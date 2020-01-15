@@ -25,5 +25,14 @@
     <string name="privacy2">Privacy Policy</string>
 
 
+    <string name="err_msg_name">Enter your full name</string>
+    <string name="err_msg_email">Enter valid email address</string>
+    <string name="err_msg_password">Enter password</string>
+    <string name="err_msg_min_6_character_password">Minimum 6 character</string>
+    <string name="err_msg_con_password">Enter confirm password</string>
+    <string name="err_msg_not_match">Password not match</string>
+    <string name="err_msg_mobile">Enter mobile number</string>
+    <string name="err_msg_10digit_mobile">Enter 10-digit mobile number</string>
+
 
 </resources>
