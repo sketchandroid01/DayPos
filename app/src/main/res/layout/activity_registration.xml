@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login.Login"
+    android:background="@color/bg_1"
+    >
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tv_copyright"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:layout_marginTop="60dp"
+                android:src="@mipmap/logo_300"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <TextView
+                android:id="@+id/tv_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/registration_txt"
+                android:layout_marginTop="20dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                >
+                <EditText
+                    android:id="@+id/edt_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/full_name"
+                    android:autofillHints="@string/full_name"
+                    android:textSize="15sp"
+                    android:inputType="textPersonName"
+                    />
+
+                <EditText
+                    android:id="@+id/edt_emailid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/email_id"
+                    android:autofillHints="@string/email_id"
+                    android:textSize="15sp"
+                    android:inputType="textEmailAddress"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <EditText
+                    android:id="@+id/edt_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/mobile_number"
+                    android:autofillHints="@string/mobile_number"
+                    android:textSize="15sp"
+                    android:inputType="phone"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <EditText
+                    android:id="@+id/edt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/password"
+                    android:autofillHints="@string/password"
+                    android:textSize="15sp"
+                    android:inputType="textPassword"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <EditText
+                    android:id="@+id/edt_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/confirm_password"
+                    android:autofillHints="@string/confirm_password"
+                    android:textSize="15sp"
+                    android:inputType="textPassword"
+                    android:layout_marginTop="10dp"
+                    />
+
+
+
+                <TextView
+                    android:id="@+id/tv_goto_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/goto_login"
+                    android:padding="5dp"
+                    />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="20dp"
+                    >
+
+                    <CheckBox
+                        android:id="@+id/checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy1"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_privacy_policy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy2"
+                        android:layout_marginStart="8dp"
+                        android:autoLink="web"
+                        android:linksClickable="true"
+                        android:textColorLink="@color/blue"
+                        />
+
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_create"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/create_my_ac"
+                    android:textColor="@color/white"
+                    />
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+    <TextView
+        android:id="@+id/tv_copyright"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="15dp"
+        android:text="@string/copyright_txt"
+        android:gravity="center"
+        />
+
+</RelativeLayout>
