@@ -47,6 +47,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.myViewHold
 
         });
 
+
+
     }
 
     @Override
