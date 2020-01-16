@@ -16,7 +16,7 @@
 
 
         <activity android:name=".splash.Splash"
-            android:theme="@style/MyNoActionBar"
+            android:theme="@style/MyFullScreen"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
         </activity>
 
         <activity android:name=".login.Login"
-            android:theme="@style/MyNoActionBar"
+            android:theme="@style/MyFullScreen"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -35,12 +35,23 @@
 
 
         <activity android:name=".registration.Registration"
+            android:theme="@style/MyFullScreen"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".container.Container"
             android:theme="@style/MyNoActionBar"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
+
+
 
 
     </application>

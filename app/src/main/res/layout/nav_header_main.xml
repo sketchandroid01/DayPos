@@ -9,12 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:gravity="center_vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Light">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher"
         app:civ_border_color="@color/white"
