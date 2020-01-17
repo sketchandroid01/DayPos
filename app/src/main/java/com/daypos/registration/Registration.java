@@ -18,7 +18,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class Registration extends AppCompatActivity {
+public class Registration extends AppCompatActivity implements
+        View.OnClickListener {
 
 
     @BindView(R.id.edt_username) EditText edt_username;
@@ -40,10 +41,13 @@ public class Registration extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
 
+        OnClickViews();
 
     }
 
     private void OnClickViews(){
+
+        tv_goto_login.setOnClickListener(this);
 
     }
 
@@ -177,7 +181,18 @@ public class Registration extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.tv_goto_login:
+                finish();
+
+                break;
 
 
+        }
 
+    }
 }

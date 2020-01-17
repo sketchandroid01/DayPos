@@ -3,12 +3,17 @@ package com.daypos.container;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -47,6 +53,7 @@ public class Container extends AppCompatActivity implements
     private static final long MOVE_DEFAULT_TIME = 1000;
     private static final long FADE_DEFAULT_TIME = 300;
     private FragmentManager mFragmentManager;
+    public static TextView cart_counter;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,8 +156,30 @@ public class Container extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.cart);
+        //menuItem.setIcon(buildCounterDrawable(2, R.mipmap.icon_cart));
+
+        MenuItemCompat.setActionView(menuItem, R.layout.cart_counter);
+        RelativeLayout relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
+        cart_counter = relativeLayout.findViewById(R.id.tv_cart_counter);
+
+        cart_counter.setText("5");
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -228,7 +257,28 @@ public class Container extends AppCompatActivity implements
 
     }
 
+    private Drawable buildCounterDrawable(int count, int backgroundImageId){
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.cart_counter, null);
+        view.setBackgroundResource(backgroundImageId);
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.rel1);
+            counterTextPanel.setVisibility(View.GONE);
+        } else {
+            TextView textView = (TextView) view.findViewById(R.id.tv_cart_counter);
+            textView.setText("" + count);
+        }
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+        return new BitmapDrawable(getResources(), bitmap);
+    }
 
 
 }

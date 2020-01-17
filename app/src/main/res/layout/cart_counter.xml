@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:id="@+id/rel1"
+    >
+
+    <ImageView
+        android:id="@+id/iv_cart"
+        android:src="@mipmap/icon_cart"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:layout_margin="0dp"
+        android:contentDescription="@string/app_name"
+        />
+
+    <TextView
+        android:id="@+id/tv_cart_counter"
+        android:layout_width="wrap_content"
+        android:minWidth="17sp"
+        android:textColor="#ffffffff"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:text="2"
+        />
+</RelativeLayout>

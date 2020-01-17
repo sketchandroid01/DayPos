@@ -140,6 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/privacy1"
+                        android:textSize="13sp"
                         />
 
                     <TextView
@@ -147,10 +148,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/privacy2"
+                        android:textColor="@color/blue"
                         android:layout_marginStart="8dp"
                         android:autoLink="web"
                         android:linksClickable="true"
                         android:textColorLink="@color/blue"
+                        android:textSize="13sp"
                         />
 
 
@@ -165,7 +168,6 @@
                     android:text="@string/create_my_ac"
                     android:textColor="@color/white"
                     />
-
 
 
 
