@@ -37,18 +37,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
+import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.home.Home;
+import com.daypos.login.Login;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 
 public class Container extends AppCompatActivity implements
         DrawerAdapter.ItemClickListener {
 
-    DrawerLayout drawer;
-    RecyclerView recycler_view;
+    @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    @BindView(R.id.recycler_view) RecyclerView recycler_view;
+    @BindView(R.id.rl_logout) RelativeLayout rl_logout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+
+
+
 
     private static final long MOVE_DEFAULT_TIME = 1000;
     private static final long FADE_DEFAULT_TIME = 300;
@@ -59,6 +68,7 @@ public class Container extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
+        ButterKnife.bind(this);
         initViews();
 
 
@@ -76,15 +86,75 @@ public class Container extends AppCompatActivity implements
         }
 
 
-        recycler_view = findViewById(R.id.recycler_view);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Home");
+
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        mFragmentManager = getSupportFragmentManager();
+
+        transactFragment(new Home());
+
+        setDrawerData();
+
+
+        rl_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialogLogout();
+            }
+        });
+
+    }
+
+
+    private void setDrawerData(){
+
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
+
         ArrayList<DrawerData> drawerDataArrayList = new ArrayList<>();
-        drawerDataArrayList.add(new DrawerData());
-        drawerDataArrayList.add(new DrawerData());
-        drawerDataArrayList.add(new DrawerData());
-        drawerDataArrayList.add(new DrawerData());
-        drawerDataArrayList.add(new DrawerData());
-        drawerDataArrayList.add(new DrawerData());
+
+        DrawerData drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Home");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Customers");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Category");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Products");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Bill History");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Help");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setTitle("Check for Update");
+        drawerDataArrayList.add(drawerData);
+
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(Container.this, drawerDataArrayList);
         recycler_view.setAdapter(drawerAdapter);
@@ -92,28 +162,11 @@ public class Container extends AppCompatActivity implements
 
 
 
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Home");
-
-        drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        mFragmentManager = getSupportFragmentManager();
-
-
-
-        transactFragment(new Home());
-
-
     }
 
-    boolean doubleBackToExitPressedOnce = false;
 
+
+    boolean doubleBackToExitPressedOnce = false;
     @Override
     public void onBackPressed() {
 
@@ -162,7 +215,6 @@ public class Container extends AppCompatActivity implements
         menuInflater.inflate(R.menu.main, menu);
 
         MenuItem menuItem = menu.findItem(R.id.cart);
-        //menuItem.setIcon(buildCounterDrawable(2, R.mipmap.icon_cart));
 
         MenuItemCompat.setActionView(menuItem, R.layout.cart_counter);
         RelativeLayout relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
@@ -194,6 +246,7 @@ public class Container extends AppCompatActivity implements
     public void onItemClick(int position, DrawerData drawerData) {
 
         Fragment fragment = null;
+        Intent intent = null;
 
         switch (position){
 
@@ -202,6 +255,13 @@ public class Container extends AppCompatActivity implements
                 break;
 
             case 1:
+
+                break;
+
+            case 2:
+
+                intent = new Intent(Container.this, CategoryList.class);
+                startActivity(intent);
 
                 break;
 
@@ -239,6 +299,11 @@ public class Container extends AppCompatActivity implements
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
+                        Intent intent = new Intent(Container.this, Login.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
 
                     }
                 });

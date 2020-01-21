@@ -38,4 +38,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
+    <string name="hint_search_cat">Search Category</string>
+    <string name="title_parent_cat">Parent Category</string>
+    <string name="title_cat_name">Category Name</string>
+    <string name="title_cat_color">Category Color</string>
+    <string name="save">Save</string>
+
+
 </resources>

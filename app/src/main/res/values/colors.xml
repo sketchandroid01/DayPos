@@ -10,4 +10,18 @@
     <color name="blue">#007fff</color>
 
     <color name="transparent">#00000000</color>
+
+
+
+    <color name="color1">#c2c2c2</color>
+    <color name="color2">#f26522</color>
+    <color name="color3">#ed1c24</color>
+    <color name="color4">#a864a8</color>
+    <color name="color5">#00bff3</color>
+    <color name="color6">#57d7df</color>
+    <color name="color7">#f5989d</color>
+    <color name="color8">#00a651</color>
+    <color name="green_light">#00a651</color>
+
+
 </resources>

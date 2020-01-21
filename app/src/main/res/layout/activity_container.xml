@@ -29,13 +29,67 @@
                 android:id="@+id/header"
                 layout="@layout/nav_header_main"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/header"
                 android:layout_above="@+id/rel_bottom"
-                />
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="15dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginTop="20dp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/iv_icon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@mipmap/ic_launcher"
+                            android:contentDescription="@string/app_name"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/iv_icon"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="5dp"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:layout_centerVertical="true"
+                            android:text="Logout"
+                            />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
+
+            </androidx.core.widget.NestedScrollView>
+
+
 
 
             <RelativeLayout

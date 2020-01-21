@@ -31,20 +31,19 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.myViewHold
     }
 
     @Override
-    public void onBindViewHolder(DrawerAdapter.myViewHolder holder, int position) {
+    public void onBindViewHolder(DrawerAdapter.myViewHolder holder, final int position) {
 
-        DrawerData drawerData = mData.get(position);
+        final DrawerData drawerData = mData.get(position);
 
         holder.iv_icon.setImageResource(drawerData.getIcon());
         holder.tv_title.setText(drawerData.getTitle());
 
 
-
-
-        holder.itemView.setOnClickListener(v -> {
-
-            mClickListener.onItemClick(position, drawerData);
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onItemClick(position, drawerData);
+            }
         });
 
 
