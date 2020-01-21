@@ -42,7 +42,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
             @Override
             public void onClick(View v) {
 
-
+                mClickListener.onItemClick(mData.get(position));
 
             }
         });
@@ -73,7 +73,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
     }
 
     public interface ItemClickListener {
-        void onItemClick(CategoryData categoryData);
+        void onItemClick(String color_code);
     }
 
 }

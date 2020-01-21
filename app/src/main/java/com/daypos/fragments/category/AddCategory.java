@@ -23,14 +23,15 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddCategory extends AppCompatActivity implements View.OnClickListener {
+public class AddCategory extends AppCompatActivity implements
+        View.OnClickListener,
+        ColorAdapter.ItemClickListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_colors) RecyclerView recycler_colors;
     @BindView(R.id.tv_save_cat) TextView tv_save_cat;
     @BindView(R.id.switch_parent) Switch switch_parent;
-    @BindView(R.id.edt_parent_name)
-    EditText edt_parent_name;
+    @BindView(R.id.edt_parent_name) EditText edt_parent_name;
     @BindView(R.id.edt_cat_name) EditText edt_cat_name;
 
 
@@ -68,7 +69,7 @@ public class AddCategory extends AppCompatActivity implements View.OnClickListen
 
         ColorAdapter colorAdapter = new ColorAdapter(AddCategory.this, colorList);
         recycler_colors.setAdapter(colorAdapter);
-
+        colorAdapter.setClickListener(this);
 
 
 
@@ -94,6 +95,12 @@ public class AddCategory extends AppCompatActivity implements View.OnClickListen
 
 
         }
+
+    }
+
+
+    @Override
+    public void onItemClick(String color_code) {
 
     }
 }

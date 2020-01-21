@@ -121,37 +121,43 @@ public class Container extends AppCompatActivity implements
         ArrayList<DrawerData> drawerDataArrayList = new ArrayList<>();
 
         DrawerData drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_home);
         drawerData.setTitle("Home");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_customers);
         drawerData.setTitle("Customers");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_category);
         drawerData.setTitle("Category");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_products);
         drawerData.setTitle("Products");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_bill_hist);
         drawerData.setTitle("Bill History");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_setting);
+        drawerData.setTitle("Settings");
+        drawerDataArrayList.add(drawerData);
+
+
+        drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.icon_help);
         drawerData.setTitle("Help");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
-        drawerData.setIcon(R.mipmap.ic_launcher);
+        drawerData.setIcon(R.mipmap.icon_update);
         drawerData.setTitle("Check for Update");
         drawerDataArrayList.add(drawerData);
 
@@ -261,7 +267,7 @@ public class Container extends AppCompatActivity implements
             case 2:
 
                 intent = new Intent(Container.this, CategoryList.class);
-                startActivity(intent);
+                intentClass(intent);
 
                 break;
 
@@ -271,7 +277,18 @@ public class Container extends AppCompatActivity implements
         }
 
 
-        transactFragment(fragment);
+        drawer.closeDrawer(GravityCompat.START);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                transactFragment(fragment);
+
+            }
+        }, FADE_DEFAULT_TIME);
+
     }
 
     private void transactFragment(Fragment fragment){
@@ -285,7 +302,23 @@ public class Container extends AppCompatActivity implements
 
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+
+    }
+
+    private void intentClass(Intent intent){
+
+        if (intent != null) {
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    startActivity(intent);
+                }
+            }, FADE_DEFAULT_TIME);
+        }
+
     }
 
 

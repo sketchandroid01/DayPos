@@ -40,10 +40,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
         final CategoryData categoryData = mData.get(position);
 
 
-
-
         GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
-        bgShape.setColor(Color.parseColor("#00FFFF"));
+        bgShape.setColor(Color.parseColor("#a864a8"));
 
     }
 

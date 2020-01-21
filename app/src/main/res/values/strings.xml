@@ -43,6 +43,18 @@
     <string name="title_cat_name">Category Name</string>
     <string name="title_cat_color">Category Color</string>
     <string name="save">Save</string>
+    <string name="assign_item">ASSIGN ITEM/PRODUCTS</string>
+    <string name="create_item">CREATE ITEM/PRODUCTS</string>
+    <string name="delete_cat">DELETE CATEGORY</string>
 
+
+    <string name="title_product_name">Product Name</string>
+    <string name="title_select_cat">Select Category</string>
+    <string name="title_selling_unit">Selling Unit</string>
+    <string name="title_selling_price">Selling Price</string>
+    <string name="title_sku">SKU</string>
+    <string name="title_barcode">Barcode</string>
+    <string name="product_color">Product Color</string>
+    <string name="product_image">Image</string>
 
 </resources>
