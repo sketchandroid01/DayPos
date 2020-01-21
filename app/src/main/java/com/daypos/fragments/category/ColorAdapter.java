@@ -43,6 +43,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
             public void onClick(View v) {
 
 
+
             }
         });
 
