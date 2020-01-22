@@ -57,5 +57,7 @@
     <string name="product_color">Product Color</string>
     <string name="product_image">Image</string>
     <string name="hint_search_product">Search Product</string>
+    <string name="hint_search_customer">Search Customer</string>
+    <string name="apply_coupon">Apply Coupon</string>
 
 </resources>
