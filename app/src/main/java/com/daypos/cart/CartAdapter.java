@@ -1,4 +1,4 @@
-package com.daypos.fragments.home;
+package com.daypos.cart;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,30 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
 import com.daypos.container.DrawerData;
+import com.daypos.fragments.home.ProductData;
 
 import java.util.ArrayList;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHolder> {
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> {
 
     private Context context;
-    private ArrayList<ProductData> productDataArrayList;
+    private ArrayList<CartData> cartDataArrayList;
 
-    public ProductAdapter(Context context, ArrayList<ProductData> data) {
+    public CartAdapter(Context context, ArrayList<CartData> data) {
         this.context = context;
-        this.productDataArrayList = data;
+        this.cartDataArrayList = data;
     }
 
     @Override
-    public ProductAdapter.myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CartAdapter.myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.product_item, parent, false);
+                .inflate(R.layout.cart_item, parent, false);
         return new myViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ProductAdapter.myViewHolder holder, int position) {
+    public void onBindViewHolder(CartAdapter.myViewHolder holder, int position) {
 
-        ProductData drawerData = productDataArrayList.get(position);
+        CartData cartData = cartDataArrayList.get(position);
 
 
 
@@ -42,7 +43,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
 
     @Override
     public int getItemCount() {
-        return productDataArrayList.size();
+        return cartDataArrayList.size();
     }
 
 

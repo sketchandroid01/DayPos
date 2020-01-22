@@ -1,12 +1,11 @@
-package com.daypos.fragments.category;
+package com.daypos.fragments.products;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,31 +14,29 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
-import com.daypos.fragments.products.AddProduct;
+import com.daypos.fragments.category.ColorAdapter;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddCategory extends AppCompatActivity implements
+public class AddProduct extends AppCompatActivity implements
         View.OnClickListener,
         ColorAdapter.ItemClickListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_colors) RecyclerView recycler_colors;
     @BindView(R.id.tv_save_cat) TextView tv_save_cat;
-    @BindView(R.id.switch_parent) Switch switch_parent;
-    @BindView(R.id.edt_parent_name) EditText edt_parent_name;
-    @BindView(R.id.edt_cat_name) EditText edt_cat_name;
-    @BindView(R.id.btn_create_item) Button btn_create_item;
-
+    @BindView(R.id.radio_color) RadioButton radio_color;
+    @BindView(R.id.radio_image) RadioButton radio_image;
+    @BindView(R.id.linear_select_image) LinearLayout linear_select_image;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_category);
+        setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
 
         initViews();
@@ -50,12 +47,11 @@ public class AddCategory extends AppCompatActivity implements
     private void initViews() {
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Add Category");
+        getSupportActionBar().setTitle("Add Product");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
         tv_save_cat.setOnClickListener(this);
-        btn_create_item.setOnClickListener(this);
 
         ArrayList<String> colorList = new ArrayList<>();
         colorList.add("#c2c2c2");
@@ -69,11 +65,34 @@ public class AddCategory extends AppCompatActivity implements
 
         recycler_colors.setLayoutManager(new GridLayoutManager(this, 4));
 
-        ColorAdapter colorAdapter = new ColorAdapter(AddCategory.this, colorList);
+        ColorAdapter colorAdapter = new ColorAdapter(AddProduct.this, colorList);
         recycler_colors.setAdapter(colorAdapter);
         colorAdapter.setClickListener(this);
 
 
+        radio_color.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    recycler_colors.setVisibility(View.VISIBLE);
+                    linear_select_image.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+        radio_image.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    recycler_colors.setVisibility(View.GONE);
+                    linear_select_image.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
 
     }
 
@@ -96,10 +115,6 @@ public class AddCategory extends AppCompatActivity implements
         if (v == tv_save_cat){
 
 
-        }else if (v == btn_create_item){
-
-            Intent intent = new Intent(AddCategory.this, AddProduct.class);
-            startActivity(intent);
         }
 
     }

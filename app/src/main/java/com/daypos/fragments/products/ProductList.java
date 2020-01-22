@@ -1,4 +1,4 @@
-package com.daypos.fragments.category;
+package com.daypos.fragments.products;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,15 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
-import com.daypos.container.DrawerData;
+import com.daypos.fragments.category.AddCategory;
+import com.daypos.fragments.home.ProductAdapter;
+import com.daypos.fragments.home.ProductData;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CategoryList extends AppCompatActivity implements
-        CategoryAdapter.ItemClickListener {
+public class ProductList extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
@@ -34,7 +35,7 @@ public class CategoryList extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category);
+        setContentView(R.layout.activity_product_list);
         ButterKnife.bind(this);
 
         initViews();
@@ -44,7 +45,7 @@ public class CategoryList extends AppCompatActivity implements
     private void initViews(){
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Categories");
+        getSupportActionBar().setTitle("Products");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
@@ -52,20 +53,26 @@ public class CategoryList extends AppCompatActivity implements
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
 
 
-        ArrayList<CategoryData> categoryDataArrayList = new ArrayList<>();
+        ArrayList<ProductData> productDataArrayList = new ArrayList<>();
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
+        productDataArrayList.add(new ProductData());
 
-        CategoryData categoryData = new CategoryData();
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
 
-        CategoryAdapter categoryAdapter = new CategoryAdapter(CategoryList.this,
-                categoryDataArrayList);
-        recycler_view.setAdapter(categoryAdapter);
-        categoryAdapter.setClickListener(this);
+        ProductAdapter productAdapter = new ProductAdapter(ProductList.this, productDataArrayList);
+        recycler_view.setAdapter(productAdapter);
+
 
 
     }
@@ -89,7 +96,7 @@ public class CategoryList extends AppCompatActivity implements
 
             case R.id.add_cat:
 
-                Intent intent = new Intent(CategoryList.this, AddCategory.class);
+                Intent intent = new Intent(ProductList.this, AddProduct.class);
                 startActivity(intent);
 
 
@@ -97,13 +104,6 @@ public class CategoryList extends AppCompatActivity implements
 
         }
         return (super.onOptionsItemSelected(menuItem));
-    }
-
-    @Override
-    public void onItemClick(CategoryData categoryData) {
-
-
-
     }
 
 

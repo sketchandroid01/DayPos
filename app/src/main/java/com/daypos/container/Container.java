@@ -3,14 +3,9 @@ package com.daypos.container;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +32,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
+import com.daypos.cart.CartActivity;
 import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.home.Home;
+import com.daypos.fragments.products.ProductList;
 import com.daypos.login.Login;
 
 import java.util.ArrayList;
@@ -226,11 +223,13 @@ public class Container extends AppCompatActivity implements
         RelativeLayout relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
         cart_counter = relativeLayout.findViewById(R.id.tv_cart_counter);
 
-        cart_counter.setText("5");
+        cart_counter.setText("0");
         relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(Container.this, CartActivity.class);
+                intentClass(intent);
 
             }
         });
@@ -244,6 +243,16 @@ public class Container extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        switch (id){
+
+            case R.id.add_customer:
+
+                dialogAddCustomer();
+
+                break;
+
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -251,7 +260,7 @@ public class Container extends AppCompatActivity implements
     @Override
     public void onItemClick(int position, DrawerData drawerData) {
 
-        Fragment fragment = null;
+        final Fragment fragment = null;
         Intent intent = null;
 
         switch (position){
@@ -271,7 +280,12 @@ public class Container extends AppCompatActivity implements
 
                 break;
 
+            case 3:
 
+                intent = new Intent(Container.this, ProductList.class);
+                intentClass(intent);
+
+                break;
 
 
         }
@@ -305,7 +319,7 @@ public class Container extends AppCompatActivity implements
 
     }
 
-    private void intentClass(Intent intent){
+    private void intentClass(final Intent intent){
 
         if (intent != null) {
 
@@ -315,18 +329,17 @@ public class Container extends AppCompatActivity implements
                 public void run() {
 
                     startActivity(intent);
+
                 }
             }, FADE_DEFAULT_TIME);
         }
 
     }
 
-
-
     public void dialogLogout(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Container.this);
-        builder.setTitle("Abound");
+        builder.setTitle("DayPos");
         builder.setMessage("Are you sure you want to logout?");
         builder.setPositiveButton("LOGOUT",
                 new DialogInterface.OnClickListener() {
@@ -355,28 +368,43 @@ public class Container extends AppCompatActivity implements
 
     }
 
-    private Drawable buildCounterDrawable(int count, int backgroundImageId){
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.cart_counter, null);
-        view.setBackgroundResource(backgroundImageId);
-        if (count == 0) {
-            View counterTextPanel = view.findViewById(R.id.rel1);
-            counterTextPanel.setVisibility(View.GONE);
-        } else {
-            TextView textView = (TextView) view.findViewById(R.id.tv_cart_counter);
-            textView.setText("" + count);
-        }
-        view.measure(
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-        view.setDrawingCacheEnabled(true);
-        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false);
-        return new BitmapDrawable(getResources(), bitmap);
+
+    private void dialogAddCustomer(){
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_customer, null);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+
+        Button btn_close = dialogView.findViewById(R.id.btn_close);
+        Button btn_save = dialogView.findViewById(R.id.btn_save);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alertDialog.dismiss();
+            }
+        });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alertDialog.dismiss();
+            }
+        });
+
+
     }
+
+
 
 
 }

@@ -51,10 +51,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             case R.id.btn_login:
 
                 intent = new Intent(Login.this, Container.class);
-                startActivity(intent);
-                finish();
+               // startActivity(intent);
+                //finish();
 
-               // checkValidate();
+                checkValidate();
 
                 break;
 

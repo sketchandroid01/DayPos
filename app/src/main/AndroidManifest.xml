@@ -74,6 +74,35 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".fragments.products.AddProduct"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".fragments.products.ProductList"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".cart.CartActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
 
 
     </application>
