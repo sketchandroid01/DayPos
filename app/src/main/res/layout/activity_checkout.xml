@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -20,62 +22,71 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_1"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-
             >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/border_only"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_1"
                 >
 
-                <EditText
-                    android:id="@+id/edt_search"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:layout_toStartOf="@+id/view"
-                    android:layout_centerVertical="true"
-                    android:paddingStart="10dp"
-                    android:paddingTop="6dp"
-                    android:paddingEnd="6dp"
-                    android:paddingBottom="6dp"
-                    android:maxLines="1"
-                    android:hint="@string/hint_search_customer"
-                    android:autofillHints="@string/hint_search_customer"
-                    android:textSize="14sp"
-                    />
+                    android:layout_height="50dp"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/border_only"
+                    >
+
+                    <EditText
+                        android:id="@+id/edt_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:layout_toStartOf="@+id/view"
+                        android:layout_centerVertical="true"
+                        android:paddingStart="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="6dp"
+                        android:paddingBottom="6dp"
+                        android:maxLines="1"
+                        android:hint="@string/hint_search_customer"
+                        android:autofillHints="@string/hint_search_customer"
+                        android:textSize="14sp"
+                        />
 
 
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/border_color"
-                    android:layout_toStartOf="@+id/iv_search"
-                    />
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/border_color"
+                        android:layout_toStartOf="@+id/iv_search"
+                        />
 
 
-                <ImageView
-                    android:id="@+id/iv_search"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@mipmap/icon_search"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="12dp"
-                    android:layout_centerVertical="true"
-                    />
+                    <ImageView
+                        android:id="@+id/iv_search"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/icon_search"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="12dp"
+                        android:layout_centerVertical="true"
+                        />
 
 
-            </RelativeLayout>
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
 
 
 
