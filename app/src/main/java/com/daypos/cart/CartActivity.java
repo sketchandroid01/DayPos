@@ -1,13 +1,11 @@
 package com.daypos.cart;
 
-import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,16 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
+import com.daypos.checkout.Checkout;
+import com.daypos.fragments.customers.DialogAddCustomer;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity implements
+        View.OnClickListener {
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.btn_checkout) Button btn_checkout;
 
     ArrayList<CartData> cartDataArrayList;
 
@@ -64,6 +66,8 @@ public class CartActivity extends AppCompatActivity {
         recyclerview.setAdapter(cartAdapter);
 
 
+        btn_checkout.setOnClickListener(this);
+
     }
 
 
@@ -91,40 +95,27 @@ public class CartActivity extends AppCompatActivity {
         return (super.onOptionsItemSelected(menuItem));
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.btn_checkout:
+
+                Intent intent_checkout = new Intent(CartActivity.this, Checkout.class);
+                startActivity(intent_checkout);
+
+                break;
 
 
+        }
+
+    }
 
     private void dialogAddCustomer(){
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_customer, null);
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false);
-
-        Button btn_close = dialogView.findViewById(R.id.btn_close);
-        Button btn_save = dialogView.findViewById(R.id.btn_save);
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                alertDialog.dismiss();
-            }
-        });
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                alertDialog.dismiss();
-            }
-        });
-
+        DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(this);
+        dialogAddCustomer.show();
 
     }
 

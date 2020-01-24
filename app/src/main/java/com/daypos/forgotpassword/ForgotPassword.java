@@ -1,6 +1,5 @@
-package com.daypos.login;
+package com.daypos.forgotpassword;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -14,12 +13,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daypos.R;
-import com.daypos.container.Container;
-import com.daypos.forgotpassword.ForgotPassword;
 import com.daypos.network.ApiConstant;
-import com.daypos.network.GetDataParser;
 import com.daypos.network.PostDataParser;
-import com.daypos.registration.Registration;
 
 import org.json.JSONObject;
 
@@ -29,68 +24,51 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class Login extends AppCompatActivity implements View.OnClickListener {
+public class ForgotPassword extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.tv_forgot_password) TextView tv_forgot_password;
     @BindView(R.id.edt_username) EditText edt_username;
-    @BindView(R.id.edt_password) EditText edt_password;
-    @BindView(R.id.btn_login) Button btn_login;
-    @BindView(R.id.btn_register) TextView btn_register;
+    @BindView(R.id.btn_submit) Button btn_submit;
+    @BindView(R.id.btn_back_to_login) TextView btn_back_to_login;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_forgot_password);
         ButterKnife.bind(this);
 
 
-        btn_login.setOnClickListener(this);
-        btn_register.setOnClickListener(this);
-        tv_forgot_password.setOnClickListener(this);
+        btn_submit.setOnClickListener(this);
+        btn_back_to_login.setOnClickListener(this);
 
-
-        String email = "admin@loyverse.com";
-        String pass = "123456";
-
-        edt_username.setText(email);
-        edt_password.setText(pass);
 
     }
 
     @Override
     public void onClick(View v) {
 
-        Intent intent = null;
-
         switch (v.getId()){
 
-            case R.id.btn_login:
+            case R.id.btn_submit:
 
                 checkValidate();
 
                 break;
 
-            case R.id.btn_register:
+            case R.id.btn_back_to_login:
 
-                intent = new Intent(Login.this, Registration.class);
-                startActivity(intent);
-
-                break;
-
-
-            case R.id.tv_forgot_password:
-
-                intent = new Intent(Login.this, ForgotPassword.class);
-                startActivity(intent);
+                finish();
 
                 break;
+
+
         }
 
     }
 
     private static boolean isValidEmail(String email) {
-        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return !TextUtils.isEmpty(email)
+                && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
     private void requestFocus(View view) {
         if (view.requestFocus()) {
@@ -127,35 +105,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             return;
         }
 
-        if (edt_password.getText().toString().isEmpty()){
-            Toasty.info(getApplicationContext(),
-                    "Enter password",
-                    Toast.LENGTH_SHORT, true).show();
-            return;
-        }
-
-
-        userlogin(edt_username.getText().toString(), edt_password.getText().toString());
+        forgotPassword(edt_username.getText().toString());
     }
 
 
 
-    public void userlogin(String email, String pass) {
+    public void forgotPassword(String email) {
 
 
         String device_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String url = ApiConstant.login;
+        String url = ApiConstant.change_password;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
-        params.put("password", pass);
-        params.put("device_type", "android");
-        params.put("fcm_token", "funky");
-        params.put("device_id", device_id);
 
-
-        new PostDataParser(Login.this, url, params, true,
+        new PostDataParser(ForgotPassword.this, url, params, true,
                 new PostDataParser.OnGetResponseListner() {
             @Override
             public void onGetResponse(JSONObject response) {
