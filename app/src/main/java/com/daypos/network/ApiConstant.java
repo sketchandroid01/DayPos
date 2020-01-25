@@ -8,7 +8,8 @@ public class ApiConstant {
 
 
     public static final String login                      = BASE_URL + "login";
-    public static final String change_password            = BASE_URL + "change_password";
+    public static final String forgotPassword            = BASE_URL + "forgotPassword";
+    public static final String resetPassword            = BASE_URL + "resetPassword";
 
 
 }

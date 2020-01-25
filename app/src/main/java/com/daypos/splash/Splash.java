@@ -7,16 +7,22 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daypos.R;
+import com.daypos.container.Container;
 import com.daypos.login.Login;
+import com.daypos.utils.Preferense;
 
 public class Splash extends AppCompatActivity {
 
     private static final int SPLASH_DISPLAY_LENGTH = 3000;
 
+    private Preferense preferense;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        preferense = new Preferense(this);
 
         threadTogo();
     }
@@ -29,9 +35,18 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent intent = new Intent(Splash.this, Login.class);
-                startActivity(intent);
-                finish();
+                if (preferense.isLogin()){
+
+                    Intent intent = new Intent(Splash.this, Container.class);
+                    startActivity(intent);
+                    finish();
+
+                }else {
+
+                    Intent intent = new Intent(Splash.this, Login.class);
+                    startActivity(intent);
+                    finish();
+                }
 
             }
 

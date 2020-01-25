@@ -3,9 +3,12 @@ package com.daypos.container;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,17 +28,21 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.daypos.R;
 import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
 import com.daypos.fragments.products.ProductList;
 import com.daypos.login.Login;
+import com.daypos.utils.GlobalClass;
+import com.daypos.utils.Preferense;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 
 
@@ -46,8 +53,14 @@ public class Container extends AppCompatActivity implements
     @BindView(R.id.recycler_view) RecyclerView recycler_view;
     @BindView(R.id.rl_logout) RelativeLayout rl_logout;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.imageView) CircleImageView imageView;
+    @BindView(R.id.username) TextView username;
+    @BindView(R.id.store_name) TextView store_name;
+    @BindView(R.id.tv_version) TextView tv_version;
 
 
+    private Preferense preferense;
+    private GlobalClass globalClass;
 
 
     private static final long MOVE_DEFAULT_TIME = 1000;
@@ -68,6 +81,9 @@ public class Container extends AppCompatActivity implements
 
     private void initViews(){
 
+        preferense = new Preferense(this);
+        globalClass = (GlobalClass) getApplicationContext();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -87,11 +103,9 @@ public class Container extends AppCompatActivity implements
         toggle.syncState();
 
         mFragmentManager = getSupportFragmentManager();
-
         transactFragment(new Home());
 
         setDrawerData();
-
 
         rl_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +114,28 @@ public class Container extends AppCompatActivity implements
                 dialogLogout();
             }
         });
+
+
+
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String versionName = pInfo.versionName;
+            int versionCode = pInfo.versionCode;
+
+            Log.d("TAG", "versionName = "+versionName);
+            Log.d("TAG", "versionCode = "+versionCode);
+
+            tv_version.setText("V: "+versionName);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(this)
+                .load(preferense.getString(Preferense.PREF_image))
+                .into(imageView);
+        username.setText(preferense.getString(Preferense.PREF_name));
+        store_name.setText(preferense.getString(Preferense.PREF_business));
 
     }
 
@@ -159,8 +195,6 @@ public class Container extends AppCompatActivity implements
 
 
     }
-
-
 
     boolean doubleBackToExitPressedOnce = false;
     @Override
@@ -298,6 +332,8 @@ public class Container extends AppCompatActivity implements
         builder.setPositiveButton("LOGOUT",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        preferense.clearData();
 
                         Intent intent = new Intent(Container.this, Login.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK

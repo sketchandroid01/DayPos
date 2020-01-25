@@ -1,7 +1,9 @@
 package com.daypos.forgotpassword;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -112,10 +114,7 @@ public class ForgotPassword extends AppCompatActivity implements View.OnClickLis
 
     public void forgotPassword(String email) {
 
-
-        String device_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        String url = ApiConstant.change_password;
+        String url = ApiConstant.forgotPassword;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -131,6 +130,7 @@ public class ForgotPassword extends AppCompatActivity implements View.OnClickLis
                         String message = response.optString("message");
                         if (status == 1) {
 
+                            dialogReset(message);
 
                         } else {
 
@@ -147,4 +147,31 @@ public class ForgotPassword extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
+
+
+    public void dialogReset(String message){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPassword.this);
+        builder.setTitle("DayPos");
+        builder.setCancelable(false);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent intent = new Intent(ForgotPassword.this,
+                                ResetPassword.class);
+                        intent.putExtra("email", edt_username.getText().toString());
+                        startActivity(intent);
+                        finish();
+
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+
 }

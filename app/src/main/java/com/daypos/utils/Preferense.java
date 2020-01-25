@@ -15,13 +15,13 @@ public class Preferense {
 
     private static final String PREF_logInStatus = "logInStatus";
     private static final String PREF_firstlogin = "firstlogin";
-    private static final String PREF_name = "name";
-    private static final String PREF_fname = "fname";
-    private static final String PREF_lname = "lname";
-    private static final String PREF_email = "user_email";
-    private static final String PREF_phone_number = "phone_number";
-    private static final String PREF_business = "business";
-    private static final String PREF_id = "id";
+    public static final String PREF_name = "name";
+    public static final String PREF_email = "user_email";
+    public static final String PREF_image = "user_image";
+    public static final String PREF_phone_number = "phone_number";
+    public static final String PREF_business = "business";
+    public static final String PREF_id = "id";
+    public static final String Pref_Pin = "pincode";
 
 
     public Preferense(Context context) {
@@ -50,7 +50,15 @@ public class Preferense {
         editor.commit();
     }
 
+    public void saveString(String key, String val){
+        editor.putString(key, val);
+        editor.commit();
+    }
 
+
+    public String getString(String key){
+        return sharedPreferences.getString(key, "");
+    }
 
     public void setToGlobal(){
 
@@ -60,6 +68,10 @@ public class Preferense {
     }
 
 
+    public void clearData(){
+        editor.clear();
+        editor.commit();
+    }
 
 
 

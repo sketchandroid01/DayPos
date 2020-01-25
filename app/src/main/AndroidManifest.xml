@@ -117,7 +117,23 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".forgotpassword.ForgotPassword"
+            android:theme="@style/MyFullScreen"
+            android:windowSoftInputMode="stateHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
+        <activity android:name=".forgotpassword.ResetPassword"
+            android:theme="@style/MyFullScreen"
+            android:windowSoftInputMode="stateHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
 
     </application>

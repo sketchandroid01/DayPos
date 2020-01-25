@@ -20,6 +20,7 @@ import com.daypos.network.ApiConstant;
 import com.daypos.network.GetDataParser;
 import com.daypos.network.PostDataParser;
 import com.daypos.registration.Registration;
+import com.daypos.utils.Preferense;
 
 import org.json.JSONObject;
 
@@ -37,6 +38,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.btn_login) Button btn_login;
     @BindView(R.id.btn_register) TextView btn_register;
 
+    private Preferense preferense;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        preferense = new Preferense(this);
 
         btn_login.setOnClickListener(this);
         btn_register.setOnClickListener(this);
@@ -53,8 +57,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         String email = "admin@loyverse.com";
         String pass = "123456";
 
-        edt_username.setText(email);
-        edt_password.setText(pass);
+       // edt_username.setText(email);
+       // edt_password.setText(pass);
 
     }
 
@@ -135,12 +139,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
 
 
-        userlogin(edt_username.getText().toString(), edt_password.getText().toString());
+        userLogin(edt_username.getText().toString(), edt_password.getText().toString());
     }
 
 
 
-    public void userlogin(String email, String pass) {
+    public void userLogin(String email, String pass) {
 
 
         String device_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -166,6 +170,38 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         String message = response.optString("message");
                         if (status == 1) {
 
+                            JSONObject data = response.getJSONObject("data");
+
+                            JSONObject user_details = data.getJSONObject("user_details");
+
+                            preferense.setPref_logInStatus(true);
+
+                            preferense.saveString(Preferense.PREF_id,
+                                    data.optString("user_id"));
+                            preferense.saveString(Preferense.PREF_name,
+                                    data.optString("user_name"));
+                            preferense.saveString(Preferense.PREF_phone_number,
+                                    data.optString("user_phone"));
+                            preferense.saveString(Preferense.PREF_image,
+                                    data.optString("user_image"));
+
+
+                            preferense.saveString(Preferense.PREF_email,
+                                    user_details.optString("email"));
+                            preferense.saveString(Preferense.Pref_Pin,
+                                    user_details.optString("emp_pin"));
+                            preferense.saveString(Preferense.PREF_business,
+                                    user_details.optString("business_name"));
+
+
+
+
+                            preferense.setToGlobal();
+
+                            Intent intent = new Intent(Login.this, Container.class);
+                            startActivity(intent);
+                            finish();
+
 
                         } else {
 
@@ -183,3 +219,49 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         });
     }
 }
+
+
+/*
+ {
+ 	"status": 1,
+ 	"message": "Login Sucessful",
+ 	"data": {
+ 		"user_id": "2",
+ 		"user_name": "Arayan Khanna",
+ 		"user_phone": "9775370208",
+ 		"user_image": "https:\/\/lab-5.sketchdemos.com\/PHP-WEB-SERVICES\/P-1029-DAYPOS\/uploads\/user\/images.png",
+ 		"user_details": {
+ 			"id": "2",
+ 			"user_id": "1",
+ 			"name": "Arayan Khanna",
+ 			"fname": "",
+ 			"lname": "",
+ 			"email": "admin@loyverse.com",
+ 			"password": "7c4a8d09ca3762af61e59520943dc26494f8941b",
+ 			"hash": "e41a54377944eca26a6b84d6c63f2e57bf172ec1",
+ 			"phone": "9775370208",
+ 			"mobile": "",
+ 			"role_id": "3",
+ 			"emp_pin": "9874",
+ 			"image": "images.png",
+ 			"created_date": null,
+ 			"modified_date": "2020-01-25 11:54:32",
+ 			"ip_address": "10.10.0.1",
+ 			"last_login": "2020-01-25 11:47:06",
+ 			"user_agent": "Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/73.0.3683.75 Safari\/537.36",
+ 			"online_status": "1",
+ 			"invite_to_back_office": "1",
+ 			"store_availability": "1",
+ 			"store_ids": "6,4,2",
+ 			"pos_status": "1",
+ 			"back_office_status": null,
+ 			"device_type": "android",
+ 			"fcm_token": "sfdgdfhfj",
+ 			"device_id": "45566",
+ 			"otp": "0",
+ 			"business_name": "dayPos online store"
+ 		}
+ 	}
+ }
+
+        */
