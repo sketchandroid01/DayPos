@@ -66,21 +66,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:paddingStart="8dp"
+            android:paddingStart="5dp"
             android:text="Name"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="end"
-            android:paddingEnd="8dp"
+            android:paddingEnd="5dp"
             android:text="Orders"
             />
 
@@ -89,22 +89,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="end"
-            android:paddingEnd="8dp"
+            android:paddingEnd="5dp"
             android:text="Value"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="end"
-            android:paddingEnd="8dp"
+            android:paddingEnd="5dp"
             android:text="Balance"
             />
 

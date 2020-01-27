@@ -20,19 +20,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:paddingStart="8dp"
-            android:text="Name"
+            android:paddingStart="5dp"
+            android:text="Customer Name"
             />
 
         <TextView
             android:id="@+id/tv_total_orders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:textColor="@color/black"
             android:gravity="end"
-            android:paddingEnd="8dp"
-            android:text="Orders"
+            android:paddingEnd="5dp"
+            android:text="7"
             />
 
         <TextView
@@ -42,19 +42,19 @@
             android:layout_weight="1"
             android:textColor="@color/black"
             android:gravity="end"
-            android:paddingEnd="8dp"
-            android:text="Value"
+            android:paddingEnd="5dp"
+            android:text="500.00"
             />
 
         <TextView
             android:id="@+id/tv_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:textColor="@color/black"
             android:gravity="end"
-            android:paddingEnd="8dp"
-            android:text="Balance"
+            android:paddingEnd="5dp"
+            android:text="100.00"
             />
 
     </LinearLayout>

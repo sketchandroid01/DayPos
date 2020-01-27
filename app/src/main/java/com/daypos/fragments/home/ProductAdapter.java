@@ -34,7 +34,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
     @Override
     public void onBindViewHolder(ProductAdapter.myViewHolder holder, int position) {
 
-        ProductData drawerData = productDataArrayList.get(position);
+        ProductData productData = productDataArrayList.get(position);
 
 
 
@@ -65,7 +65,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
     }
 
     public interface ItemClickListener {
-        void onItemClick(int position, DrawerData drawerData);
+        void onItemClick(ProductData productData);
     }
 
 }

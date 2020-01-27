@@ -187,6 +187,7 @@ public class Registration extends AppCompatActivity implements
         switch (v.getId()){
 
             case R.id.tv_goto_login:
+
                 finish();
 
                 break;
