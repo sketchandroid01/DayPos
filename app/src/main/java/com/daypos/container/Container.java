@@ -341,8 +341,7 @@ public class Container extends AppCompatActivity implements
         AlertDialog.Builder builder = new AlertDialog.Builder(Container.this);
         builder.setTitle("DayPos");
         builder.setMessage("Are you sure you want to logout?");
-        builder.setPositiveButton("LOGOUT",
-                new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("LOGOUT", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         Intent intent = new Intent(Container.this, Login.class);
@@ -354,9 +353,7 @@ public class Container extends AppCompatActivity implements
                     }
                 });
 
-        builder.setNegativeButton("CANCEL",
-                new DialogInterface.OnClickListener()
-                {
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id)
                     {
                         dialog.cancel();
