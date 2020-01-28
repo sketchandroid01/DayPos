@@ -76,9 +76,8 @@ public class GlobalClass extends MultiDexApplication {
         return userId;
     }
 
-    public GlobalClass setUserId(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
-        return this;
     }
 
 

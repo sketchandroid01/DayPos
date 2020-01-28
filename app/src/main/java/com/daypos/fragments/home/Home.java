@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.GlobalClass;
+import com.daypos.utils.Preferense;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,7 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class Home extends Fragment {
+public class Home extends Fragment implements
+        SwipeRefreshLayout.OnRefreshListener {
 
     private Unbinder unbinder;
 
@@ -49,10 +52,12 @@ public class Home extends Fragment {
 
 
     private GlobalClass globalClass;
+    private Preferense preferense;
 
     private ArrayList<CategoryData> categoryDataArrayList;
     private int start_index = 1;
     private int limit = 20;
+    private String category_id;
 
     public Home() {}
 
@@ -134,9 +139,13 @@ public class Home extends Fragment {
 
     private void viewsAction(){
 
+        preferense = new Preferense(getActivity());
+        preferense.setToGlobal();
+
         globalClass = (GlobalClass) getActivity().getApplicationContext();
 
         recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        swipe_refresh_layout.setOnRefreshListener(this);
 
 
         ArrayList<ProductData> productDataArrayList = new ArrayList<>();
@@ -160,17 +169,22 @@ public class Home extends Fragment {
         recyclerview.setAdapter(productAdapter);
 
 
+
+
         categoryDataArrayList = new ArrayList<>();
-
-
-
-
         getCategoryList();
 
+    }
+
+    @Override
+    public void onRefresh() {
+
+        getProductCategoryWise(category_id);
 
     }
 
     private void getCategoryList() {
+        categoryDataArrayList = new ArrayList<>();
 
         String url = ApiConstant.category_list;
 
@@ -187,12 +201,21 @@ public class Home extends Fragment {
                                 int status = response.optInt("status");
                                 String message = response.optString("message");
                                 if (status == 1) {
+
+                                    CategoryData categoryData = new CategoryData();
+
+                                    categoryData.setId("all");
+                                    categoryData.setName("All");
+                                    categoryData.setColor_code("");
+                                    categoryData.setItem_no("");
+                                    categoryDataArrayList.add(categoryData);
+
                                     JSONArray data = response.getJSONArray("data");
 
                                     for (int i = 0; i < data.length(); i++){
                                         JSONObject object = data.getJSONObject(i);
 
-                                        CategoryData categoryData = new CategoryData();
+                                        categoryData = new CategoryData();
 
                                         categoryData.setId(object.optString("id"));
                                         categoryData.setName(object.optString("category_name"));
@@ -209,6 +232,8 @@ public class Home extends Fragment {
 
                                 }
 
+                                spinnerAction();
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -216,6 +241,22 @@ public class Home extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void spinnerAction(){
+
+        spinner_cat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                category_id = categoryDataArrayList.get(position).getId();
+                getProductCategoryWise(categoryDataArrayList.get(position).getId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -226,7 +267,7 @@ public class Home extends Fragment {
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
-        params.put("category_id", globalClass.getUserId());
+        params.put("category_id", category);
         params.put("start", String.valueOf(start_index));
         params.put("limit", String.valueOf(limit));
 
@@ -245,20 +286,10 @@ public class Home extends Fragment {
                                     for (int i = 0; i < data.length(); i++){
                                         JSONObject object = data.getJSONObject(i);
 
-                                        CategoryData categoryData = new CategoryData();
-
-                                        categoryData.setId(object.optString("id"));
-                                        categoryData.setName(object.optString("category_name"));
-                                        categoryData.setColor_code(object.optString("category_colour"));
-                                        categoryData.setItem_no(object.optString("items"));
-
-                                        categoryDataArrayList.add(categoryData);
 
                                     }
 
-                                    CategorySpinnerAdapter categorySpinnerAdapter
-                                            = new CategorySpinnerAdapter(getActivity(), categoryDataArrayList);
-                                    spinner_cat.setAdapter(categorySpinnerAdapter);
+                                }else {
 
                                 }
 
@@ -266,10 +297,15 @@ public class Home extends Fragment {
                                 e.printStackTrace();
                             }
 
+
+                            swipe_refresh_layout.setRefreshing(false);
+
                         }
                     }
                 });
     }
+
+
 
 
 

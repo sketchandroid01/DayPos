@@ -82,6 +82,7 @@ public class Container extends AppCompatActivity implements
     private void initViews(){
 
         preferense = new Preferense(this);
+        preferense.setToGlobal();
         globalClass = (GlobalClass) getApplicationContext();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
