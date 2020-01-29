@@ -62,7 +62,6 @@
             android:layout_centerVertical="true"
             />
 
-
     </RelativeLayout>
 
     <View
@@ -70,7 +69,6 @@
         android:layout_height="1dp"
         android:background="@color/border_color"
         />
-
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -83,7 +81,6 @@
             android:layout_height="wrap_content"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
 
 </LinearLayout>

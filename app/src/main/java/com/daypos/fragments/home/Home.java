@@ -1,5 +1,6 @@
 package com.daypos.fragments.home;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
@@ -22,9 +24,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
 import com.daypos.cart.CartActivity;
+import com.daypos.fragments.category.CategoryData;
 import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.utils.CircleAnimationUtil;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
 
@@ -37,9 +41,11 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Home extends Fragment implements
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        ProductAdapter.ItemClickListener{
 
     private Unbinder unbinder;
 
@@ -49,12 +55,13 @@ public class Home extends Fragment implements
     Spinner spinner_cat;
 
     public static TextView cart_counter;
-
+    RelativeLayout cart_relativeLayout;
 
     private GlobalClass globalClass;
     private Preferense preferense;
 
     private ArrayList<CategoryData> categoryDataArrayList;
+    private ArrayList<ProductData> productDataArrayList;
     private int start_index = 1;
     private int limit = 20;
     private String category_id;
@@ -93,11 +100,11 @@ public class Home extends Fragment implements
         MenuItem menuItem = menu.findItem(R.id.cart);
 
         MenuItemCompat.setActionView(menuItem, R.layout.cart_counter);
-        RelativeLayout relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
-        cart_counter = relativeLayout.findViewById(R.id.tv_cart_counter);
+        cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
+        cart_counter = cart_relativeLayout.findViewById(R.id.tv_cart_counter);
 
         cart_counter.setText("0");
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
+        cart_relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -148,29 +155,6 @@ public class Home extends Fragment implements
         swipe_refresh_layout.setOnRefreshListener(this);
 
 
-        ArrayList<ProductData> productDataArrayList = new ArrayList<>();
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-        productDataArrayList.add(new ProductData());
-
-
-        ProductAdapter productAdapter = new ProductAdapter(getActivity(), productDataArrayList);
-        recyclerview.setAdapter(productAdapter);
-
-
-
-
         categoryDataArrayList = new ArrayList<>();
         getCategoryList();
 
@@ -206,7 +190,7 @@ public class Home extends Fragment implements
 
                                     categoryData.setId("all");
                                     categoryData.setName("All");
-                                    categoryData.setColor_code("");
+                                    categoryData.setColor("");
                                     categoryData.setItem_no("");
                                     categoryDataArrayList.add(categoryData);
 
@@ -219,7 +203,7 @@ public class Home extends Fragment implements
 
                                         categoryData.setId(object.optString("id"));
                                         categoryData.setName(object.optString("category_name"));
-                                        categoryData.setColor_code(object.optString("category_colour"));
+                                        categoryData.setColor(object.optString("category_colour"));
                                         categoryData.setItem_no(object.optString("items"));
 
                                         categoryDataArrayList.add(categoryData);
@@ -249,7 +233,7 @@ public class Home extends Fragment implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 category_id = categoryDataArrayList.get(position).getId();
-                getProductCategoryWise(categoryDataArrayList.get(position).getId());
+                getProductCategoryWise(category_id);
             }
 
             @Override
@@ -262,6 +246,8 @@ public class Home extends Fragment implements
 
 
     private void getProductCategoryWise(String category) {
+
+        productDataArrayList = new ArrayList<>();
 
         String url = ApiConstant.filterProductCategoryWise;
 
@@ -281,17 +267,33 @@ public class Home extends Fragment implements
                                 int status = response.optInt("status");
                                 String message = response.optString("message");
                                 if (status == 1) {
-                                    JSONArray data = response.getJSONArray("data");
+                                    JSONArray item_list = response.getJSONArray("item_list");
 
-                                    for (int i = 0; i < data.length(); i++){
-                                        JSONObject object = data.getJSONObject(i);
+                                    for (int i = 0; i < item_list.length(); i++){
+                                        JSONObject object = item_list.getJSONObject(i);
 
 
+                                        ProductData productData = new ProductData();
+                                        productData.setId(object.optString("id"));
+                                        productData.setName(object.optString("name"));
+                                        productData.setPrice(object.optString("price"));
+                                        productData.setSku(object.optString("sku"));
+                                        productData.setBar_code(object.optString("bar_code"));
+                                        productData.setImage(object.optString("item_image"));
+                                        productData.setTaxes(object.optString("taxes"));
+                                        productData.setItem_color(object.optString("item_color"));
+                                        productData.setIs_attribute(object.optString("is_attribute"));
+
+
+                                        productDataArrayList.add(productData);
                                     }
 
                                 }else {
 
                                 }
+
+
+                                setProductData();
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -305,8 +307,58 @@ public class Home extends Fragment implements
                 });
     }
 
+    private void setProductData(){
+
+        ProductAdapter productAdapter =
+                new ProductAdapter(getActivity(), productDataArrayList);
+        recyclerview.setAdapter(productAdapter);
+        productAdapter.setClickListener(this);
+
+
+    }
+
+    @Override
+    public void onItemClick(ProductData productData, View view) {
+
+        makeFlyAnimation(view);
+
+    }
 
 
 
+    private void makeFlyAnimation(View view) {
+
+
+        new CircleAnimationUtil().attachActivity(getActivity())
+                .setTargetView(view)
+                .setMoveDuration(1000)
+                .setDestView(cart_relativeLayout)
+                .setAnimationListener(new Animator.AnimatorListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //addItemToCart();
+                Toast.makeText(getActivity(), "Added",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }).startAnimation();
+
+
+    }
 
 }

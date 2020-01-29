@@ -23,6 +23,7 @@
         <activity android:name=".splash.Splash"
             android:theme="@style/MyFullScreen"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +35,7 @@
         <activity android:name=".login.Login"
             android:theme="@style/MyFullScreen"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -44,6 +46,7 @@
         <activity android:name=".registration.Registration"
             android:theme="@style/MyFullScreen"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -53,6 +56,7 @@
         <activity android:name=".container.Container"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -63,6 +67,7 @@
         <activity android:name=".fragments.category.CategoryList"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -72,6 +77,7 @@
         <activity android:name=".fragments.category.AddCategory"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -81,6 +87,7 @@
         <activity android:name=".fragments.products.AddProduct"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -91,6 +98,7 @@
         <activity android:name=".fragments.products.ProductList"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -101,6 +109,7 @@
         <activity android:name=".cart.CartActivity"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -111,6 +120,7 @@
         <activity android:name=".checkout.Checkout"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -120,6 +130,7 @@
         <activity android:name=".forgotpassword.ForgotPassword"
             android:theme="@style/MyFullScreen"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -129,6 +140,7 @@
         <activity android:name=".forgotpassword.ResetPassword"
             android:theme="@style/MyFullScreen"
             android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

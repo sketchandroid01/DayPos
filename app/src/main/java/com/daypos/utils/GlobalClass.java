@@ -73,7 +73,7 @@ public class GlobalClass extends MultiDexApplication {
     private String userId;
 
     public String getUserId() {
-        return userId;
+        return "1";
     }
 
     public void setUserId(String userId) {

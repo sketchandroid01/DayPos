@@ -1,6 +1,8 @@
 package com.daypos.fragments.category;
 
-public class CategoryData {
+import java.io.Serializable;
+
+public class CategoryData implements Serializable {
 
     private String id;
     private String name;

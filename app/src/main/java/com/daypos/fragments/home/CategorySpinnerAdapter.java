@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.daypos.R;
+import com.daypos.fragments.category.CategoryData;
 
 import java.util.ArrayList;
 

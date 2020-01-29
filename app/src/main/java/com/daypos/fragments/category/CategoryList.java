@@ -15,14 +15,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
 import com.daypos.container.DrawerData;
+import com.daypos.fragments.products.ProductList;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+import com.daypos.utils.GlobalClass;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CategoryList extends AppCompatActivity implements
-        CategoryAdapter.ItemClickListener {
+        CategoryAdapter.ItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
@@ -30,6 +39,9 @@ public class CategoryList extends AppCompatActivity implements
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipe_refresh_layout;
 
+
+    ArrayList<CategoryData> categoryDataArrayList;
+    GlobalClass globalClass;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,23 +61,12 @@ public class CategoryList extends AppCompatActivity implements
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
 
+        globalClass = (GlobalClass) getApplicationContext();
+
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        swipe_refresh_layout.setOnRefreshListener(this);
 
-
-        ArrayList<CategoryData> categoryDataArrayList = new ArrayList<>();
-
-        CategoryData categoryData = new CategoryData();
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-        categoryDataArrayList.add(categoryData);
-
-        CategoryAdapter categoryAdapter = new CategoryAdapter(CategoryList.this,
-                categoryDataArrayList);
-        recycler_view.setAdapter(categoryAdapter);
-        categoryAdapter.setClickListener(this);
+        getCategoryList();
 
 
     }
@@ -102,10 +103,80 @@ public class CategoryList extends AppCompatActivity implements
     @Override
     public void onItemClick(CategoryData categoryData) {
 
+        Intent intent = new Intent(CategoryList.this, ProductList.class);
+        intent.putExtra("product_data", categoryData);
+        startActivity(intent);
 
 
     }
 
+    @Override
+    public void onRefresh() {
+        getCategoryList();
+    }
 
+    private void getCategoryList() {
+        categoryDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.category_list;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+
+        new PostDataParser(this, url, params, true,
+                new PostDataParser.OnGetResponseListner() {
+                    @Override
+                    public void onGetResponse(JSONObject response) {
+                        if (response != null) {
+
+                            try {
+                                int status = response.optInt("status");
+                                String message = response.optString("message");
+                                if (status == 1) {
+
+                                    CategoryData categoryData = new CategoryData();
+
+                                    JSONArray data = response.getJSONArray("data");
+
+                                    for (int i = 0; i < data.length(); i++){
+                                        JSONObject object = data.getJSONObject(i);
+
+                                        categoryData = new CategoryData();
+
+                                        categoryData.setId(object.optString("id"));
+                                        categoryData.setName(object.optString("category_name"));
+                                        categoryData.setColor(object.optString("category_colour"));
+                                        categoryData.setItem_no(object.optString("items"));
+
+                                        categoryDataArrayList.add(categoryData);
+
+                                    }
+
+                                   setCategoryData();
+
+                                }
+
+
+                                if (swipe_refresh_layout.isRefreshing()){
+                                    swipe_refresh_layout.setRefreshing(false);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+    }
+
+
+    private void setCategoryData(){
+
+        CategoryAdapter categoryAdapter = new CategoryAdapter(CategoryList.this,
+                categoryDataArrayList);
+        recycler_view.setAdapter(categoryAdapter);
+        categoryAdapter.setClickListener(this);
+    }
 
 }

@@ -40,8 +40,26 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
         final CategoryData categoryData = mData.get(position);
 
 
-        GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
-        bgShape.setColor(Color.parseColor("#a864a8"));
+        if (categoryData.getColor().isEmpty()){
+            GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
+            bgShape.setColor(Color.parseColor("#ffffff"));
+        }else {
+            if (categoryData.getColor().length() == 7){
+                GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
+                bgShape.setColor(Color.parseColor(categoryData.getColor()));
+            }
+
+        }
+
+
+
+        holder.tv_name.setText(categoryData.getName());
+        holder.tv_item_no.setText(categoryData.getItem_no());
+
+
+        holder.itemView.setOnClickListener(v -> {
+            mClickListener.onItemClick(categoryData);
+        });
 
     }
 

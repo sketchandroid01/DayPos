@@ -16,21 +16,51 @@
         android:paddingEnd="10dp"
         >
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/watch1"
-            app:civ_border_width="1dp"
-            app:civ_border_color="@color/border_color"
-            />
+        <RelativeLayout
+            android:id="@+id/rl_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/watch1"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/border_color"
+                />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_image_clone"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/watch1"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/border_color"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl_color"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circle_green"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rl_color_clone"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circle_green"
+                />
+
+        </RelativeLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_toEndOf="@id/iv_image"
+            android:layout_toEndOf="@id/rl_image"
             android:layout_toStartOf="@+id/tv_price"
             android:layout_centerVertical="true"
             android:paddingStart="10dp"

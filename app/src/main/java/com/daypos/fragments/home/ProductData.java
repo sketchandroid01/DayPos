@@ -8,6 +8,7 @@ public class ProductData {
     private String sku;
     private String price;
     private String taxes;
+    private String bar_code;
     private String item_color;
     private String item_shape;
     private String is_attribute;
@@ -51,6 +52,51 @@ public class ProductData {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getTaxes() {
+        return taxes;
+    }
+
+    public ProductData setTaxes(String taxes) {
+        this.taxes = taxes;
+        return this;
+    }
+
+    public String getBar_code() {
+        return bar_code;
+    }
+
+    public ProductData setBar_code(String bar_code) {
+        this.bar_code = bar_code;
+        return this;
+    }
+
+    public String getItem_color() {
+        return item_color;
+    }
+
+    public ProductData setItem_color(String item_color) {
+        this.item_color = item_color;
+        return this;
+    }
+
+    public String getItem_shape() {
+        return item_shape;
+    }
+
+    public ProductData setItem_shape(String item_shape) {
+        this.item_shape = item_shape;
+        return this;
+    }
+
+    public String getIs_attribute() {
+        return is_attribute;
+    }
+
+    public ProductData setIs_attribute(String is_attribute) {
+        this.is_attribute = is_attribute;
+        return this;
     }
 }
 
