@@ -51,11 +51,10 @@ public class Home extends Fragment implements
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe_refresh_layout;
-    @BindView(R.id.spinner_cat)
-    Spinner spinner_cat;
+    @BindView(R.id.spinner_cat) Spinner spinner_cat;
 
     public static TextView cart_counter;
-    RelativeLayout cart_relativeLayout;
+    private RelativeLayout cart_relativeLayout;
 
     private GlobalClass globalClass;
     private Preferense preferense;
