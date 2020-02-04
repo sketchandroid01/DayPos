@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:animateLayoutChanges="true"
     >
 
     <RelativeLayout
@@ -13,4 +14,13 @@
         android:background="@drawable/circle_green"
         />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_check_white"
+        android:contentDescription="@string/app_name"
+        />
+
+</RelativeLayout>

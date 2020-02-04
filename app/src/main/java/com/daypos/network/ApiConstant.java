@@ -12,6 +12,7 @@ public class ApiConstant {
     public static final String resetPassword                 = BASE_URL + "resetPassword";
     public static final String category_list                 = BASE_URL + "category_list";
     public static final String filterProductCategoryWise     = BASE_URL + "filterProductCategoryWise";
+    public static final String addEditCategory               = BASE_URL + "addEditCategory";
 
 
 

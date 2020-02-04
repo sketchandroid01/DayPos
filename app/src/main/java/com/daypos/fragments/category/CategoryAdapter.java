@@ -92,6 +92,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
         void onItemClick(CategoryData categoryData);
     }
 
+
+
+    public void filterList(ArrayList<CategoryData> filterdData) {
+        this.mData = filterdData;
+        notifyDataSetChanged();
+    }
+
 }
 
 

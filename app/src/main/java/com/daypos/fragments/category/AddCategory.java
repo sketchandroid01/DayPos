@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,11 +17,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
 import com.daypos.fragments.products.AddProduct;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+import com.daypos.utils.Commons;
+import com.daypos.utils.GlobalClass;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class AddCategory extends AppCompatActivity implements
         View.OnClickListener,
@@ -29,12 +38,12 @@ public class AddCategory extends AppCompatActivity implements
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_colors) RecyclerView recycler_colors;
     @BindView(R.id.tv_save_cat) TextView tv_save_cat;
-    @BindView(R.id.switch_parent) Switch switch_parent;
-    @BindView(R.id.edt_parent_name) EditText edt_parent_name;
     @BindView(R.id.edt_cat_name) EditText edt_cat_name;
     @BindView(R.id.btn_create_item) Button btn_create_item;
 
 
+    private GlobalClass globalClass;
+    private String selected_color_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,9 @@ public class AddCategory extends AppCompatActivity implements
 
         tv_save_cat.setOnClickListener(this);
         btn_create_item.setOnClickListener(this);
+        globalClass = (GlobalClass) getApplicationContext();
+
+        selected_color_code = "#c2c2c2";
 
         ArrayList<String> colorList = new ArrayList<>();
         colorList.add("#c2c2c2");
@@ -95,6 +107,14 @@ public class AddCategory extends AppCompatActivity implements
 
         if (v == tv_save_cat){
 
+            if (edt_cat_name.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter category name",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            addCategory();
 
         }else if (v == btn_create_item){
 
@@ -107,6 +127,45 @@ public class AddCategory extends AppCompatActivity implements
 
     @Override
     public void onItemClick(String color_code) {
-
+        selected_color_code = color_code;
     }
+
+
+
+    private void addCategory() {
+
+        String url = ApiConstant.addEditCategory;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("category_name", edt_cat_name.getText().toString());
+        params.put("category_colour", selected_color_code);
+        params.put("category_id", "");
+
+        new PostDataParser(this, url, params, true,
+                new PostDataParser.OnGetResponseListner() {
+                    @Override
+                    public void onGetResponse(JSONObject response) {
+                        if (response != null) {
+
+                            try {
+                                int status = response.optInt("status");
+                                String message = response.optString("message");
+                                if (status == 1) {
+
+                                    Commons.hideSoftKeyboard(AddCategory.this);
+
+                                    finish();
+
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+    }
+
 }

@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,10 +20,29 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
 
     private Context context;
     private ArrayList<String> mData;
+    private ArrayList<Boolean> booleanArrayList;
 
     public ColorAdapter(Context context, ArrayList<String> data) {
         this.context = context;
         this.mData = data;
+
+
+        booleanArrayList = new ArrayList<>();
+        for (int i = 0; i < mData.size(); i++){
+            if (i == 0){
+                booleanArrayList.add(true);
+            }else {
+                booleanArrayList.add(false);
+            }
+        }
+    }
+
+    private void setBooleanData(){
+        booleanArrayList = new ArrayList<>();
+        for (int i = 0; i < mData.size(); i++){
+            booleanArrayList.add(false);
+        }
+
     }
 
     @Override
@@ -38,14 +58,19 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
         GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
         bgShape.setColor(Color.parseColor(mData.get(position)));
 
-        holder.rl_color.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (booleanArrayList.get(position)) {
+            holder.iv_check.setVisibility(View.VISIBLE);
+        }else {
+            holder.iv_check.setVisibility(View.GONE);
+        }
 
-                mClickListener.onItemClick(mData.get(position));
-
-            }
+        holder.rl_color.setOnClickListener(v -> {
+            mClickListener.onItemClick(mData.get(position));
+            setBooleanData();
+            booleanArrayList.set(position, true);
+            notifyDataSetChanged();
         });
+
 
     }
 
@@ -56,12 +81,15 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
 
 
     public class myViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout rl_color;
+
+        private RelativeLayout rl_color;
+        private ImageView iv_check;
 
 
         public myViewHolder(View itemView) {
             super(itemView);
             rl_color = itemView.findViewById(R.id.rl_color);
+            iv_check = itemView.findViewById(R.id.iv_check);
         }
     }
 

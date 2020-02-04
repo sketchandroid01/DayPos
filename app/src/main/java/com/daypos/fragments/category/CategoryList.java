@@ -2,6 +2,8 @@ package com.daypos.fragments.category;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -42,6 +44,7 @@ public class CategoryList extends AppCompatActivity implements
 
     ArrayList<CategoryData> categoryDataArrayList;
     GlobalClass globalClass;
+    CategoryAdapter categoryAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,12 +69,32 @@ public class CategoryList extends AppCompatActivity implements
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
         swipe_refresh_layout.setOnRefreshListener(this);
 
-        getCategoryList();
 
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                filter(s.toString());
+            }
+        });
 
     }
 
-
+    @Override
+    protected void onResume() {
+        getCategoryList();
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,10 +196,20 @@ public class CategoryList extends AppCompatActivity implements
 
     private void setCategoryData(){
 
-        CategoryAdapter categoryAdapter = new CategoryAdapter(CategoryList.this,
-                categoryDataArrayList);
+        categoryAdapter = new CategoryAdapter(CategoryList.this, categoryDataArrayList);
         recycler_view.setAdapter(categoryAdapter);
         categoryAdapter.setClickListener(this);
+    }
+
+
+    private void filter(String text) {
+        ArrayList<CategoryData> filterdNames = new ArrayList<>();
+        for (CategoryData categoryData : categoryDataArrayList) {
+            if (categoryData.getName().toLowerCase().contains(text.toLowerCase())) {
+                filterdNames.add(categoryData);
+            }
+        }
+        categoryAdapter.filterList(filterdNames);
     }
 
 }
