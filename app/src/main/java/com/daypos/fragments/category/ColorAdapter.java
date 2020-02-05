@@ -22,14 +22,14 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.myViewHolder
     private ArrayList<String> mData;
     private ArrayList<Boolean> booleanArrayList;
 
-    public ColorAdapter(Context context, ArrayList<String> data) {
+    public ColorAdapter(Context context, ArrayList<String> data, String selected_color_code) {
         this.context = context;
         this.mData = data;
 
 
         booleanArrayList = new ArrayList<>();
         for (int i = 0; i < mData.size(); i++){
-            if (i == 0){
+            if (selected_color_code.equals(mData.get(i))){
                 booleanArrayList.add(true);
             }else {
                 booleanArrayList.add(false);

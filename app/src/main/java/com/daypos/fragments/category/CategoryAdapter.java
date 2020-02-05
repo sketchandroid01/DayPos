@@ -1,6 +1,7 @@
 package com.daypos.fragments.category;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
 
         if (categoryData.getColor().isEmpty()){
             GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
-            bgShape.setColor(Color.parseColor("#ffffff"));
+            bgShape.setColor(Color.parseColor("#c2c2c2"));
         }else {
             if (categoryData.getColor().length() == 7){
                 GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
@@ -61,6 +62,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
             mClickListener.onItemClick(categoryData);
         });
 
+        holder.iv_edit.setOnClickListener(v -> {
+
+            Intent intent = new Intent(context, EditCategory.class);
+            intent.putExtra("cat", categoryData);
+            context.startActivity(intent);
+
+        });
+
     }
 
     @Override
@@ -72,12 +81,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
     public class myViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout rl_color;
         TextView tv_name, tv_item_no;
+        ImageView iv_edit;
 
         public myViewHolder(View itemView) {
             super(itemView);
             rl_color = itemView.findViewById(R.id.rl_color);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_item_no = itemView.findViewById(R.id.tv_item_no);
+            iv_edit = itemView.findViewById(R.id.iv_edit);
         }
     }
 

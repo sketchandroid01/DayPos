@@ -33,6 +33,8 @@ public class AddProduct extends AppCompatActivity implements
     @BindView(R.id.linear_select_image) LinearLayout linear_select_image;
 
 
+    private String selected_color_code;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,7 @@ public class AddProduct extends AppCompatActivity implements
 
         tv_save_cat.setOnClickListener(this);
 
+        selected_color_code = "#c2c2c2";
         ArrayList<String> colorList = new ArrayList<>();
         colorList.add("#c2c2c2");
         colorList.add("#f26522");
@@ -65,7 +68,8 @@ public class AddProduct extends AppCompatActivity implements
 
         recycler_colors.setLayoutManager(new GridLayoutManager(this, 4));
 
-        ColorAdapter colorAdapter = new ColorAdapter(AddProduct.this, colorList);
+        ColorAdapter colorAdapter = new ColorAdapter(AddProduct.this,
+                colorList, selected_color_code);
         recycler_colors.setAdapter(colorAdapter);
         colorAdapter.setClickListener(this);
 

@@ -6,7 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class AddCategory extends AppCompatActivity implements
+public class EditCategory extends AppCompatActivity implements
         View.OnClickListener,
         ColorAdapter.ItemClickListener{
 
@@ -44,11 +43,12 @@ public class AddCategory extends AppCompatActivity implements
 
     private GlobalClass globalClass;
     private String selected_color_code;
+    private CategoryData categoryData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_category);
+        setContentView(R.layout.activity_edit_category);
         ButterKnife.bind(this);
 
         initViews();
@@ -59,7 +59,7 @@ public class AddCategory extends AppCompatActivity implements
     private void initViews() {
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Add Category");
+        getSupportActionBar().setTitle("Edit Category");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
@@ -67,7 +67,16 @@ public class AddCategory extends AppCompatActivity implements
         btn_create_item.setOnClickListener(this);
         globalClass = (GlobalClass) getApplicationContext();
 
-        selected_color_code = "#E2E2E2";
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            categoryData = (CategoryData) bundle.getSerializable("cat");
+        }
+
+        selected_color_code = categoryData.getColor();
+        edt_cat_name.setText(categoryData.getName());
+        edt_cat_name.setSelection(edt_cat_name.length());
+
 
         ArrayList<String> colorList = new ArrayList<>();
         colorList.add("#E2E2E2");
@@ -81,7 +90,7 @@ public class AddCategory extends AppCompatActivity implements
 
         recycler_colors.setLayoutManager(new GridLayoutManager(this, 4));
 
-        ColorAdapter colorAdapter = new ColorAdapter(AddCategory.this,
+        ColorAdapter colorAdapter = new ColorAdapter(EditCategory.this,
                 colorList, selected_color_code);
         recycler_colors.setAdapter(colorAdapter);
         colorAdapter.setClickListener(this);
@@ -115,11 +124,11 @@ public class AddCategory extends AppCompatActivity implements
                 return;
             }
 
-            addCategory();
+            editCategory();
 
         }else if (v == btn_create_item){
 
-            Intent intent = new Intent(AddCategory.this, AddProduct.class);
+            Intent intent = new Intent(EditCategory.this, AddProduct.class);
             startActivity(intent);
         }
 
@@ -133,7 +142,7 @@ public class AddCategory extends AppCompatActivity implements
 
 
 
-    private void addCategory() {
+    private void editCategory() {
 
         String url = ApiConstant.addEditCategory;
 
@@ -141,7 +150,7 @@ public class AddCategory extends AppCompatActivity implements
         params.put("user_id", globalClass.getUserId());
         params.put("category_name", edt_cat_name.getText().toString());
         params.put("category_colour", selected_color_code);
-        params.put("category_id", "");
+        params.put("category_id", categoryData.getId());
 
         new PostDataParser(this, url, params, true,
                 new PostDataParser.OnGetResponseListner() {
@@ -154,9 +163,13 @@ public class AddCategory extends AppCompatActivity implements
                                 String message = response.optString("message");
                                 if (status == 1) {
 
-                                    Commons.hideSoftKeyboard(AddCategory.this);
+                                    Commons.hideSoftKeyboard(EditCategory.this);
 
-                                    finish();
+                                   // finish();
+
+                                    Toasty.success(getApplicationContext(),
+                                            message,
+                                            Toast.LENGTH_SHORT, true).show();
 
                                 }else {
 
