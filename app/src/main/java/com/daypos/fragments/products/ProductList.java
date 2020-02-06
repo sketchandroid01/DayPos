@@ -72,9 +72,10 @@ public class ProductList extends AppCompatActivity implements
         if (bundle != null){
 
             categoryData = (CategoryData) bundle.getSerializable("product_data");
-
             getProductCategoryWise(categoryData.getId());
 
+        }else {
+            getProductCategoryWise("all");
         }
 
 
@@ -113,7 +114,13 @@ public class ProductList extends AppCompatActivity implements
     @Override
     public void onRefresh() {
 
-        getProductCategoryWise(categoryData.getId());
+        if (categoryData == null){
+            getProductCategoryWise("all");
+        }else {
+            getProductCategoryWise(categoryData.getId());
+        }
+
+
 
     }
 

@@ -155,6 +155,7 @@
                         android:background="@color/transparent"
                         android:textSize="14sp"
                         android:padding="8dp"
+                        android:inputType="numberDecimal"
                         android:hint="0.00"
                         />
                     <View

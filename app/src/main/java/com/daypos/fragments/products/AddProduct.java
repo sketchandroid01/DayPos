@@ -3,6 +3,8 @@ package com.daypos.fragments.products;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,11 +20,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daypos.R;
+import com.daypos.fragments.category.CategoryData;
 import com.daypos.fragments.category.ColorAdapter;
+import com.daypos.fragments.home.CategorySpinnerAdapter;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
+import com.daypos.utils.GlobalClass;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -51,8 +57,12 @@ public class AddProduct extends AppCompatActivity implements
     @BindView(R.id.iv_gallery) ImageView iv_gallery;
     @BindView(R.id.iv_camera) ImageView iv_camera;
 
+    private GlobalClass globalClass;
 
+    private String category_id;
     private String selected_color_code;
+    private ArrayList<CategoryData> categoryDataArrayList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,8 @@ public class AddProduct extends AppCompatActivity implements
         getSupportActionBar().setTitle("Add Product");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
+
+        globalClass = (GlobalClass) getApplicationContext();
 
         tv_save_cat.setOnClickListener(this);
         iv_camera.setOnClickListener(this);
@@ -119,6 +131,22 @@ public class AddProduct extends AppCompatActivity implements
             }
         });
 
+
+        ArrayList<String> spinnerArray = new ArrayList<String>();
+        spinnerArray.add("Piece");
+        spinnerArray.add("Weight");
+        ArrayAdapter spinnerArrayAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                spinnerArray);
+        spinner_unit.setAdapter(spinnerArrayAdapter);
+
+
+
+
+
+        categoryDataArrayList = new ArrayList<>();
+        getCategoryList();
+
     }
 
 
@@ -139,8 +167,22 @@ public class AddProduct extends AppCompatActivity implements
 
         if (v == tv_save_cat){
 
+            if (edt_product_name.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter product name",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            if (edt_selling_price.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter product price",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
 
 
+            addProduct();
 
         }
 
@@ -152,17 +194,102 @@ public class AddProduct extends AppCompatActivity implements
 
     }
 
+    private void getCategoryList() {
+        categoryDataArrayList = new ArrayList<>();
 
+        String url = ApiConstant.category_list;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        CategoryData categoryData = new CategoryData();
+
+                        categoryData.setId("");
+                        categoryData.setName("Select Category");
+                        categoryData.setColor("");
+                        categoryData.setItem_no("");
+                        categoryDataArrayList.add(categoryData);
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            categoryData = new CategoryData();
+
+                            categoryData.setId(object.optString("id"));
+                            categoryData.setName(object.optString("category_name"));
+                            categoryData.setColor(object.optString("category_colour"));
+                            categoryData.setItem_no(object.optString("items"));
+
+                            categoryDataArrayList.add(categoryData);
+
+                        }
+
+                        CategorySpinnerAdapter categorySpinnerAdapter
+                                = new CategorySpinnerAdapter(AddProduct.this, categoryDataArrayList);
+                        spinner_category.setAdapter(categorySpinnerAdapter);
+
+                    }
+
+                    spinnerAction();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+    private void spinnerAction(){
+
+        spinner_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position > 0){
+                    category_id = categoryDataArrayList.get(position).getId();
+                }else {
+                    category_id = "";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
 
 
     private void addProduct() {
 
-        String url = ApiConstant.addEditCategory;
+        String url = ApiConstant.add_item;
 
         HashMap<String, String> params = new HashMap<>();
 
-        params.put("category_colour", selected_color_code);
-        params.put("category_id", "");
+        params.put("user_id", globalClass.getUserId());
+        params.put("name", edt_product_name.getText().toString());
+        params.put("category_id", category_id);
+        params.put("sold_option", "2");
+        params.put("price", edt_selling_price.getText().toString());
+        params.put("cost", edt_selling_price.getText().toString());
+        params.put("sku", edt_sku.getText().toString());
+        params.put("bar_code", edt_barcode.getText().toString());
+
 
         new PostDataParser(this, url, params, true,
                 new PostDataParser.OnGetResponseListner() {
@@ -177,7 +304,7 @@ public class AddProduct extends AppCompatActivity implements
 
                                     Commons.hideSoftKeyboard(AddProduct.this);
 
-                                    finish();
+                                   // finish();
 
                                 }else {
 

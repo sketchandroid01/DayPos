@@ -13,6 +13,7 @@ public class ApiConstant {
     public static final String category_list                 = BASE_URL + "category_list";
     public static final String filterProductCategoryWise     = BASE_URL + "filterProductCategoryWise";
     public static final String addEditCategory               = BASE_URL + "addEditCategory";
+    public static final String add_item                      = BASE_URL + "add_item";
 
 
 
