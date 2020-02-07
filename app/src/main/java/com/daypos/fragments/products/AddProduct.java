@@ -127,16 +127,16 @@ public class AddProduct extends AppCompatActivity implements
         ll_gallery.setOnClickListener(this);
         ll_camera.setOnClickListener(this);
 
-        selected_color_code = "#c2c2c2";
+        selected_color_code = "#E2E2E2";
         ArrayList<String> colorList = new ArrayList<>();
-        colorList.add("#c2c2c2");
-        colorList.add("#f26522");
-        colorList.add("#ed1c24");
-        colorList.add("#a864a8");
-        colorList.add("#00bff3");
-        colorList.add("#57d7df");
-        colorList.add("#f5989d");
-        colorList.add("#00a651");
+        colorList.add("#E2E2E2");
+        colorList.add("#F44336");
+        colorList.add("#E91E63");
+        colorList.add("#f5a108");
+        colorList.add("#bdf158");
+        colorList.add("#39b939");
+        colorList.add("#448AFF");
+        colorList.add("#9C27B0");
 
         recycler_colors.setLayoutManager(new GridLayoutManager(this, 4));
 
@@ -367,7 +367,7 @@ public class AddProduct extends AppCompatActivity implements
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-        String url = ApiConstant.add_item;;
+        String url = ApiConstant.add_item;
         AsyncHttpClient cl = new AsyncHttpClient();
         RequestParams params = new RequestParams();
 

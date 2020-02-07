@@ -1,5 +1,6 @@
 package com.daypos.fragments.products;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,20 +9,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
-import com.daypos.fragments.category.CategoryData;
+import com.daypos.cart.CartActivity;
 import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.utils.CircleAnimationUtil;
 import com.daypos.utils.GlobalClass;
 
 import org.json.JSONArray;
@@ -32,22 +39,28 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
-public class ProductList extends AppCompatActivity implements
+public class SearchProductList extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener,
         ProductAdapter.ItemClickListener{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
     @BindView(R.id.edt_search) EditText edt_search;
+    @BindView(R.id.iv_search) ImageView iv_search;
+    @BindView(R.id.iv_barcode_search) ImageView iv_barcode_search;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipe_refresh_layout;
+
+
+    public static TextView cart_counter;
+    private RelativeLayout cart_relativeLayout;
 
     GlobalClass globalClass;
     private int start_index = 0;
     private int limit = 50;
     private ArrayList<ProductData> productDataArrayList;
-    private CategoryData categoryData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +75,7 @@ public class ProductList extends AppCompatActivity implements
     private void initViews(){
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Products");
+        getSupportActionBar().setTitle("Search Products");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
@@ -74,6 +87,18 @@ public class ProductList extends AppCompatActivity implements
         getProductCategoryWise("all");
 
 
+
+        iv_search.setOnClickListener(v -> {
+
+            if (edt_search.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter search keyword",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            searchProduct(edt_search.getText().toString());
+        });
 
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,8 +113,14 @@ public class ProductList extends AppCompatActivity implements
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (s.toString().trim().length() > 3){
+                    searchProduct(s.toString());
+                }
             }
+        });
+
+        iv_barcode_search.setOnClickListener(v -> {
+
         });
 
 
@@ -102,6 +133,23 @@ public class ProductList extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_cat, menu);
 
+        MenuItem menuItem = menu.findItem(R.id.add_cat);
+
+        MenuItemCompat.setActionView(menuItem, R.layout.cart_counter);
+        cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
+        cart_counter = cart_relativeLayout.findViewById(R.id.tv_cart_counter);
+
+        cart_counter.setText("0");
+        cart_relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(SearchProductList.this, CartActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -113,14 +161,6 @@ public class ProductList extends AppCompatActivity implements
                 finish();
                 break;
 
-            case R.id.add_cat:
-
-                Intent intent = new Intent(ProductList.this, AddProduct.class);
-                startActivity(intent);
-
-
-                break;
-
         }
         return (super.onOptionsItemSelected(menuItem));
     }
@@ -128,13 +168,7 @@ public class ProductList extends AppCompatActivity implements
     @Override
     public void onRefresh() {
 
-        if (categoryData == null){
-            getProductCategoryWise("all");
-        }else {
-            getProductCategoryWise(categoryData.getId());
-        }
-
-
+        getProductCategoryWise("all");
 
     }
 
@@ -203,7 +237,7 @@ public class ProductList extends AppCompatActivity implements
     private void setProductData(){
 
         ProductAdapter productAdapter =
-                new ProductAdapter(ProductList.this, productDataArrayList);
+                new ProductAdapter(SearchProductList.this, productDataArrayList);
         recycler_view.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
 
@@ -211,6 +245,41 @@ public class ProductList extends AppCompatActivity implements
 
     @Override
     public void onItemClick(ProductData productData, View view) {
+        makeFlyAnimation(view);
+    }
+
+    private void makeFlyAnimation(View view) {
+
+        new CircleAnimationUtil().attachActivity(SearchProductList.this)
+                .setTargetView(view)
+                .setMoveDuration(500)
+                .setDestView(cart_relativeLayout)
+                .setAnimationListener(new Animator.AnimatorListener() {
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        //addItemToCart();
+                        Toasty.success(getApplicationContext(),
+                                "Added",
+                                Toast.LENGTH_SHORT, true).show();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).startAnimation();
+
 
     }
 

@@ -15,6 +15,7 @@ public class ApiConstant {
     public static final String addEditCategory               = BASE_URL + "addEditCategory";
     public static final String add_item                      = BASE_URL + "add_item";
     public static final String addEditCustomer               = BASE_URL + "addEditCustomer";
+    public static final String search_item_list              = BASE_URL + "search_item_list";
 
 
 

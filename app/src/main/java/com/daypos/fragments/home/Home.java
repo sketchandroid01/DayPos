@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.daypos.R;
 import com.daypos.cart.CartActivity;
 import com.daypos.fragments.category.CategoryData;
 import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.fragments.products.SearchProductList;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.CircleAnimationUtil;
@@ -41,7 +43,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.hdodenhof.circleimageview.CircleImageView;
+import es.dmoral.toasty.Toasty;
 
 public class Home extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
@@ -51,6 +53,8 @@ public class Home extends Fragment implements
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe_refresh_layout;
+    @BindView(R.id.iv_search)
+    ImageView iv_search;
     @BindView(R.id.spinner_cat) Spinner spinner_cat;
 
     public static TextView cart_counter;
@@ -156,6 +160,12 @@ public class Home extends Fragment implements
 
         categoryDataArrayList = new ArrayList<>();
         getCategoryList();
+
+
+        iv_search.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SearchProductList.class);
+            startActivity(intent);
+        });
 
     }
 
@@ -327,10 +337,9 @@ public class Home extends Fragment implements
 
     private void makeFlyAnimation(View view) {
 
-
         new CircleAnimationUtil().attachActivity(getActivity())
                 .setTargetView(view)
-                .setMoveDuration(1000)
+                .setMoveDuration(500)
                 .setDestView(cart_relativeLayout)
                 .setAnimationListener(new Animator.AnimatorListener() {
 
@@ -342,8 +351,9 @@ public class Home extends Fragment implements
             @Override
             public void onAnimationEnd(Animator animation) {
                 //addItemToCart();
-                Toast.makeText(getActivity(), "Added",
-                        Toast.LENGTH_SHORT).show();
+                Toasty.success(getActivity(),
+                        "Added",
+                        Toast.LENGTH_SHORT, true).show();
             }
 
             @Override

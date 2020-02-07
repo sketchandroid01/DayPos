@@ -2,6 +2,8 @@ package com.daypos.fragments.products;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -33,6 +37,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import es.dmoral.toasty.Toasty;
 
 public class FragProductList extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
@@ -42,6 +47,8 @@ public class FragProductList extends Fragment implements
 
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
     @BindView(R.id.edt_search) EditText edt_search;
+    @BindView(R.id.iv_search)
+    ImageView iv_search;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipe_refresh_layout;
 
@@ -122,6 +129,39 @@ public class FragProductList extends Fragment implements
 
         getProductCategoryWise("all");
 
+        iv_search.setOnClickListener(v -> {
+
+            if (edt_search.getText().toString().trim().length() == 0){
+                Toasty.info(getActivity(),
+                        "Enter search keyword",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            searchProduct(edt_search.getText().toString());
+        });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.toString().trim().length() > 3){
+                    searchProduct(s.toString());
+                }
+
+            }
+        });
+
     }
 
     private void getProductCategoryWise(String category) {
@@ -198,5 +238,62 @@ public class FragProductList extends Fragment implements
 
     }
 
+
+
+    private void searchProduct(String search_key) {
+
+        productDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.filterProductCategoryWise;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("search_keyword", search_key);
+
+        new PostDataParser(getActivity(), url, params, true,
+                new PostDataParser.OnGetResponseListner() {
+                    @Override
+                    public void onGetResponse(JSONObject response) {
+                        if (response != null) {
+
+                            try {
+                                int status = response.optInt("status");
+                                String message = response.optString("message");
+                                if (status == 1) {
+                                    JSONArray item_list = response.getJSONArray("item_list");
+
+                                    for (int i = 0; i < item_list.length(); i++){
+                                        JSONObject object = item_list.getJSONObject(i);
+
+
+                                        ProductData productData = new ProductData();
+                                        productData.setId(object.optString("id"));
+                                        productData.setName(object.optString("name"));
+                                        productData.setPrice(object.optString("price"));
+                                        productData.setSku(object.optString("sku"));
+                                        productData.setBar_code(object.optString("bar_code"));
+                                        productData.setImage(object.optString("item_image"));
+                                        productData.setTaxes(object.optString("taxes"));
+                                        productData.setItem_color(object.optString("item_color"));
+                                        productData.setIs_attribute(object.optString("is_attribute"));
+
+
+                                        productDataArrayList.add(productData);
+                                    }
+
+                                }
+
+                                setProductData();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            swipe_refresh_layout.setRefreshing(false);
+
+                        }
+                    }
+                });
+    }
 
 }

@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
-import com.daypos.container.DrawerData;
-import com.daypos.fragments.products.ProductList;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.GlobalClass;
@@ -126,11 +124,9 @@ public class CategoryList extends AppCompatActivity implements
     @Override
     public void onItemClick(CategoryData categoryData) {
 
-        Intent intent = new Intent(CategoryList.this, ProductList.class);
-        intent.putExtra("product_data", categoryData);
+        Intent intent = new Intent(CategoryList.this, EditCategory.class);
+        intent.putExtra("cat", categoryData);
         startActivity(intent);
-
-
     }
 
     @Override

@@ -34,7 +34,6 @@ import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
 import com.daypos.fragments.products.FragProductList;
-import com.daypos.fragments.products.ProductList;
 import com.daypos.login.Login;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;

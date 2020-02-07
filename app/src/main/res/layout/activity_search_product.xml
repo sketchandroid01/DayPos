@@ -57,6 +57,26 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@mipmap/icon_search"
+            android:layout_margin="12dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/view2"
+            />
+
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/border_color"
+            android:layout_toStartOf="@+id/iv_barcode_search"
+            />
+
+
+        <ImageView
+            android:id="@+id/iv_barcode_search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@mipmap/icon_barcode"
             android:layout_alignParentEnd="true"
             android:layout_margin="12dp"
             android:layout_centerVertical="true"

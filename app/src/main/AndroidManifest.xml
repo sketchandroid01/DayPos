@@ -166,7 +166,15 @@
             </intent-filter>
         </activity>
 
-
+        <activity android:name=".fragments.products.SearchProductList"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
 
 
