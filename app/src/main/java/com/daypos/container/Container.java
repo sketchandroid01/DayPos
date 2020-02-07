@@ -33,6 +33,7 @@ import com.daypos.R;
 import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
+import com.daypos.fragments.products.FragProductList;
 import com.daypos.fragments.products.ProductList;
 import com.daypos.login.Login;
 import com.daypos.utils.GlobalClass;
@@ -249,6 +250,7 @@ public class Container extends AppCompatActivity implements
 
             case 0:
 
+                getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new Home();
                 transactFragment(fragment);
 
@@ -256,6 +258,7 @@ public class Container extends AppCompatActivity implements
 
             case 1:
 
+                getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new Customers();
                 transactFragment(fragment);
 
@@ -270,8 +273,9 @@ public class Container extends AppCompatActivity implements
 
             case 3:
 
-                intent = new Intent(Container.this, ProductList.class);
-                intentClass(intent);
+                getSupportActionBar().setTitle(drawerData.getTitle());
+                fragment = new FragProductList();
+                transactFragment(fragment);
 
                 break;
 

@@ -2,26 +2,27 @@ package com.daypos.fragments.products;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
-import com.daypos.fragments.category.AddCategory;
-import com.daypos.fragments.category.CategoryData;
 import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.GlobalClass;
+import com.daypos.utils.Preferense;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,98 +32,95 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-public class ProductList extends AppCompatActivity implements
+public class FragProductList extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
         ProductAdapter.ItemClickListener{
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    private Unbinder unbinder;
+
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
     @BindView(R.id.edt_search) EditText edt_search;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipe_refresh_layout;
 
-    GlobalClass globalClass;
-    private int start_index = 1;
-    private int limit = 20;
-    private String category_id;
+    private GlobalClass globalClass;
+    private Preferense preferense;
+
     private ArrayList<ProductData> productDataArrayList;
-    private CategoryData categoryData;
+    private int start_index = 1;
+    private int limit = 50;
+
+
+    public FragProductList() {}
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_list);
-        ButterKnife.bind(this);
 
-        initViews();
-
+        setHasOptionsMenu(true);
     }
 
-    private void initViews(){
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.frag_product_list, container, false);
+        unbinder = ButterKnife.bind(this, view);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Products");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
+        viewsAction();
 
-        globalClass = (GlobalClass)getApplicationContext();
-        recycler_view.setLayoutManager(new LinearLayoutManager(this));
-        swipe_refresh_layout.setOnRefreshListener(this);
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-
-            categoryData = (CategoryData) bundle.getSerializable("product_data");
-            getProductCategoryWise(categoryData.getId());
-
-        }else {
-            getProductCategoryWise("all");
-        }
-
-
-
+        return view;
     }
-
-
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_cat, menu);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 
-        return super.onCreateOptionsMenu(menu);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_cat, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
             case R.id.add_cat:
 
-                Intent intent = new Intent(ProductList.this, AddProduct.class);
+                Intent intent = new Intent(getActivity(), AddProduct.class);
                 startActivity(intent);
-
 
                 break;
 
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return (super.onOptionsItemSelected(menuItem));
+        return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onRefresh() {
 
-        if (categoryData == null){
-            getProductCategoryWise("all");
-        }else {
-            getProductCategoryWise(categoryData.getId());
-        }
+        getProductCategoryWise("all");
+
+    }
+
+    private void viewsAction(){
+
+        globalClass = (GlobalClass)getActivity().getApplicationContext();
+        recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+        swipe_refresh_layout.setOnRefreshListener(this);
 
 
+        getProductCategoryWise("all");
 
     }
 
@@ -138,7 +136,7 @@ public class ProductList extends AppCompatActivity implements
         params.put("start", String.valueOf(start_index));
         params.put("limit", String.valueOf(limit));
 
-        new PostDataParser(this, url, params, true,
+        new PostDataParser(getActivity(), url, params, true,
                 new PostDataParser.OnGetResponseListner() {
                     @Override
                     public void onGetResponse(JSONObject response) {
@@ -169,8 +167,6 @@ public class ProductList extends AppCompatActivity implements
                                         productDataArrayList.add(productData);
                                     }
 
-                                }else {
-
                                 }
 
 
@@ -191,7 +187,7 @@ public class ProductList extends AppCompatActivity implements
     private void setProductData(){
 
         ProductAdapter productAdapter =
-                new ProductAdapter(ProductList.this, productDataArrayList);
+                new ProductAdapter(getActivity(), productDataArrayList);
         recycler_view.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
 
@@ -201,5 +197,6 @@ public class ProductList extends AppCompatActivity implements
     public void onItemClick(ProductData productData, View view) {
 
     }
+
 
 }
