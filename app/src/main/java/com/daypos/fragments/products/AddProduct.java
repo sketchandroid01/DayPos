@@ -275,7 +275,7 @@ public class AddProduct extends AppCompatActivity implements
 
     @Override
     public void onItemClick(String color_code) {
-
+        selected_color_code = color_code;
     }
 
     private void getCategoryList() {
@@ -384,7 +384,7 @@ public class AddProduct extends AppCompatActivity implements
         params.put("is_track", "0");
         params.put("is_composite", "0");
         params.put("store_availability", "1");
-        params.put("is_attribute", type_of_color_file);  // 1 for color, 2 for image file
+        params.put("item_attribute", type_of_color_file);  // 1 for color, 2 for image file
 
         try{
 
@@ -394,10 +394,10 @@ public class AddProduct extends AppCompatActivity implements
             e.printStackTrace();
         }
 
-        // Log.d(TAG , "URL "+url);
-        // Log.d(TAG , "params "+params.toString());
+         Log.d(Commons.TAG , "URL "+url);
+         Log.d(Commons.TAG , "params "+params.toString());
 
-        int DEFAULT_TIMEOUT = 20 * 1000;
+        int DEFAULT_TIMEOUT = 30 * 1000;
         cl.setMaxRetriesAndTimeout(5 , DEFAULT_TIMEOUT);
         cl.post(url,params, new JsonHttpResponseHandler(){
             @Override
