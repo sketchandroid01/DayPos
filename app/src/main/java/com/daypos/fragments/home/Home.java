@@ -3,6 +3,7 @@ package com.daypos.fragments.home;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
@@ -65,9 +67,10 @@ public class Home extends Fragment implements
 
     private ArrayList<CategoryData> categoryDataArrayList;
     private ArrayList<ProductData> productDataArrayList;
-    private int start_index = 1;
+    private int start_index_offset = 0;
     private int limit = 20;
     private String category_id;
+    ProductAdapter productAdapter;
 
     public Home() {}
 
@@ -167,11 +170,13 @@ public class Home extends Fragment implements
             startActivity(intent);
         });
 
+
+        initScrollListener();
     }
 
     @Override
     public void onRefresh() {
-
+        start_index_offset = 0;
         getProductCategoryWise(category_id);
 
     }
@@ -263,7 +268,7 @@ public class Home extends Fragment implements
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("category_id", category);
-        params.put("start", String.valueOf(start_index));
+        params.put("start", String.valueOf(start_index_offset));
         params.put("limit", String.valueOf(limit));
 
         new PostDataParser(getActivity(), url, params, true,
@@ -288,7 +293,8 @@ public class Home extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(object.optString("item_image"));
+                                        productData.setImage(ApiConstant.IMAGE_PATH
+                                                + object.optString("item_image"));
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
@@ -318,13 +324,139 @@ public class Home extends Fragment implements
 
     private void setProductData(){
 
-        ProductAdapter productAdapter =
-                new ProductAdapter(getActivity(), productDataArrayList);
+        productAdapter = new ProductAdapter(getActivity(), productDataArrayList);
         recyclerview.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
 
+    }
+
+
+
+    boolean isLoading = false;
+    private void initScrollListener() {
+
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager)
+                        recyclerView.getLayoutManager();
+
+                if (!isLoading) {
+                    if (linearLayoutManager != null &&
+                            linearLayoutManager.findLastCompletelyVisibleItemPosition()
+                                    == productDataArrayList.size() - 1) {
+                        //bottom of list!
+
+                        if (productDataArrayList.size() >= limit){
+                            loadMore();
+                            isLoading = true;
+                        }
+
+                    }
+                }
+            }
+        });
+
 
     }
+
+
+    private void loadMore() {
+
+        productDataArrayList.add(null);
+        productAdapter.notifyItemInserted(productDataArrayList.size() - 1);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                start_index_offset = productDataArrayList.size() - 1;
+
+                loadMoreProductCategoryWise(category_id);
+            }
+        }, 1000);
+
+    }
+
+    private void loadMoreProductCategoryWise(String category) {
+
+        String url = ApiConstant.filterProductCategoryWise;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("category_id", category);
+        params.put("start", String.valueOf(start_index_offset));
+        params.put("limit", String.valueOf(limit));
+
+        new PostDataParser(getActivity(), url, params, false,
+                new PostDataParser.OnGetResponseListner() {
+                    @Override
+                    public void onGetResponse(JSONObject response) {
+                        if (response != null) {
+
+                            try {
+                                int status = response.optInt("status");
+                                String message = response.optString("message");
+                                if (status == 1) {
+
+                                    productDataArrayList.remove(productDataArrayList.size() - 1);
+                                    int scrollPosition = productDataArrayList.size();
+                                    productAdapter.notifyItemRemoved(scrollPosition);
+
+
+                                    JSONArray item_list = response.getJSONArray("item_list");
+
+                                    for (int i = 0; i < item_list.length(); i++){
+                                        JSONObject object = item_list.getJSONObject(i);
+
+
+                                        ProductData productData = new ProductData();
+                                        productData.setId(object.optString("id"));
+                                        productData.setName(object.optString("name"));
+                                        productData.setPrice(object.optString("price"));
+                                        productData.setSku(object.optString("sku"));
+                                        productData.setBar_code(object.optString("bar_code"));
+                                        productData.setImage(ApiConstant.IMAGE_PATH
+                                                + object.optString("item_image"));
+                                        productData.setTaxes(object.optString("taxes"));
+                                        productData.setItem_color(object.optString("item_color"));
+                                        productData.setIs_attribute(object.optString("is_attribute"));
+
+
+                                        productDataArrayList.add(productData);
+                                    }
+
+                                }else {
+
+                                    productDataArrayList.remove(productDataArrayList.size() - 1);
+                                    int scrollPosition = productDataArrayList.size();
+                                    productAdapter.notifyItemRemoved(scrollPosition);
+                                }
+
+
+                                productAdapter.notifyDataSetChanged();
+                                isLoading = false;
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                            swipe_refresh_layout.setRefreshing(false);
+
+                        }
+                    }
+                });
+    }
+
 
     @Override
     public void onItemClick(ProductData productData, View view) {

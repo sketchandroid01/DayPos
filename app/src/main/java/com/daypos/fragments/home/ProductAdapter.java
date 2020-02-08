@@ -6,9 +6,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,10 +20,15 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private ArrayList<ProductData> productDataArrayList;
+
+
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
 
     public ProductAdapter(Context context, ArrayList<ProductData> data) {
         this.context = context;
@@ -29,14 +36,71 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
     }
 
     @Override
-    public ProductAdapter.myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.product_item, parent, false);
-        return new myViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if (viewType == VIEW_TYPE_ITEM) {
+            View view = LayoutInflater.from(context)
+                    .inflate(R.layout.product_item, parent, false);
+            return new myViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading_product, parent, false);
+            return new LoadingViewHolder(view);
+        }
+
     }
 
     @Override
-    public void onBindViewHolder(ProductAdapter.myViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        if (holder instanceof myViewHolder) {
+            setProductView((myViewHolder) holder, position);
+        } else if (holder instanceof LoadingViewHolder) {
+            showLoadingView((LoadingViewHolder) holder, position);
+        }
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return productDataArrayList == null ? 0 : productDataArrayList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return productDataArrayList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
+
+
+    public class myViewHolder extends RecyclerView.ViewHolder {
+        CircleImageView iv_image, iv_image_clone;
+        TextView tv_name, tv_sku, tv_price;
+        RelativeLayout rl_color, rl_color_clone;
+
+        public myViewHolder(View itemView) {
+            super(itemView);
+            iv_image = itemView.findViewById(R.id.iv_image);
+            tv_name = itemView.findViewById(R.id.tv_name);
+            tv_sku = itemView.findViewById(R.id.tv_sku);
+            tv_price = itemView.findViewById(R.id.tv_price);
+            rl_color = itemView.findViewById(R.id.rl_color);
+            rl_color_clone = itemView.findViewById(R.id.rl_color_clone);
+            iv_image_clone = itemView.findViewById(R.id.iv_image_clone);
+        }
+    }
+
+
+    private ItemClickListener mClickListener;
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener {
+        void onItemClick(ProductData productData, View view);
+    }
+
+
+    private void setProductView(myViewHolder holder, int position){
 
         ProductData productData = productDataArrayList.get(position);
 
@@ -55,11 +119,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
                 Glide.with(context)
                         .load(productData.getImage())
                         .placeholder(R.drawable.circle_green)
+                        .fallback(R.drawable.circle_green)
                         .into(holder.iv_image);
 
                 Glide.with(context)
                         .load(productData.getImage())
                         .placeholder(R.drawable.circle_green)
+                        .fallback(R.drawable.circle_green)
                         .into(holder.iv_image_clone);
 
                 holder.itemView.setOnClickListener(v -> {
@@ -90,48 +156,32 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.myViewHo
             });
 
             if (productData.getItem_color().length() == 7){
-                GradientDrawable bgShape = (GradientDrawable)holder.rl_color.getBackground();
-                bgShape.setColor(Color.parseColor(productData.getItem_color()));
+                GradientDrawable bgShape1 = (GradientDrawable)holder.rl_color.getBackground();
+                bgShape1.setColor(Color.parseColor(productData.getItem_color()));
+
+                GradientDrawable bgShape2 = (GradientDrawable)holder.rl_color_clone.getBackground();
+                bgShape2.setColor(Color.parseColor(productData.getItem_color()));
             }
 
         }
 
 
-
     }
 
-    @Override
-    public int getItemCount() {
-        return productDataArrayList.size();
-    }
+    ////
 
+    private class LoadingViewHolder extends RecyclerView.ViewHolder {
 
-    public class myViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView iv_image, iv_image_clone;
-        TextView tv_name, tv_sku, tv_price;
-        RelativeLayout rl_color, rl_color_clone;
+        ProgressBar progressBar;
 
-        public myViewHolder(View itemView) {
+        public LoadingViewHolder(@NonNull View itemView) {
             super(itemView);
-            iv_image = itemView.findViewById(R.id.iv_image);
-            tv_name = itemView.findViewById(R.id.tv_name);
-            tv_sku = itemView.findViewById(R.id.tv_sku);
-            tv_price = itemView.findViewById(R.id.tv_price);
-            rl_color = itemView.findViewById(R.id.rl_color);
-            rl_color_clone = itemView.findViewById(R.id.rl_color_clone);
-            iv_image_clone = itemView.findViewById(R.id.iv_image_clone);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 
-
-
-    private ItemClickListener mClickListener;
-    public void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    public interface ItemClickListener {
-        void onItemClick(ProductData productData, View view);
+    private void showLoadingView(LoadingViewHolder holder, int position) {
+        //ProgressBar would be displayed
     }
 
 

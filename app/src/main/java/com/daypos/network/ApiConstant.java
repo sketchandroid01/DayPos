@@ -6,6 +6,8 @@ public class ApiConstant {
 
     private static final String BASE_URL = "https://lab-5.sketchdemos.com/PHP-WEB-SERVICES/P-1029-DAYPOS/Api/";
 
+    public static final String IMAGE_PATH = "https://lab-5.sketchdemos.com/PHP-WEB-SERVICES/P-1029-DAYPOS/assets/uploads/item/";
+
 
     public static final String login                         = BASE_URL + "login";
     public static final String forgotPassword                = BASE_URL + "forgotPassword";

@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
 
 public class CircleAnimationUtil {
 
-    private static final int DEFAULT_DURATION = 1000;
+    private static final int DEFAULT_DURATION = 200;
     private static final int DEFAULT_DURATION_DISAPPEAR = 200;
     private View mTarget;
     private View mDest;

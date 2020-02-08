@@ -206,7 +206,8 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(object.optString("item_image"));
+                                        productData.setImage(ApiConstant.IMAGE_PATH
+                                                + object.optString("item_image"));
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
@@ -288,11 +289,12 @@ public class SearchProductList extends AppCompatActivity implements
 
         productDataArrayList = new ArrayList<>();
 
-        String url = ApiConstant.filterProductCategoryWise;
+        String url = ApiConstant.search_item_list;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("search_keyword", search_key);
+        params.put("bar_code", "");
 
         new PostDataParser(this, url, params, true,
                 new PostDataParser.OnGetResponseListner() {
@@ -304,7 +306,7 @@ public class SearchProductList extends AppCompatActivity implements
                                 int status = response.optInt("status");
                                 String message = response.optString("message");
                                 if (status == 1) {
-                                    JSONArray item_list = response.getJSONArray("item_list");
+                                    JSONArray item_list = response.getJSONArray("data");
 
                                     for (int i = 0; i < item_list.length(); i++){
                                         JSONObject object = item_list.getJSONObject(i);
@@ -316,7 +318,8 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(object.optString("item_image"));
+                                        productData.setImage(ApiConstant.IMAGE_PATH
+                                                + object.optString("item_image"));
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
