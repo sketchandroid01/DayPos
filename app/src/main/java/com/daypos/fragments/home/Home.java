@@ -461,13 +461,11 @@ public class Home extends Fragment implements
     @Override
     public void onItemClick(ProductData productData, View view) {
 
-        makeFlyAnimation(view);
+        makeFlyAnimation(view, productData.getId());
 
     }
 
-
-
-    private void makeFlyAnimation(View view) {
+    private void makeFlyAnimation(View view, String id) {
 
         new CircleAnimationUtil().attachActivity(getActivity())
                 .setTargetView(view)
@@ -482,10 +480,8 @@ public class Home extends Fragment implements
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                //addItemToCart();
-                Toasty.success(getActivity(),
-                        "Added",
-                        Toast.LENGTH_SHORT, true).show();
+
+                addToCart(id);
             }
 
             @Override
@@ -500,6 +496,41 @@ public class Home extends Fragment implements
         }).startAnimation();
 
 
+    }
+
+    private void addToCart(String product_id) {
+
+        String url = ApiConstant.add_to_cart;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", product_id);
+        params.put("type", "1");
+
+        new PostDataParser(getActivity(), url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        String count = response.optString("count");
+                        cart_counter.setText(count);
+
+                        Toasty.success(getActivity(),
+                                "Added",
+                                Toast.LENGTH_SHORT, true).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
     }
 
 }

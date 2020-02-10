@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,20 +16,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daypos.R;
 import com.daypos.checkout.Checkout;
 import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+import com.daypos.utils.GlobalClass;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class CartActivity extends AppCompatActivity implements
-        View.OnClickListener {
+        View.OnClickListener, CartAdapter.ItemClickListener {
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.btn_checkout) Button btn_checkout;
 
     ArrayList<CartData> cartDataArrayList;
+    GlobalClass globalClass;
 
 
     @Override
@@ -42,31 +52,18 @@ public class CartActivity extends AppCompatActivity implements
 
     private void initViews(){
 
+        globalClass = (GlobalClass) getApplicationContext();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
-        getSupportActionBar().setTitle("Cart (0)");
-
+        getSupportActionBar().setTitle("Cart");
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
-
-        cartDataArrayList = new ArrayList<>();
-        cartDataArrayList.add(new CartData());
-        cartDataArrayList.add(new CartData());
-        cartDataArrayList.add(new CartData());
-        cartDataArrayList.add(new CartData());
-        cartDataArrayList.add(new CartData());
-        cartDataArrayList.add(new CartData());
-
-        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
-
-
-        CartAdapter cartAdapter = new CartAdapter(CartActivity.this, cartDataArrayList);
-        recyclerview.setAdapter(cartAdapter);
-
-
         btn_checkout.setOnClickListener(this);
+
+        getCartItems();
 
     }
 
@@ -120,4 +117,72 @@ public class CartActivity extends AppCompatActivity implements
     }
 
 
+    private void getCartItems() {
+
+        cartDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.cart_item_list;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String item_id = object.optString("item_id");
+                            String name = object.optString("name");
+                            String quantity = object.optString("quantity");
+                            String price = object.optString("price");
+                            String cost = object.optString("cost");
+
+
+                            CartData cartData = new CartData();
+                            cartData.setId(id);
+                            cartData.setProduct_id(item_id);
+                            cartData.setProduct_name(name);
+                            cartData.setPrice(price);
+                            cartData.setQty(quantity);
+                            cartData.setMrp(cost);
+
+                            cartDataArrayList.add(cartData);
+                        }
+
+                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+
+                        setCartData();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+    private void setCartData(){
+
+        CartAdapter cartAdapter = new CartAdapter(CartActivity.this, cartDataArrayList);
+        recyclerview.setAdapter(cartAdapter);
+        cartAdapter.setClickListener(this);
+    }
+
+
+    @Override
+    public void onItemClick(int position, CartData cartData) {
+
+    }
 }
