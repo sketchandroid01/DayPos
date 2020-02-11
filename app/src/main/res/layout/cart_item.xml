@@ -52,7 +52,7 @@
                             android:id="@+id/tv_variant_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="(Red)"
+                            android:text=""
                             android:textColor="@color/black"
                             android:maxLines="1"
                             android:layout_below="@+id/tv_product_name"
