@@ -1,11 +1,16 @@
 package com.daypos.cart;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +36,9 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class CartActivity extends AppCompatActivity implements
-        View.OnClickListener, CartAdapter.ItemClickListener {
+        View.OnClickListener,
+        CartAdapter.ItemClickListenerDetete,
+        CartAdapter.ItemClickListenerEdit{
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -177,12 +184,218 @@ public class CartActivity extends AppCompatActivity implements
 
         CartAdapter cartAdapter = new CartAdapter(CartActivity.this, cartDataArrayList);
         recyclerview.setAdapter(cartAdapter);
-        cartAdapter.setClickListener(this);
+        cartAdapter.setClickListenerEdit(this);
+        cartAdapter.setClickListenerDetete(this);
+    }
+
+    @Override
+    public void onItemClickEdit(int position, CartData cartData) {
+        editDialog(cartData);
+    }
+
+    @Override
+    public void onItemClickDelete(int position, CartData cartData) {
+        deleteProductDialog(cartData);
     }
 
 
-    @Override
-    public void onItemClick(int position, CartData cartData) {
+    private void deleteProductDialog(CartData cartData){
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("Are you sure, you want to delete " +cartData.getProduct_name()+" ?");
+        adb.setIcon(R.mipmap.alert_48);
+        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                deleteCart(cartData.getId());
 
+            } });
+        adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+            } });
+        adb.show();
+
+    }
+
+    private void editDialog(CartData cartData){
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_cart_edit, null);
+        dialogBuilder.setView(dialogView);
+
+        EditText edit_cart_quantity = dialogView.findViewById(R.id.edit_cart_quantity);
+        ImageView cart_minus_img = dialogView.findViewById(R.id.cart_minus_img);
+        ImageView cart_plus_img = dialogView.findViewById(R.id.cart_plus_img);
+        Button btn_close = dialogView.findViewById(R.id.btn_close);
+        Button btn_save = dialogView.findViewById(R.id.btn_save);
+        edit_cart_quantity.setText(cartData.getQty());
+
+
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        cart_minus_img.setOnClickListener(v -> {
+
+            try {
+                int count = Integer.parseInt(edit_cart_quantity.getText().toString());
+                if (count >= 2){
+                    count--;
+                    edit_cart_quantity.setText(String.valueOf(count));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+
+        });
+        cart_plus_img.setOnClickListener(v -> {
+
+            try {
+                int count = Integer.parseInt(edit_cart_quantity.getText().toString());
+                count++;
+                edit_cart_quantity.setText(String.valueOf(count));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
+        btn_close.setOnClickListener(v -> {
+
+            alertDialog.dismiss();
+
+        });
+        btn_save.setOnClickListener(v -> {
+
+            if (edit_cart_quantity.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter quantity",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            editCart(cartData.getId(), edit_cart_quantity.getText().toString());
+
+            alertDialog.dismiss();
+        });
+
+    }
+
+    private void editCart(String cart_row_id, String quantity_) {
+
+        cartDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.cart_item_quantity_update;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("cart_row_id", cart_row_id);
+        params.put("quantity", quantity_);
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String item_id = object.optString("item_id");
+                            String name = object.optString("name");
+                            String quantity = object.optString("quantity");
+                            String price = object.optString("price");
+                            String cost = object.optString("cost");
+
+
+                            CartData cartData = new CartData();
+                            cartData.setId(id);
+                            cartData.setProduct_id(item_id);
+                            cartData.setProduct_name(name);
+                            cartData.setPrice(price);
+                            cartData.setQty(quantity);
+                            cartData.setMrp(cost);
+
+                            cartDataArrayList.add(cartData);
+                        }
+
+                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+
+                        setCartData();
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+    private void deleteCart(String cart_row_id) {
+
+        cartDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.cart_item_delete;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("cart_row_id", cart_row_id);
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String item_id = object.optString("item_id");
+                            String name = object.optString("name");
+                            String quantity = object.optString("quantity");
+                            String price = object.optString("price");
+                            String cost = object.optString("cost");
+
+
+                            CartData cartData = new CartData();
+                            cartData.setId(id);
+                            cartData.setProduct_id(item_id);
+                            cartData.setProduct_name(name);
+                            cartData.setPrice(price);
+                            cartData.setQty(quantity);
+                            cartData.setMrp(cost);
+
+                            cartDataArrayList.add(cartData);
+                        }
+
+                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+
+                        setCartData();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
     }
 }

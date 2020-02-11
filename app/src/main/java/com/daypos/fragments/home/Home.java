@@ -109,7 +109,7 @@ public class Home extends Fragment implements
         cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
         cart_counter = cart_relativeLayout.findViewById(R.id.tv_cart_counter);
 
-        cart_counter.setText("0");
+        cart_counter.setText(globalClass.getCart_counter());
         cart_relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,6 +172,8 @@ public class Home extends Fragment implements
 
 
         initScrollListener();
+
+        getCartItems();
     }
 
     @Override
@@ -465,6 +467,7 @@ public class Home extends Fragment implements
 
     }
 
+
     private void makeFlyAnimation(View view, String id) {
 
         new CircleAnimationUtil().attachActivity(getActivity())
@@ -522,6 +525,39 @@ public class Home extends Fragment implements
                         Toasty.success(getActivity(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+    private void getCartItems() {
+
+        String url = ApiConstant.cart_item_list;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+
+        new PostDataParser(getActivity(), url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        cart_counter.setText(""+data.length());
+
+                        globalClass.setCart_counter(""+data.length());
                     }
 
                 } catch (Exception e) {

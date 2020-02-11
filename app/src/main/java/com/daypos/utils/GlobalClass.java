@@ -71,6 +71,7 @@ public class GlobalClass extends MultiDexApplication {
     ///// data..
 
     private String userId;
+    private String cart_counter = "0";
 
     public String getUserId() {
         return "1";
@@ -80,6 +81,11 @@ public class GlobalClass extends MultiDexApplication {
         this.userId = userId;
     }
 
+    public String getCart_counter() {
+        return cart_counter;
+    }
 
-
+    public void setCart_counter(String cart_counter) {
+        this.cart_counter = cart_counter;
+    }
 }

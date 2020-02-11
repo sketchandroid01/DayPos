@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             >
 
             <LinearLayout
@@ -29,7 +30,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
                     >
 
                     <RelativeLayout
@@ -46,16 +46,6 @@
                             android:text="Product 1"
                             android:textColor="@color/black"
                             android:maxLines="2"
-                            />
-
-                        <TextView
-                            android:id="@+id/tv_variant_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:maxLines="1"
-                            android:layout_below="@+id/tv_product_name"
                             />
 
                     </RelativeLayout>
@@ -103,39 +93,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="2dp"
-                    >
-
-                    <LinearLayout
-                        android:id="@+id/ll_dynamic_offer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="1dp"
-                        android:layout_weight="1"
-                        >
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_dynamic_tax"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        >
-                    </LinearLayout>
-
-
-                </LinearLayout>
 
             </LinearLayout>
 

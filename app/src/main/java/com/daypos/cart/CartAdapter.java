@@ -57,8 +57,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
             e.printStackTrace();
         }
 
-        holder.itemView.setOnClickListener(v -> {
-            mClickListener.onItemClick(position, cartData);
+        holder.tv_quantity.setOnClickListener(v -> {
+            mClickListenerEdit.onItemClickEdit(position, cartData);
+        });
+
+        holder.delete_iv.setOnClickListener(v -> {
+            mClickListenerDetete.onItemClickDelete(position, cartData);
         });
 
     }
@@ -84,13 +88,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
 
 
 
-    private ItemClickListener mClickListener;
-    public void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
+    private ItemClickListenerEdit mClickListenerEdit;
+    private ItemClickListenerDetete mClickListenerDetete;
+    public void setClickListenerEdit(ItemClickListenerEdit itemClickListener) {
+        this.mClickListenerEdit = itemClickListener;
     }
 
-    public interface ItemClickListener {
-        void onItemClick(int position, CartData cartData);
+    public void setClickListenerDetete(ItemClickListenerDetete itemClickListener) {
+        this.mClickListenerDetete = itemClickListener;
+    }
+
+    public interface ItemClickListenerEdit {
+        void onItemClickEdit(int position, CartData cartData);
+    }
+
+    public interface ItemClickListenerDetete {
+        void onItemClickDelete(int position, CartData cartData);
     }
 
 }

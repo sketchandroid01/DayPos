@@ -88,10 +88,7 @@ public class SearchProductList extends AppCompatActivity implements
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
         swipe_refresh_layout.setOnRefreshListener(this);
 
-
         getProductCategoryWise("all");
-
-
 
         iv_search.setOnClickListener(v -> {
 
@@ -131,7 +128,6 @@ public class SearchProductList extends AppCompatActivity implements
         });
 
 
-
     }
 
 
@@ -146,7 +142,7 @@ public class SearchProductList extends AppCompatActivity implements
         cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
         cart_counter = cart_relativeLayout.findViewById(R.id.tv_cart_counter);
 
-        cart_counter.setText("0");
+        cart_counter.setText(globalClass.getCart_counter());
         cart_relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,9 +170,7 @@ public class SearchProductList extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-
         getProductCategoryWise("all");
-
     }
 
     private void getProductCategoryWise(String category) {
@@ -253,10 +247,10 @@ public class SearchProductList extends AppCompatActivity implements
 
     @Override
     public void onItemClick(ProductData productData, View view) {
-        makeFlyAnimation(view);
+        makeFlyAnimation(view, productData.getId());
     }
 
-    private void makeFlyAnimation(View view) {
+    private void makeFlyAnimation(View view, String id) {
 
         new CircleAnimationUtil().attachActivity(SearchProductList.this)
                 .setTargetView(view)
@@ -272,9 +266,8 @@ public class SearchProductList extends AppCompatActivity implements
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         //addItemToCart();
-                        Toasty.success(getApplicationContext(),
-                                "Added",
-                                Toast.LENGTH_SHORT, true).show();
+
+                        addToCart(id);
                     }
 
                     @Override
@@ -289,6 +282,42 @@ public class SearchProductList extends AppCompatActivity implements
                 }).startAnimation();
 
 
+    }
+
+    private void addToCart(String product_id) {
+
+        String url = ApiConstant.add_to_cart;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", product_id);
+        params.put("type", "1");
+
+        new PostDataParser(this, url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        String count = response.optString("count");
+                        cart_counter.setText(count);
+                        globalClass.setCart_counter(count);
+
+                        Toasty.success(getApplicationContext(),
+                                "Added",
+                                Toast.LENGTH_SHORT, true).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
     }
 
 
