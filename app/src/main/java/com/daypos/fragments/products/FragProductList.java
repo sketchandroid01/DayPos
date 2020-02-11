@@ -120,14 +120,20 @@ public class FragProductList extends Fragment implements
 
     }
 
+    @Override
+    public void onResume() {
+
+        getProductCategoryWise("all");
+
+        super.onResume();
+    }
+
     private void viewsAction(){
 
         globalClass = (GlobalClass)getActivity().getApplicationContext();
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         swipe_refresh_layout.setOnRefreshListener(this);
 
-
-        getProductCategoryWise("all");
 
         iv_search.setOnClickListener(v -> {
 

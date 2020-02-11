@@ -3,10 +3,15 @@ package com.daypos.network;
 public class ApiConstant {
 
 
+    /// lab domain
+   // private static final String DOMAIN = "https://lab-5.sketchdemos.com/PHP-WEB-SERVICES/P-1029-DAYPOS/";
 
-    private static final String BASE_URL = "https://lab-5.sketchdemos.com/PHP-WEB-SERVICES/P-1029-DAYPOS/Api/";
+    ///
+    private static final String DOMAIN = "https://teq-dev-var19.co.in/daypos/";
 
-    public static final String IMAGE_PATH = "https://lab-5.sketchdemos.com/PHP-WEB-SERVICES/P-1029-DAYPOS/assets/uploads/item/";
+    private static final String BASE_URL = DOMAIN + "Api/";
+
+    public static final String IMAGE_PATH = DOMAIN + "assets/uploads/item/";
 
 
     public static final String login                         = BASE_URL + "login";
