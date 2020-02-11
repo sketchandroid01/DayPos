@@ -1,7 +1,9 @@
 package com.daypos.fragments.products;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,12 +19,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
+import com.daypos.barcodeLibs.FullScannerActivity;
 import com.daypos.cart.CartActivity;
 import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
@@ -120,6 +125,8 @@ public class SearchProductList extends AppCompatActivity implements
         });
 
         iv_barcode_search.setOnClickListener(v -> {
+
+            launchActivity(FullScannerActivity.class);
 
         });
 
@@ -341,6 +348,39 @@ public class SearchProductList extends AppCompatActivity implements
                         }
                     }
                 });
+    }
+
+
+    ////////// goto barcode scanner ...
+    private static final int ZXING_CAMERA_PERMISSION = 1;
+    private Class<?> mClss;
+
+    public void launchActivity(Class<?> clss) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            mClss = clss;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
+        } else {
+            Intent intent = new Intent(this, clss);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case ZXING_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(mClss != null) {
+                        Intent intent = new Intent(this, mClss);
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                }
+                return;
+        }
     }
 
 }

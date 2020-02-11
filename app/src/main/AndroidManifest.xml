@@ -178,6 +178,16 @@
 
 
 
+        <activity android:name=".barcodeLibs.FullScannerActivity"
+            android:theme="@style/MyNoActionBar"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:label="Scan Products">
+            <meta-data android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
+        </activity>
+
+
+
 
 
         <provider

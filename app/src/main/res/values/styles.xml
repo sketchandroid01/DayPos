@@ -25,6 +25,8 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
 
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+
         <item name="android:fontFamily">@font/poppins_regular</item>
 
     </style>
@@ -43,10 +45,16 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
 
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+
         <item name="android:fontFamily">@font/poppins_regular</item>
 
     </style>
 
+
+    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">#ffffff</item>
+    </style>
 
 
 </resources>
