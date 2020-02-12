@@ -166,6 +166,8 @@ public class CartActivity extends AppCompatActivity implements
                             cartDataArrayList.add(cartData);
                         }
 
+                        globalClass.setCart_counter(""+cartDataArrayList.size());
+
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
 
                         setCartData();
@@ -327,6 +329,8 @@ public class CartActivity extends AppCompatActivity implements
                             cartDataArrayList.add(cartData);
                         }
 
+                        globalClass.setCart_counter(""+cartDataArrayList.size());
+
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
 
                         setCartData();
@@ -384,7 +388,7 @@ public class CartActivity extends AppCompatActivity implements
 
                             cartDataArrayList.add(cartData);
                         }
-
+                        globalClass.setCart_counter(""+cartDataArrayList.size());
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
 
                         setCartData();

@@ -169,6 +169,12 @@ public class SearchProductList extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        cart_counter.setText(globalClass.getCart_counter());
+        super.onResume();
+    }
+
+    @Override
     public void onRefresh() {
         getProductCategoryWise("all");
     }

@@ -9,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,12 +30,17 @@ public class DialogEditCustomer extends Dialog {
 
     private Context context;
     private GlobalClass globalClass;
+    private CustomerData customerData;
+    public int isEdited = 0;
 
-    public DialogEditCustomer(@NonNull Context context) {
+    public DialogEditCustomer(@NonNull Context context, CustomerData customerData) {
 
         super(context);
         this.context = context;
+        this.customerData = customerData;
         globalClass = (GlobalClass) context.getApplicationContext();
+
+        isEdited = 0;
 
     }
 
@@ -55,12 +61,22 @@ public class DialogEditCustomer extends Dialog {
 
     private void initViews(){
 
+
+
+        TextView tv_title = findViewById(R.id.tv_title);
         Button btn_close = findViewById(R.id.btn_close);
         Button btn_save = findViewById(R.id.btn_save);
         EditText edt_customer_name = findViewById(R.id.edt_customer_name);
         EditText edt_customer_phone = findViewById(R.id.edt_customer_phone);
         EditText edt_customer_email = findViewById(R.id.edt_customer_email);
         EditText edt_customer_number = findViewById(R.id.edt_customer_number);
+
+        edt_customer_name.setText(customerData.getName());
+        edt_customer_phone.setText(customerData.getPhone());
+        edt_customer_email.setText(customerData.getEmail());
+        edt_customer_number.setText(customerData.getCustomer_id());
+
+        tv_title.setText("Update Customer");
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +123,7 @@ public class DialogEditCustomer extends Dialog {
                 }
 
 
-                addCustomer(edt_customer_name.getText().toString(),
+                addCustomer(customerData.getId(), edt_customer_name.getText().toString(),
                         edt_customer_email.getText().toString(),
                         edt_customer_phone.getText().toString(),
                         edt_customer_number.getText().toString());
@@ -120,12 +136,13 @@ public class DialogEditCustomer extends Dialog {
 
 
 
-    private void addCustomer(String name, String email, String mobile, String c_no) {
+    private void addCustomer(String id, String name, String email, String mobile, String c_no) {
 
         String url = ApiConstant.addEditCustomer;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
+        params.put("customer_id", id);
         params.put("name", name);
         params.put("email", email);
         params.put("phone", mobile);
@@ -142,18 +159,18 @@ public class DialogEditCustomer extends Dialog {
 
                     if (status == 1) {
 
-                        Toasty.success(context,
-                                message,
+                        Toasty.success(context, message,
                                 Toast.LENGTH_SHORT, true).show();
 
                         Commons.hideSoftKeyboard((Activity) context);
+
+                        isEdited = 1;
 
                         dismiss();
 
                     }else {
 
-                        Toasty.error(context,
-                                message,
+                        Toasty.error(context, message,
                                 Toast.LENGTH_SHORT, true).show();
                     }
 

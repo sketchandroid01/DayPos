@@ -141,6 +141,18 @@ public class Home extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume() {
+
+        try {
+            cart_counter.setText(globalClass.getCart_counter());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        super.onResume();
+    }
+
     private void dialogAddCustomer(){
 
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(getActivity());

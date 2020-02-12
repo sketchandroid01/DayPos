@@ -7,6 +7,9 @@ public class CustomerData {
     private String total_order;
     private String total_order_amt;
     private String balance;
+    private String email;
+    private String phone;
+    private String customer_id;
 
     public String getId() {
         return id;
@@ -51,5 +54,29 @@ public class CustomerData {
     public CustomerData setBalance(String balance) {
         this.balance = balance;
         return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getCustomer_id() {
+        return customer_id;
+    }
+
+    public void setCustomer_id(String customer_id) {
+        this.customer_id = customer_id;
     }
 }

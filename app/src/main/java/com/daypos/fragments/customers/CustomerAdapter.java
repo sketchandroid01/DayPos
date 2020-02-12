@@ -42,6 +42,15 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.myView
             holder.linear_main.setBackgroundColor(context.getResources().getColor(R.color.white));
         }
 
+        holder.customer_name.setText(customerData.getName());
+        holder.tv_total_value.setText("0.00");
+        holder.tv_balance.setText("0.00");
+        holder.tv_total_orders.setText("0");
+
+
+        holder.itemView.setOnClickListener(v -> {
+            mClickListener.onItemClick(customerData);
+        });
 
 
     }

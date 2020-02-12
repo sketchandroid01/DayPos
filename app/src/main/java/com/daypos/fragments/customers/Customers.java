@@ -16,14 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+import com.daypos.utils.GlobalClass;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class Customers extends Fragment {
+public class Customers extends Fragment implements
+        SwipeRefreshLayout.OnRefreshListener,
+        CustomerAdapter.ItemClickListener {
 
     private Unbinder unbinder;
 
@@ -33,6 +42,9 @@ public class Customers extends Fragment {
     @BindView(R.id.edt_search)
     EditText edt_search;
 
+
+    private ArrayList<CustomerData> customerDataArrayList;
+    private GlobalClass globalClass;
 
     public Customers() {}
 
@@ -94,22 +106,105 @@ public class Customers extends Fragment {
 
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ArrayList<CustomerData> customerDataArrayList = new ArrayList<>();
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
-        customerDataArrayList.add(new CustomerData());
+        globalClass = (GlobalClass) getActivity().getApplicationContext();
+        customerDataArrayList = new ArrayList<>();
 
-        CustomerAdapter customerAdapter = new CustomerAdapter(getActivity(),
-                customerDataArrayList);
-        recycler_view.setAdapter(customerAdapter);
+        swipe_refresh_layout.setOnRefreshListener(this);
 
+
+        getCustomerList();
 
     }
 
 
+    @Override
+    public void onRefresh() {
+        getCustomerList();
+    }
 
+    private void getCustomerList() {
+
+        customerDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.customer_list_by_userID;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+
+        new PostDataParser(getActivity(), url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String name = object.optString("name");
+                            String image = object.optString("image");
+                            String customerId = object.optString("customerId");
+                            String email = object.optString("email");
+                            String phone = object.optString("phone");
+                            String purchase_amount = object.optString("purchase_amount");
+                            String points_balance = object.optString("points_balance");
+                            String note = object.optString("note");
+                            String address = object.optString("address");
+
+                            CustomerData customerData = new CustomerData();
+                            customerData.setId(id);
+                            customerData.setName(name);
+                            customerData.setEmail(email);
+                            customerData.setPhone(phone);
+                            customerData.setCustomer_id(customerId);
+
+                            customerDataArrayList.add(customerData);
+                        }
+
+
+                        setCustomerData();
+                    }
+
+                    if (swipe_refresh_layout.isRefreshing()){
+                        swipe_refresh_layout.setRefreshing(false);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+    private void setCustomerData(){
+
+        CustomerAdapter customerAdapter = new CustomerAdapter(getActivity(),
+                customerDataArrayList);
+        recycler_view.setAdapter(customerAdapter);
+        customerAdapter.setClickListener(this);
+
+    }
+
+    @Override
+    public void onItemClick(CustomerData customerData) {
+
+        DialogEditCustomer dialogEditCustomer =
+                new DialogEditCustomer(getActivity(), customerData);
+        dialogEditCustomer.show();
+
+        dialogEditCustomer.setOnDismissListener(dialog -> {
+            if (dialogEditCustomer.isEdited == 1){
+                getCustomerList();
+            }
+        });
+
+    }
 }
