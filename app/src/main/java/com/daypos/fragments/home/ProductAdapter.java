@@ -108,7 +108,11 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.tv_sku.setText(productData.getSku());
         holder.tv_price.setText(productData.getPrice());
 
-        if (productData.getItem_color().isEmpty()){
+        if (productData.getItem_color() == null
+                || productData.getItem_color().equals(null)
+                || productData.getItem_color().equals("null")
+                || productData.getItem_color().isEmpty()
+        ){
             if (!productData.getImage().isEmpty()){
 
                 holder.iv_image.setVisibility(View.VISIBLE);
@@ -161,6 +165,9 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 GradientDrawable bgShape2 = (GradientDrawable)holder.rl_color_clone.getBackground();
                 bgShape2.setColor(Color.parseColor(productData.getItem_color()));
+            }else {
+                holder.rl_color.setBackground(context.getResources().getDrawable(R.drawable.circle_green));
+                holder.rl_color_clone.setBackground(context.getResources().getDrawable(R.drawable.circle_green));
             }
 
         }

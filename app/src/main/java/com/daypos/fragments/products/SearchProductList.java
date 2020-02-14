@@ -170,7 +170,12 @@ public class SearchProductList extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-        cart_counter.setText(globalClass.getCart_counter());
+        try {
+            cart_counter.setText(globalClass.getCart_counter());
+        }catch (Exception E){
+            E.printStackTrace();
+        }
+
         super.onResume();
     }
 
@@ -222,8 +227,6 @@ public class SearchProductList extends AppCompatActivity implements
 
                                         productDataArrayList.add(productData);
                                     }
-
-                                }else {
 
                                 }
 
@@ -325,7 +328,6 @@ public class SearchProductList extends AppCompatActivity implements
 
         });
     }
-
 
     private void searchProduct(String search_key) {
 

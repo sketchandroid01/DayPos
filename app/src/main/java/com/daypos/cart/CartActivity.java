@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.daypos.utils.GlobalClass;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,10 +45,13 @@ public class CartActivity extends AppCompatActivity implements
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.btn_checkout) Button btn_checkout;
+    @BindView(R.id.tv_total_price)
+    TextView tv_total_price;
 
     ArrayList<CartData> cartDataArrayList;
     GlobalClass globalClass;
-
+    double total_cart_value = 0;
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +133,8 @@ public class CartActivity extends AppCompatActivity implements
 
         cartDataArrayList = new ArrayList<>();
 
+        total_cart_value = 0;
+
         String url = ApiConstant.cart_item_list;
 
         HashMap<String, String> params = new HashMap<>();
@@ -164,6 +171,11 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setMrp(cost);
 
                             cartDataArrayList.add(cartData);
+
+                            double price_ = Float.parseFloat(cartData.getPrice());
+                            int qty = Integer.parseInt(cartData.getQty());
+                            double total_price = price_ * qty;
+                            total_cart_value = total_cart_value + total_price;
                         }
 
                         globalClass.setCart_counter(""+cartDataArrayList.size());
@@ -188,6 +200,8 @@ public class CartActivity extends AppCompatActivity implements
         recyclerview.setAdapter(cartAdapter);
         cartAdapter.setClickListenerEdit(this);
         cartAdapter.setClickListenerDetete(this);
+
+        tv_total_price.setText(df.format(total_cart_value));
     }
 
     @Override
@@ -289,6 +303,8 @@ public class CartActivity extends AppCompatActivity implements
 
         cartDataArrayList = new ArrayList<>();
 
+        total_cart_value = 0;
+
         String url = ApiConstant.cart_item_quantity_update;
 
         HashMap<String, String> params = new HashMap<>();
@@ -327,6 +343,13 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setMrp(cost);
 
                             cartDataArrayList.add(cartData);
+
+
+                            double price_ = Float.parseFloat(cartData.getPrice());
+                            int qty = Integer.parseInt(cartData.getQty());
+                            double total_price = price_ * qty;
+                            total_cart_value = total_cart_value + total_price;
+
                         }
 
                         globalClass.setCart_counter(""+cartDataArrayList.size());
@@ -349,6 +372,8 @@ public class CartActivity extends AppCompatActivity implements
     private void deleteCart(String cart_row_id) {
 
         cartDataArrayList = new ArrayList<>();
+
+        total_cart_value = 0;
 
         String url = ApiConstant.cart_item_delete;
 
@@ -387,6 +412,13 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setMrp(cost);
 
                             cartDataArrayList.add(cartData);
+
+
+                            double price_ = Float.parseFloat(cartData.getPrice());
+                            int qty = Integer.parseInt(cartData.getQty());
+                            double total_price = price_ * qty;
+                            total_cart_value = total_cart_value + total_price;
+
                         }
                         globalClass.setCart_counter(""+cartDataArrayList.size());
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");

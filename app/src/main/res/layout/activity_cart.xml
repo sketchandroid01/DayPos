@@ -55,41 +55,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:layout_centerVertical="true"
-                        android:text="Add Discount"
-                        />
-
-                    <EditText
-                        android:id="@+id/edt_discount"
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:background="@color/transparent"
-                        android:gravity="end"
-                        android:layout_centerVertical="true"
-                        android:digits="0123456789.%"
-                        android:hint="0.00"
-                        />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/border_color"
-                    />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:textColor="@color/black"
                         android:textStyle="bold"
@@ -106,7 +71,7 @@
                         android:textStyle="bold"
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
-                        android:text="100.00"
+                        android:text="0.00"
                         />
 
                 </RelativeLayout>
