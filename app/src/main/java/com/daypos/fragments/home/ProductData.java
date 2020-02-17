@@ -1,6 +1,8 @@
 package com.daypos.fragments.home;
 
-public class ProductData {
+import java.io.Serializable;
+
+public class ProductData implements Serializable {
 
     private String id;
     private String name;

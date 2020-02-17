@@ -64,7 +64,7 @@ public class SearchProductList extends AppCompatActivity implements
 
     GlobalClass globalClass;
     private int start_index = 0;
-    private int limit = 50;
+    private int limit = 60;
     private ArrayList<ProductData> productDataArrayList;
 
     @Override
@@ -115,8 +115,12 @@ public class SearchProductList extends AppCompatActivity implements
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().trim().length() > 3){
+                if (s.toString().trim().length() > 1){
                     searchProduct(s.toString());
+                }
+
+                if (s.toString().length() == 0){
+                    getProductCategoryWise("all");
                 }
             }
         });

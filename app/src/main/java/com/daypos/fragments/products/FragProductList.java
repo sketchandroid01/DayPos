@@ -243,6 +243,10 @@ public class FragProductList extends Fragment implements
     @Override
     public void onItemClick(ProductData productData, View view) {
 
+        Intent intent = new Intent(getActivity(), EditProduct.class);
+        intent.putExtra("datas", productData);
+        startActivity(intent);
+
     }
 
 

@@ -1,6 +1,8 @@
 package com.daypos.fragments.customers;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -111,6 +113,32 @@ public class Customers extends Fragment implements
 
         swipe_refresh_layout.setOnRefreshListener(this);
 
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.toString().length() > 1){
+
+                    searchCustomerList(s.toString());
+                }
+
+                if (s.toString().length() == 0){
+                    getCustomerList();
+                }
+
+            }
+        });
+
 
         getCustomerList();
 
@@ -139,6 +167,68 @@ public class Customers extends Fragment implements
                     int status = response.optInt("status");
                     String message = response.optString("message");
                     if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String name = object.optString("name");
+                            String image = object.optString("image");
+                            String customerId = object.optString("customerId");
+                            String email = object.optString("email");
+                            String phone = object.optString("phone");
+                            String purchase_amount = object.optString("purchase_amount");
+                            String points_balance = object.optString("points_balance");
+                            String note = object.optString("note");
+                            String address = object.optString("address");
+
+                            CustomerData customerData = new CustomerData();
+                            customerData.setId(id);
+                            customerData.setName(name);
+                            customerData.setEmail(email);
+                            customerData.setPhone(phone);
+                            customerData.setCustomer_id(customerId);
+
+                            customerDataArrayList.add(customerData);
+                        }
+
+
+                        setCustomerData();
+                    }
+
+                    if (swipe_refresh_layout.isRefreshing()){
+                        swipe_refresh_layout.setRefreshing(false);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+    private void searchCustomerList(String keyword) {
+
+        String url = ApiConstant.customer_by_name_mobile;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("name", keyword);
+
+        new PostDataParser(getActivity(), url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        customerDataArrayList = new ArrayList<>();
 
                         JSONArray data = response.getJSONArray("data");
 
