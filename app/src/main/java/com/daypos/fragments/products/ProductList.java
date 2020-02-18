@@ -172,7 +172,15 @@ public class ProductList extends AppCompatActivity implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(object.optString("item_image"));
+
+                                        if (object.optString("item_image").isEmpty()){
+                                            productData.setImage("");
+                                        }else {
+                                            productData.setImage(ApiConstant.IMAGE_PATH
+                                                    + object.optString("item_image"));
+                                        }
+
+
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));

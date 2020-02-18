@@ -43,8 +43,8 @@
                     android:background="@drawable/border_only"
                     >
 
-                    <EditText
-                        android:id="@+id/edt_search"
+                    <AutoCompleteTextView
+                        android:id="@+id/autocomplete_search"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
@@ -121,7 +121,7 @@
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_alignParentEnd="true"
-                        android:text="1000.00"
+                        android:text="0.00"
                         />
 
                     <TextView
@@ -186,6 +186,7 @@
 
 
                 <EditText
+                    android:id="@+id/edt_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="150dp"
@@ -212,6 +213,7 @@
                     >
 
                     <TextView
+                        android:id="@+id/tv_cash"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@color/colorAccent"
@@ -223,6 +225,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/tv_creditcard"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/border_pay_button"
@@ -235,6 +238,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/tv_debitcard"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="@drawable/border_pay_button"

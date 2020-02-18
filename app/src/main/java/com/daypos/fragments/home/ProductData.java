@@ -14,6 +14,8 @@ public class ProductData implements Serializable {
     private String item_color;
     private String item_shape;
     private String is_attribute;
+    private String category_id;
+    private String sold_option;
 
 
     public String getId() {
@@ -99,6 +101,22 @@ public class ProductData implements Serializable {
     public ProductData setIs_attribute(String is_attribute) {
         this.is_attribute = is_attribute;
         return this;
+    }
+
+    public String getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
+    }
+
+    public String getSold_option() {
+        return sold_option;
+    }
+
+    public void setSold_option(String sold_option) {
+        this.sold_option = sold_option;
     }
 }
 

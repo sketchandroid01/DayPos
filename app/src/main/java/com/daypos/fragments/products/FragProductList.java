@@ -204,11 +204,19 @@ public class FragProductList extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(ApiConstant.IMAGE_PATH
-                                                + object.optString("item_image"));
+
+                                        if (object.optString("item_image").isEmpty()){
+                                            productData.setImage("");
+                                        }else {
+                                            productData.setImage(ApiConstant.IMAGE_PATH
+                                                    + object.optString("item_image"));
+                                        }
+
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setCategory_id(object.optString("category_id"));
+                                        productData.setSold_option(object.optString("sold_option"));
 
 
                                         productDataArrayList.add(productData);

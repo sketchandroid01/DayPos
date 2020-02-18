@@ -3,6 +3,10 @@ package com.daypos.checkout;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,8 +19,15 @@ import butterknife.ButterKnife;
 
 public class Checkout extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tv_pay_amount) TextView tv_pay_amount;
+    @BindView(R.id.tv_cash) TextView tv_cash;
+    @BindView(R.id.tv_creditcard) TextView tv_creditcard;
+    @BindView(R.id.tv_debitcard) TextView tv_debitcard;
+    @BindView(R.id.autocomplete_search) AutoCompleteTextView autocomplete_search;
+    @BindView(R.id.edt_coupon_code) EditText edt_coupon_code;
+    @BindView(R.id.edt_notes) EditText edt_notes;
+    @BindView(R.id.iv_apply_coupon) ImageView iv_apply_coupon;
 
 
 
@@ -37,6 +48,13 @@ public class Checkout extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+
+            tv_pay_amount.setText(bundle.getString("total_price"));
+
+
+        }
 
 
     }

@@ -129,18 +129,6 @@ public class EditProduct extends AppCompatActivity implements
         ll_gallery.setOnClickListener(this);
         ll_camera.setOnClickListener(this);
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            productData = (ProductData) bundle.getSerializable("datas");
-
-            edt_barcode.setText(productData.getBar_code());
-            edt_product_name.setText(productData.getName());
-            edt_selling_price.setText(productData.getPrice());
-            edt_sku.setText(productData.getSku());
-
-        }
-
-        selected_color_code = "#E2E2E2";
         ArrayList<String> colorList = new ArrayList<>();
         colorList.add("#E2E2E2");
         colorList.add("#F44336");
@@ -150,6 +138,53 @@ public class EditProduct extends AppCompatActivity implements
         colorList.add("#39b939");
         colorList.add("#448AFF");
         colorList.add("#9C27B0");
+        selected_color_code = "#E2E2E2";
+
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            productData = (ProductData) bundle.getSerializable("datas");
+
+            edt_barcode.setText(productData.getBar_code());
+            edt_product_name.setText(productData.getName());
+            edt_selling_price.setText(productData.getPrice());
+            edt_sku.setText(productData.getSku());
+
+
+            if (productData.getItem_color() == null
+                    || productData.getItem_color().equals(null)
+                    || productData.getItem_color().equals("null")
+                    || productData.getItem_color().isEmpty()
+            ){
+
+                type_of_color_file = "2";
+                recycler_colors.setVisibility(View.GONE);
+                linear_select_image.setVisibility(View.VISIBLE);
+                radio_color.setChecked(false);
+                radio_image.setChecked(true);
+
+                Glide.with(this)
+                        .load(productData.getImage())
+                        .into(iv_image);
+
+            }else {
+                type_of_color_file = "1";
+                recycler_colors.setVisibility(View.VISIBLE);
+                linear_select_image.setVisibility(View.GONE);
+
+                if (productData.getItem_color().isEmpty()){
+                    selected_color_code = "#E2E2E2";
+                }else {
+                    selected_color_code = productData.getItem_color();
+                }
+                radio_color.setChecked(true);
+                radio_image.setChecked(false);
+            }
+
+
+
+        }
+
 
         recycler_colors.setLayoutManager(new GridLayoutManager(this, 4));
 
@@ -210,6 +245,15 @@ public class EditProduct extends AppCompatActivity implements
             }
         });
 
+        if (productData.getSold_option().equals("1")){
+            spinner_unit.setSelection(0);
+        }else {
+            spinner_unit.setSelection(1);
+        }
+
+
+
+
 
         categoryDataArrayList = new ArrayList<>();
         getCategoryList();
@@ -266,6 +310,7 @@ public class EditProduct extends AppCompatActivity implements
                         permissionsList.toArray(new String[permissionsList.size()]),
                         REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
                 return;
+
             } else {
 
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK,
@@ -307,7 +352,7 @@ public class EditProduct extends AppCompatActivity implements
 
                         CategoryData categoryData = new CategoryData();
 
-                        categoryData.setId("");
+                        categoryData.setId("0");
                         categoryData.setName("Select Category");
                         categoryData.setColor("");
                         categoryData.setItem_no("");
@@ -366,6 +411,15 @@ public class EditProduct extends AppCompatActivity implements
 
             }
         });
+
+
+        for (int i = 0; i < categoryDataArrayList.size(); i++){
+            if (categoryDataArrayList.get(i).getId()
+                    .equals(productData.getCategory_id())){
+                spinner_category.setSelection(i);
+            }
+
+        }
     }
 
 
@@ -382,6 +436,7 @@ public class EditProduct extends AppCompatActivity implements
         RequestParams params = new RequestParams();
 
 
+        params.put("item_id", productData.getId());
         params.put("user_id", globalClass.getUserId());
         params.put("name", edt_product_name.getText().toString());
         params.put("category_id", category_id);

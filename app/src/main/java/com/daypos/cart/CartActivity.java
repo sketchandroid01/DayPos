@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -45,6 +46,7 @@ public class CartActivity extends AppCompatActivity implements
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.btn_checkout) Button btn_checkout;
+    @BindView(R.id.btn_more_shop) Button btn_more_shop;
     @BindView(R.id.tv_total_price)
     TextView tv_total_price;
 
@@ -74,6 +76,7 @@ public class CartActivity extends AppCompatActivity implements
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         btn_checkout.setOnClickListener(this);
+        btn_more_shop.setOnClickListener(this);
 
         getCartItems();
 
@@ -112,10 +115,16 @@ public class CartActivity extends AppCompatActivity implements
             case R.id.btn_checkout:
 
                 Intent intent_checkout = new Intent(CartActivity.this, Checkout.class);
+                intent_checkout.putExtra("total_price", tv_total_price.getText().toString());
                 startActivity(intent_checkout);
 
                 break;
 
+            case R.id.btn_more_shop:
+
+                finish();
+
+                break;
 
         }
 
@@ -177,6 +186,8 @@ public class CartActivity extends AppCompatActivity implements
                             double total_price = price_ * qty;
                             total_cart_value = total_cart_value + total_price;
                         }
+
+                        Collections.reverse(cartDataArrayList);
 
                         globalClass.setCart_counter(""+cartDataArrayList.size());
 
@@ -352,6 +363,8 @@ public class CartActivity extends AppCompatActivity implements
 
                         }
 
+                        Collections.reverse(cartDataArrayList);
+
                         globalClass.setCart_counter(""+cartDataArrayList.size());
 
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
@@ -420,7 +433,11 @@ public class CartActivity extends AppCompatActivity implements
                             total_cart_value = total_cart_value + total_price;
 
                         }
+
+                        Collections.reverse(cartDataArrayList);
+
                         globalClass.setCart_counter(""+cartDataArrayList.size());
+
                         getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
 
                         setCartData();

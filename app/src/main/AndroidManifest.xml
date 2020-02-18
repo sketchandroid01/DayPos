@@ -186,6 +186,16 @@
                 android:value="splitActionBarWhenNarrow" />
         </activity>
 
+        <activity android:name=".fragments.products.EditProduct"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
 
 
 
