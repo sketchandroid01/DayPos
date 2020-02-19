@@ -16,6 +16,7 @@ public class ProductData implements Serializable {
     private String is_attribute;
     private String category_id;
     private String sold_option;
+    private String is_fav;
 
 
     public String getId() {
@@ -117,6 +118,14 @@ public class ProductData implements Serializable {
 
     public void setSold_option(String sold_option) {
         this.sold_option = sold_option;
+    }
+
+    public String getIs_fav() {
+        return is_fav;
+    }
+
+    public void setIs_fav(String is_fav) {
+        this.is_fav = is_fav;
     }
 }
 

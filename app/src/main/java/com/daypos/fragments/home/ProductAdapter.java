@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,7 +44,8 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     .inflate(R.layout.product_item, parent, false);
             return new myViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loading_product, parent, false);
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_loading_product, parent, false);
             return new LoadingViewHolder(view);
         }
 
@@ -76,6 +78,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         CircleImageView iv_image, iv_image_clone;
         TextView tv_name, tv_sku, tv_price;
         RelativeLayout rl_color, rl_color_clone;
+        ImageView iv_fav;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -86,6 +89,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             rl_color = itemView.findViewById(R.id.rl_color);
             rl_color_clone = itemView.findViewById(R.id.rl_color_clone);
             iv_image_clone = itemView.findViewById(R.id.iv_image_clone);
+            iv_fav = itemView.findViewById(R.id.iv_fav);
         }
     }
 
@@ -173,6 +177,16 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
 
+        if (productData.getIs_fav().equals("1")){
+            holder.iv_fav.setImageResource(R.mipmap.icon_heart_red);
+        }else {
+            holder.iv_fav.setImageResource(R.mipmap.icon_heart_grey);
+        }
+
+        holder.iv_fav.setOnClickListener(v -> {
+            mClickListenerFav.onItemClickFav(productData);
+        });
+
     }
 
     ////
@@ -191,6 +205,16 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         //ProgressBar would be displayed
     }
 
+
+
+    private ItemClickListenerFav mClickListenerFav;
+    public void setClickListenerFav(ItemClickListenerFav itemClickListenerfav) {
+        this.mClickListenerFav = itemClickListenerfav;
+    }
+
+    public interface ItemClickListenerFav {
+        void onItemClickFav(ProductData productData);
+    }
 
 }
 

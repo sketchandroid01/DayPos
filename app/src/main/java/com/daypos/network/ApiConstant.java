@@ -29,6 +29,9 @@ public class ApiConstant {
     public static final String cart_item_quantity_update     = BASE_URL + "cart_item_quantity_update";
     public static final String customer_list_by_userID       = BASE_URL + "customer_list_by_userID";
     public static final String customer_by_name_mobile       = BASE_URL + "customer_by_name_mobile";
+    public static final String edit_item                     = BASE_URL + "edit_item";
+    public static final String add_to_favourite              = BASE_URL + "add_to_favourite";
+    public static final String delete_favourite              = BASE_URL + "delete_favourite";
 
 
 

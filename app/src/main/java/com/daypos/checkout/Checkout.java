@@ -1,6 +1,9 @@
 package com.daypos.checkout;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
@@ -12,7 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.daypos.R;
+import com.daypos.fragments.customers.CustomerData;
 import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.fragments.customers.SearchCustomerAdapter;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+import com.daypos.utils.GlobalClass;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +44,8 @@ public class Checkout extends AppCompatActivity {
     @BindView(R.id.iv_apply_coupon) ImageView iv_apply_coupon;
 
 
+    GlobalClass globalClass;
+    private ArrayList<CustomerData> customerDataArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +64,9 @@ public class Checkout extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
+        globalClass = (GlobalClass) getApplicationContext();
+        customerDataArrayList = new ArrayList<>();
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
 
@@ -55,6 +74,29 @@ public class Checkout extends AppCompatActivity {
 
 
         }
+
+
+        autocomplete_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.toString().length() >= 1 ){
+
+                    searchCustomerList(s.toString());
+                }
+
+            }
+        });
 
 
     }
@@ -91,6 +133,75 @@ public class Checkout extends AppCompatActivity {
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(this);
         dialogAddCustomer.show();
 
+    }
+
+
+
+    private void searchCustomerList(String keyword) {
+
+        String url = ApiConstant.customer_by_name_mobile;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("name", keyword);
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        customerDataArrayList = new ArrayList<>();
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String id = object.optString("id");
+                            String name = object.optString("name");
+                            String image = object.optString("image");
+                            String customerId = object.optString("customerId");
+                            String email = object.optString("email");
+                            String phone = object.optString("phone");
+                            String purchase_amount = object.optString("purchase_amount");
+                            String points_balance = object.optString("points_balance");
+                            String note = object.optString("note");
+                            String address = object.optString("address");
+
+                            CustomerData customerData = new CustomerData();
+                            customerData.setId(id);
+                            customerData.setName(name);
+                            customerData.setEmail(email);
+                            customerData.setPhone(phone);
+                            customerData.setCustomer_id(customerId);
+
+                            customerDataArrayList.add(customerData);
+                        }
+
+
+                        autocomplete_search.setThreshold(1);
+                        autocomplete_search.setTextColor(Color.BLACK);
+
+                        SearchCustomerAdapter searchCustomerAdapter =
+                                new SearchCustomerAdapter(Checkout.this, customerDataArrayList);
+                        autocomplete_search.setAdapter(searchCustomerAdapter);
+                        searchCustomerAdapter.notifyDataSetChanged();
+                        autocomplete_search.showDropDown();
+                    }
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
     }
 
 

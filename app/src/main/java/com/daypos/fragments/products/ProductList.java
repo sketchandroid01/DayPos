@@ -35,7 +35,8 @@ import butterknife.ButterKnife;
 
 public class ProductList extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener,
-        ProductAdapter.ItemClickListener{
+        ProductAdapter.ItemClickListener,
+        ProductAdapter.ItemClickListenerFav{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
@@ -214,6 +215,7 @@ public class ProductList extends AppCompatActivity implements
                 new ProductAdapter(ProductList.this, productDataArrayList);
         recycler_view.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
+        productAdapter.setClickListenerFav(this);
 
     }
 
@@ -222,6 +224,10 @@ public class ProductList extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onItemClickFav(ProductData productData) {
+
+    }
 
     private void searchProduct(String search_key) {
 

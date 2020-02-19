@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_toEndOf="@id/rl_image"
-            android:layout_toStartOf="@+id/tv_price"
+            android:layout_toStartOf="@+id/rl_end"
             android:layout_centerVertical="true"
             android:paddingStart="10dp"
             android:paddingEnd="5dp"
@@ -86,16 +86,34 @@
         </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/tv_price"
+        <LinearLayout
+            android:id="@+id/rl_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:textSize="16sp"
-            android:text="$100"
-            />
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                android:text="$100"
+                />
+
+            <ImageView
+                android:id="@+id/iv_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_heart_grey"
+                android:layout_marginStart="10dp"
+                />
+
+        </LinearLayout>
+
+
 
 
     </RelativeLayout>

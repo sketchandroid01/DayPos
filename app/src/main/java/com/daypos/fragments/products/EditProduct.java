@@ -293,7 +293,7 @@ public class EditProduct extends AppCompatActivity implements
             }
 
 
-            addProduct();
+            editProduct();
 
         } else if (v == ll_gallery){
 
@@ -423,7 +423,7 @@ public class EditProduct extends AppCompatActivity implements
     }
 
 
-    public void addProduct(){
+    public void editProduct(){
 
         ProgressDialog progressDialog = new ProgressDialog(EditProduct.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -431,7 +431,7 @@ public class EditProduct extends AppCompatActivity implements
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-        String url = ApiConstant.add_item;
+        String url = ApiConstant.edit_item;
         AsyncHttpClient cl = new AsyncHttpClient();
         RequestParams params = new RequestParams();
 
@@ -503,8 +503,8 @@ public class EditProduct extends AppCompatActivity implements
             public void onFailure(int statusCode, Header[] headers, String responseString,
                                   Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                Toasty.error(getApplicationContext(),
-                        "Server error",
+                Log.d(Commons.TAG , "onFailure "+responseString);
+                Toasty.error(getApplicationContext(), "Server error",
                         Toast.LENGTH_LONG, true).show();
                 progressDialog.dismiss();
             }

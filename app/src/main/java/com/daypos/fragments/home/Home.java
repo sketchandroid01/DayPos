@@ -49,7 +49,8 @@ import es.dmoral.toasty.Toasty;
 
 public class Home extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        ProductAdapter.ItemClickListener{
+        ProductAdapter.ItemClickListener,
+        ProductAdapter.ItemClickListenerFav{
 
     private Unbinder unbinder;
 
@@ -272,7 +273,6 @@ public class Home extends Fragment implements
     }
 
 
-
     private void getProductCategoryWise(String category) {
 
         productDataArrayList = new ArrayList<>();
@@ -341,9 +341,9 @@ public class Home extends Fragment implements
         productAdapter = new ProductAdapter(getActivity(), productDataArrayList);
         recyclerview.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
+        productAdapter.setClickListenerFav(this);
 
     }
-
 
 
     boolean isLoading = false;
@@ -479,7 +479,6 @@ public class Home extends Fragment implements
 
     }
 
-
     private void makeFlyAnimation(View view, String id) {
 
         new CircleAnimationUtil().attachActivity(getActivity())
@@ -548,7 +547,6 @@ public class Home extends Fragment implements
         });
     }
 
-
     private void getCartItems() {
 
         String url = ApiConstant.cart_item_list;
@@ -570,6 +568,52 @@ public class Home extends Fragment implements
                         cart_counter.setText(""+data.length());
 
                         globalClass.setCart_counter(""+data.length());
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+    @Override
+    public void onItemClickFav(ProductData productData) {
+
+        addOrRemoveFav(productData);
+    }
+
+    private void addOrRemoveFav(ProductData productData) {
+
+        String url;
+        if (productData.getIs_fav().equals("1")){
+            url = ApiConstant.delete_favourite;
+        }else {
+            url = ApiConstant.add_to_favourite;
+        }
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", productData.getId());
+
+
+        new PostDataParser(getActivity(), url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        Toasty.success(getActivity(),
+                                message, Toast.LENGTH_SHORT, true).show();
+
+                        getProductCategoryWise(category_id);
                     }
 
                 } catch (Exception e) {

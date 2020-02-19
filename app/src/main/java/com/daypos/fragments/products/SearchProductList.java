@@ -48,7 +48,8 @@ import es.dmoral.toasty.Toasty;
 
 public class SearchProductList extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener,
-        ProductAdapter.ItemClickListener{
+        ProductAdapter.ItemClickListener,
+        ProductAdapter.ItemClickListenerFav{
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recyclerview) RecyclerView recycler_view;
@@ -261,6 +262,7 @@ public class SearchProductList extends AppCompatActivity implements
                 new ProductAdapter(SearchProductList.this, productDataArrayList);
         recycler_view.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
+        productAdapter.setClickListenerFav(this);
 
     }
 
@@ -404,6 +406,51 @@ public class SearchProductList extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onItemClickFav(ProductData productData) {
+        addOrRemoveFav(productData);
+    }
+
+    private void addOrRemoveFav(ProductData productData) {
+
+        String url;
+        if (productData.getIs_fav().equals("1")){
+            url = ApiConstant.delete_favourite;
+        }else {
+            url = ApiConstant.add_to_favourite;
+        }
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", productData.getId());
+
+
+        new PostDataParser(this, url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        Toasty.success(getApplicationContext(),
+                                message, Toast.LENGTH_SHORT, true).show();
+
+                        getProductCategoryWise("all");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
     ////////// goto barcode scanner ...
     private static final int ZXING_CAMERA_PERMISSION = 1;
     private Class<?> mClss;
@@ -435,5 +482,9 @@ public class SearchProductList extends AppCompatActivity implements
                 return;
         }
     }
+
+
+
+
 
 }
