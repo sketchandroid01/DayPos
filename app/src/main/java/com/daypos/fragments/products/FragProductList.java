@@ -41,7 +41,8 @@ import es.dmoral.toasty.Toasty;
 
 public class FragProductList extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        ProductAdapter.ItemClickListener{
+        ProductAdapter.ItemClickListener,
+        ProductAdapter.ItemClickListenerFav{
 
     private Unbinder unbinder;
 
@@ -217,6 +218,7 @@ public class FragProductList extends Fragment implements
                                         productData.setIs_attribute(object.optString("is_attribute"));
                                         productData.setCategory_id(object.optString("category_id"));
                                         productData.setSold_option(object.optString("sold_option"));
+                                        productData.setIs_fav(object.optString("fav"));
 
 
                                         productDataArrayList.add(productData);
@@ -245,6 +247,7 @@ public class FragProductList extends Fragment implements
                 new ProductAdapter(getActivity(), productDataArrayList);
         recycler_view.setAdapter(productAdapter);
         productAdapter.setClickListener(this);
+        productAdapter.setClickListenerFav(this);
 
     }
 
@@ -256,8 +259,6 @@ public class FragProductList extends Fragment implements
         startActivity(intent);
 
     }
-
-
 
     private void searchProduct(String search_key) {
 
@@ -318,4 +319,48 @@ public class FragProductList extends Fragment implements
                 });
     }
 
+
+    @Override
+    public void onItemClickFav(ProductData productData) {
+        addOrRemoveFav(productData);
+    }
+
+    private void addOrRemoveFav(ProductData productData) {
+
+        String url;
+        if (productData.getIs_fav().equals("1")){
+            url = ApiConstant.delete_favourite;
+        }else {
+            url = ApiConstant.add_to_favourite;
+        }
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", productData.getId());
+
+
+        new PostDataParser(getActivity(), url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        Toasty.success(getActivity(),
+                                message, Toast.LENGTH_SHORT, true).show();
+
+                        getProductCategoryWise("all");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 }

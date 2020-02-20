@@ -234,7 +234,7 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
-
+                                        productData.setIs_fav(object.optString("fav"));
 
                                         productDataArrayList.add(productData);
                                     }
@@ -314,7 +314,7 @@ public class SearchProductList extends AppCompatActivity implements
         params.put("item_id", product_id);
         params.put("type", "1");
 
-        new PostDataParser(this, url, params, false, response -> {
+        new PostDataParser(this, url, params, true, response -> {
 
             if (response != null) {
 
@@ -385,6 +385,7 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_fav(object.optString("fav"));
 
 
                                         productDataArrayList.add(productData);
@@ -426,7 +427,7 @@ public class SearchProductList extends AppCompatActivity implements
         params.put("item_id", productData.getId());
 
 
-        new PostDataParser(this, url, params, false, response -> {
+        new PostDataParser(this, url, params, true, response -> {
 
             if (response != null) {
 

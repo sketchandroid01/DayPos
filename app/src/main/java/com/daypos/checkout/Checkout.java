@@ -6,9 +6,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.fragments.customers.SearchCustomerAdapter;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 
 import org.json.JSONArray;
@@ -42,10 +45,15 @@ public class Checkout extends AppCompatActivity {
     @BindView(R.id.edt_coupon_code) EditText edt_coupon_code;
     @BindView(R.id.edt_notes) EditText edt_notes;
     @BindView(R.id.iv_apply_coupon) ImageView iv_apply_coupon;
+    @BindView(R.id.tv_customer_info) TextView tv_customer_info;
+    @BindView(R.id.iv_remove_customer) ImageView iv_remove_customer;
+    @BindView(R.id.rel_customer)
+    RelativeLayout rel_customer;
 
 
     GlobalClass globalClass;
     private ArrayList<CustomerData> customerDataArrayList;
+    private CustomerData selected_customer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +77,11 @@ public class Checkout extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-
             tv_pay_amount.setText(bundle.getString("total_price"));
 
-
         }
+
+        rel_customer.setVisibility(View.GONE);
 
 
         autocomplete_search.addTextChangedListener(new TextWatcher() {
@@ -90,7 +98,7 @@ public class Checkout extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (s.toString().length() >= 1 ){
+                if (s.toString().length() >= 1 && s.toString().length() < 6){
 
                     searchCustomerList(s.toString());
                 }
@@ -98,6 +106,38 @@ public class Checkout extends AppCompatActivity {
             }
         });
 
+
+        autocomplete_search.setOnItemClickListener((parent, view, position, id) -> {
+
+            try {
+
+                CustomerData customerData = (CustomerData)parent.getItemAtPosition(position);
+
+                String sss = customerData.getName()+" "
+                        + "\n" + customerData.getPhone()
+                        + "\n" + customerData.getEmail();
+
+                tv_customer_info.setText(sss);
+
+                rel_customer.setVisibility(View.VISIBLE);
+
+                autocomplete_search.setText("");
+                autocomplete_search.setSelection(autocomplete_search.length());
+
+                selected_customer = customerData;
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
+
+        iv_remove_customer.setOnClickListener(v -> {
+            tv_customer_info.setText("");
+            selected_customer = null;
+            rel_customer.setVisibility(View.GONE);
+
+        });
 
     }
 
@@ -191,7 +231,11 @@ public class Checkout extends AppCompatActivity {
                         autocomplete_search.setAdapter(searchCustomerAdapter);
                         searchCustomerAdapter.notifyDataSetChanged();
                         autocomplete_search.showDropDown();
+
                     }
+
+
+                    Commons.hideSoftKeyboard(Checkout.this);
 
 
 

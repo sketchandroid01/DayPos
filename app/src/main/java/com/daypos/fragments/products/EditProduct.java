@@ -436,7 +436,7 @@ public class EditProduct extends AppCompatActivity implements
         RequestParams params = new RequestParams();
 
 
-        params.put("item_id", productData.getId());
+        params.put("id", productData.getId());
         params.put("user_id", globalClass.getUserId());
         params.put("name", edt_product_name.getText().toString());
         params.put("category_id", category_id);
