@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class Checkout extends AppCompatActivity {
 
@@ -46,14 +48,17 @@ public class Checkout extends AppCompatActivity {
     @BindView(R.id.edt_notes) EditText edt_notes;
     @BindView(R.id.iv_apply_coupon) ImageView iv_apply_coupon;
     @BindView(R.id.tv_customer_info) TextView tv_customer_info;
+    @BindView(R.id.tv_coupon_amt) TextView tv_coupon_amt;
+    @BindView(R.id.tv_pay_amount2) TextView tv_pay_amount2;
     @BindView(R.id.iv_remove_customer) ImageView iv_remove_customer;
-    @BindView(R.id.rel_customer)
-    RelativeLayout rel_customer;
+    @BindView(R.id.rel_customer) RelativeLayout rel_customer;
+    @BindView(R.id.rel_coupon_amt) RelativeLayout rel_coupon_amt;
+    @BindView(R.id.rel_coupon_amt2) RelativeLayout rel_coupon_amt2;
 
 
     GlobalClass globalClass;
     private ArrayList<CustomerData> customerDataArrayList;
-    private CustomerData selected_customer;
+    private CustomerData selected_customer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,8 @@ public class Checkout extends AppCompatActivity {
         }
 
         rel_customer.setVisibility(View.GONE);
+        rel_coupon_amt.setVisibility(View.GONE);
+        rel_coupon_amt2.setVisibility(View.GONE);
 
 
         autocomplete_search.addTextChangedListener(new TextWatcher() {
@@ -139,13 +146,32 @@ public class Checkout extends AppCompatActivity {
 
         });
 
+        iv_apply_coupon.setOnClickListener(v -> {
+
+            if (selected_customer == null){
+                Toasty.info(getApplicationContext(),
+                        "Select customer",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            if (edt_coupon_code.getText().toString().trim().length() == 0){
+                Toasty.info(getApplicationContext(),
+                        "Enter coupon code",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+            applyCoupon(edt_coupon_code.getText().toString());
+
+        });
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_customer, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -169,13 +195,9 @@ public class Checkout extends AppCompatActivity {
 
 
     private void dialogAddCustomer(){
-
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(this);
         dialogAddCustomer.show();
-
     }
-
-
 
     private void searchCustomerList(String keyword) {
 
@@ -248,6 +270,47 @@ public class Checkout extends AppCompatActivity {
         });
     }
 
+    private void applyCoupon(String code) {
 
+        String url = ApiConstant.check_coupon;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", selected_customer.getId());
+        params.put("cart_amount", tv_pay_amount.getText().toString());
+        params.put("coupon", code);
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        String discount_amount = response.optString("discount_amount");
+                        String cart_amount_now = response.optString("cart_amount_now");
+
+
+                        tv_coupon_amt.setText(discount_amount);
+                        tv_pay_amount2.setText(cart_amount_now);
+
+                        rel_coupon_amt.setVisibility(View.VISIBLE);
+                        rel_coupon_amt2.setVisibility(View.VISIBLE);
+
+                    }else {
+
+                        Toasty.error(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 
 }

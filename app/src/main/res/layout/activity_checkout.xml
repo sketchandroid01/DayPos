@@ -127,9 +127,6 @@
 
                 </RelativeLayout>
 
-
-
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,6 +211,60 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rel_coupon_amt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="5dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:text="Discount Amount"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_coupon_amt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rel_coupon_amt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="Pay Amount"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pay_amount2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
 
                 <EditText
                     android:id="@+id/edt_notes"
@@ -225,6 +276,7 @@
                     android:gravity="start"
                     android:padding="8dp"
                     android:textSize="15sp"
+                    android:maxLength="150"
                     android:hint="Add note"
                     />
 
@@ -274,24 +326,15 @@
 
                 </LinearLayout>
 
-
-
-
-
-
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"/>
 
 
             </LinearLayout>
 
-
-
         </LinearLayout>
 
-
-
     </androidx.core.widget.NestedScrollView>
-
-
-
 
 </LinearLayout>

@@ -32,6 +32,7 @@ public class ApiConstant {
     public static final String edit_item                     = BASE_URL + "edit_item";
     public static final String add_to_favourite              = BASE_URL + "add_to_favourite";
     public static final String delete_favourite              = BASE_URL + "delete_favourite";
+    public static final String check_coupon                  = BASE_URL + "check_coupon";
 
 
 
