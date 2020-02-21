@@ -1,19 +1,26 @@
 package com.daypos.checkout;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -25,10 +32,12 @@ import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
+import com.daypos.utils.PriceValueFilter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -56,9 +65,11 @@ public class Checkout extends AppCompatActivity {
     @BindView(R.id.rel_coupon_amt2) RelativeLayout rel_coupon_amt2;
 
 
-    GlobalClass globalClass;
+    private GlobalClass globalClass;
     private ArrayList<CustomerData> customerDataArrayList;
     private CustomerData selected_customer = null;
+
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +322,99 @@ public class Checkout extends AppCompatActivity {
             }
 
         });
+    }
+
+
+    private void dialogRefundAmount(){
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Checkout.this);
+        View dialogView = inflater.inflate(R.layout.cash_refund_dialog, null);
+        dialogBuilder.setView(dialogView);
+        AlertDialog dialog_refund = dialogBuilder.create();
+        dialog_refund.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog_refund.show();
+
+        EditText edt_received_cash = dialogView.findViewById(R.id.tv_received_cash_value);
+        TextView tv_order_total = dialogView.findViewById(R.id.tv_order_total);
+        TextView tv_refund_value = dialogView.findViewById(R.id.tv_refund_value);
+        TextView tv_due_refund = dialogView.findViewById(R.id.tv_due_refund);
+        Button btn_done = dialogView.findViewById(R.id.btn_done);
+        RelativeLayout rl_refund = dialogView.findViewById(R.id.rl_refund);
+        rl_refund.setVisibility(View.GONE);
+
+        tv_order_total.setText(tv_pay_amount2.getText().toString());
+
+
+        edt_received_cash.setInputType(InputType.TYPE_CLASS_NUMBER
+                | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                | InputType.TYPE_NUMBER_FLAG_SIGNED);
+
+        edt_received_cash.setFilters(new InputFilter[]{new PriceValueFilter(2)});
+        edt_received_cash.setSelection(edt_received_cash.getText().length());
+
+        edt_received_cash.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                try {
+
+                    if (s.toString().length() > 0){
+
+                        rl_refund.setVisibility(View.VISIBLE);
+
+                        float value_received = Float.parseFloat(s.toString());
+                        float differ = value_received - Float.parseFloat(tv_order_total.getText().toString());
+
+
+                        if (differ == 0){
+
+                            tv_refund_value.setText(df.format(differ));
+                            tv_due_refund.setText("Refund Amount");
+                            tv_refund_value.setTextColor(getResources().getColor(R.color.green_light));
+
+
+                        }else if (differ > 0){
+
+                            tv_refund_value.setText(df.format(differ));
+                            tv_due_refund.setText("Refund Amount");
+                            tv_refund_value.setTextColor(getResources().getColor(R.color.green_light));
+
+
+                        }else if (differ < 0){
+
+                            tv_refund_value.setText(df.format(differ));
+                            tv_due_refund.setText("Due Amount");
+                            tv_refund_value.setTextColor(getResources().getColor(R.color.color3));
+
+                        }
+
+
+                    }else {
+
+                        rl_refund.setVisibility(View.GONE);
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    rl_refund.setVisibility(View.GONE);
+                }
+
+
+            }
+        });
+
+
     }
 
 }
