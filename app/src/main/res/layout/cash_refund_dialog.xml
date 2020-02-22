@@ -35,7 +35,7 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_order_total"
@@ -43,7 +43,6 @@
                     android:layout_height="wrap_content"
                     android:text="0.00"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
@@ -66,14 +65,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
                     android:layout_centerVertical="true"
                     android:textStyle="bold"
                     android:text="Amount Received" />
 
                 <EditText
                     android:id="@+id/tv_received_cash_value"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:gravity="end"

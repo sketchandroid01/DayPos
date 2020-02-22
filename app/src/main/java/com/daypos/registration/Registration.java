@@ -1,6 +1,7 @@
 package com.daypos.registration;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daypos.R;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,9 +29,9 @@ public class Registration extends AppCompatActivity implements
         View.OnClickListener {
 
 
-    @BindView(R.id.edt_username) EditText edt_username;
+    @BindView(R.id.edt_first_name) EditText edt_first_name;
+    @BindView(R.id.edt_last_name) EditText edt_last_name;
     @BindView(R.id.edt_emailid) EditText edt_emailid;
-    @BindView(R.id.edt_mobile) EditText edt_mobile;
     @BindView(R.id.edt_password) EditText edt_password;
     @BindView(R.id.edt_confirm_password) EditText edt_confirm_password;
     @BindView(R.id.btn_create) Button btn_create;
@@ -48,16 +55,29 @@ public class Registration extends AppCompatActivity implements
     private void OnClickViews(){
 
         tv_goto_login.setOnClickListener(this);
+        btn_create.setOnClickListener(this);
 
     }
 
 
-    private boolean validateName() {
-        if (edt_username.getText().toString().trim().isEmpty()) {
+    private boolean validateFName() {
+        if (edt_first_name.getText().toString().trim().isEmpty()) {
             Toasty.info(getApplicationContext(),
-                    "Enter your name",
+                    "Enter your first name",
                     Toast.LENGTH_SHORT, true).show();
-            requestFocus(edt_username);
+            requestFocus(edt_first_name);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateLName() {
+        if (edt_last_name.getText().toString().trim().isEmpty()) {
+            Toasty.info(getApplicationContext(),
+                    "Enter your last name",
+                    Toast.LENGTH_SHORT, true).show();
+            requestFocus(edt_last_name);
             return false;
         }
 
@@ -86,7 +106,7 @@ public class Registration extends AppCompatActivity implements
         return true;
     }
 
-    private boolean validateMobile() {
+    /*private boolean validateMobile() {
         String mobile = edt_mobile.getText().toString().trim();
 
         if (mobile.isEmpty()) {
@@ -97,15 +117,15 @@ public class Registration extends AppCompatActivity implements
             return false;
         }
 
-       /* if (mobile.length() < 10) {
+       *//* if (mobile.length() < 10) {
             input_layout_mobile.setError(getString(R.string.err_msg_10digit_mobile));
             requestFocus(input_mobile);
             return false;
-        }*/
+        }*//*
 
 
         return true;
-    }
+    }*/
 
     private boolean validatePassword() {
 
@@ -178,6 +198,32 @@ public class Registration extends AppCompatActivity implements
 
     private void checkValidate(){
 
+        if (!validateFName()){
+            return;
+        }
+        if (!validateLName()){
+            return;
+        }
+        if (!validateEmail()){
+            return;
+        }
+
+        if (!validatePassword()){
+            return;
+        }
+        if (!validateConfirmPassword()){
+            return;
+        }
+
+
+        if (!checkbox.isChecked()){
+            Toasty.info(getApplicationContext(),
+                    "Please agree privacy policy",
+                    Toast.LENGTH_SHORT, true).show();
+            return;
+        }
+
+        userSignUp();
 
     }
 
@@ -192,8 +238,71 @@ public class Registration extends AppCompatActivity implements
 
                 break;
 
+            case R.id.btn_create:
+
+                checkValidate();
+
+                break;
 
         }
 
+    }
+
+
+    public void userSignUp() {
+
+
+        String device_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        String url = ApiConstant.SignUp;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("fname", edt_first_name.getText().toString());
+        params.put("lname", edt_last_name.getText().toString());
+        params.put("email", edt_emailid.getText().toString());
+        params.put("password", edt_password.getText().toString());
+        params.put("rpassword", edt_confirm_password.getText().toString());
+
+        if (checkbox.isChecked()){
+            params.put("agree", "true");
+        }else {
+            params.put("agree", "");
+        }
+
+        params.put("device_type", "android");
+        params.put("fcm_token", "funky");
+        params.put("device_id", device_id);
+
+
+        new PostDataParser(Registration.this, url, params, true,
+                new PostDataParser.OnGetResponseListner() {
+                    @Override
+                    public void onGetResponse(JSONObject response) {
+                        if (response != null) {
+
+                            try {
+                                int status = response.optInt("status");
+                                String message = response.optString("message");
+                                if (status == 1) {
+
+                                    Toasty.success(getApplicationContext(),
+                                            message,
+                                            Toast.LENGTH_LONG, true).show();
+                                    finish();
+
+                                } else {
+
+                                    Toasty.info(getApplicationContext(),
+                                            message,
+                                            Toast.LENGTH_LONG, true).show();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
     }
 }

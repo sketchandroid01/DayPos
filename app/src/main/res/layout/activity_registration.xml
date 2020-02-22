@@ -49,15 +49,28 @@
                 android:layout_marginTop="20dp"
                 >
                 <EditText
-                    android:id="@+id/edt_username"
+                    android:id="@+id/edt_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/border_only"
                     android:padding="10dp"
-                    android:hint="@string/full_name"
-                    android:autofillHints="@string/full_name"
+                    android:hint="@string/f_name"
+                    android:autofillHints="@string/f_name"
                     android:textSize="15sp"
                     android:inputType="textPersonName"
+                    />
+
+                <EditText
+                    android:id="@+id/edt_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_only"
+                    android:padding="10dp"
+                    android:hint="@string/l_name"
+                    android:autofillHints="@string/l_name"
+                    android:textSize="15sp"
+                    android:inputType="textPersonName"
+                    android:layout_marginTop="10dp"
                     />
 
                 <EditText
@@ -70,19 +83,6 @@
                     android:autofillHints="@string/email_id"
                     android:textSize="15sp"
                     android:inputType="textEmailAddress"
-                    android:layout_marginTop="10dp"
-                    />
-
-                <EditText
-                    android:id="@+id/edt_mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/border_only"
-                    android:padding="10dp"
-                    android:hint="@string/mobile_number"
-                    android:autofillHints="@string/mobile_number"
-                    android:textSize="15sp"
-                    android:inputType="phone"
                     android:layout_marginTop="10dp"
                     />
 

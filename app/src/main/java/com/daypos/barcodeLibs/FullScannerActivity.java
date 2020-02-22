@@ -5,6 +5,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.DialogFragment;
@@ -19,13 +21,18 @@ import androidx.fragment.app.FragmentManager;
 
 import com.daypos.R;
 import com.daypos.cart.CartActivity;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
+import com.daypos.utils.GlobalClass;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 
@@ -47,6 +54,8 @@ public class FullScannerActivity extends BaseScannerActivity implements
 
     public static TextView cart_counter;
     private RelativeLayout cart_relativeLayout;
+
+    private GlobalClass globalClass;
 
 
 
@@ -72,6 +81,8 @@ public class FullScannerActivity extends BaseScannerActivity implements
         mScannerView = new ZXingScannerView(this);
         setupFormats();
         contentFrame.addView(mScannerView);
+
+        globalClass = (GlobalClass) getApplicationContext();
     }
 
     @Override
@@ -105,7 +116,7 @@ public class FullScannerActivity extends BaseScannerActivity implements
         cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem_cart);
         cart_counter = cart_relativeLayout.findViewById(R.id.tv_cart_counter);
 
-        cart_counter.setText("0");
+        cart_counter.setText(globalClass.getCart_counter());
         cart_relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,10 +206,12 @@ public class FullScannerActivity extends BaseScannerActivity implements
             e.printStackTrace();
         }
 
+        addToCart(rawResult.getText());
+
        // mScannerView.resumeCameraPreview(this);
 
       //  showMessageDialog("Contents = " + rawResult.getText() + ", Format = " + rawResult.getBarcodeFormat().toString());
-        showMessageDialog("Contents = " + rawResult.getText());
+      //  showMessageDialog("Contents = " + rawResult.getText());
     }
 
 
@@ -268,4 +281,68 @@ public class FullScannerActivity extends BaseScannerActivity implements
         closeMessageDialog();
         closeFormatsDialog();
     }
+
+
+    private void addToCart(String barcode) {
+
+        String url = ApiConstant.add_to_cart;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("item_id", "");
+        params.put("bar_code", barcode);
+        params.put("type", "2");
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        String count = response.optString("count");
+                        cart_counter.setText(count);
+                        globalClass.setCart_counter(count);
+
+                        Toasty.success(getApplicationContext(),
+                                "Added",
+                                Toast.LENGTH_SHORT, true).show();
+
+                    }else {
+
+                        Toasty.error(getApplicationContext(),
+                                message,
+                                Toast.LENGTH_SHORT, true).show();
+                    }
+
+                    holdForCameraResume();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+    private void holdForCameraResume(){
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                resumeCamera();
+            }
+        }, 1500);
+    }
+
+    private void resumeCamera(){
+        mScannerView.resumeCameraPreview(this);
+    }
+
+
 }

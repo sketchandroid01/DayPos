@@ -1,6 +1,7 @@
 package com.daypos.checkout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.daypos.R;
+import com.daypos.container.Container;
 import com.daypos.fragments.customers.CustomerData;
 import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.fragments.customers.SearchCustomerAdapter;
@@ -45,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class Checkout extends AppCompatActivity {
+public class Checkout extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tv_pay_amount) TextView tv_pay_amount;
@@ -68,6 +70,7 @@ public class Checkout extends AppCompatActivity {
     private GlobalClass globalClass;
     private ArrayList<CustomerData> customerDataArrayList;
     private CustomerData selected_customer = null;
+    private String payment_method = "", coupon_code = "";
 
     private static DecimalFormat df = new DecimalFormat("0.00");
 
@@ -88,12 +91,17 @@ public class Checkout extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
 
+        tv_cash.setOnClickListener(this);
+        tv_creditcard.setOnClickListener(this);
+        tv_debitcard.setOnClickListener(this);
+
         globalClass = (GlobalClass) getApplicationContext();
         customerDataArrayList = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             tv_pay_amount.setText(bundle.getString("total_price"));
+            tv_pay_amount2.setText(bundle.getString("total_price"));
 
         }
 
@@ -204,6 +212,61 @@ public class Checkout extends AppCompatActivity {
         return (super.onOptionsItemSelected(menuItem));
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.tv_cash:
+
+                payment_method = "Cash";
+
+                if (selected_customer == null){
+                    Toasty.info(getApplicationContext(),
+                            "Select customer",
+                            Toast.LENGTH_LONG, true).show();
+                    return;
+                }
+
+                dialogRefundAmount();
+
+                break;
+
+            case R.id.tv_creditcard:
+
+                payment_method = "Credit Card";
+
+                if (selected_customer == null){
+                    Toasty.info(getApplicationContext(),
+                            "Select customer",
+                            Toast.LENGTH_LONG, true).show();
+                    return;
+                }
+
+
+
+                break;
+
+            case R.id.tv_debitcard:
+
+                payment_method = "Debit Card";
+
+                if (selected_customer == null){
+                    Toasty.info(getApplicationContext(),
+                            "Select customer",
+                            Toast.LENGTH_LONG, true).show();
+                    return;
+                }
+
+
+
+
+                break;
+
+
+        }
+
+    }
 
     private void dialogAddCustomer(){
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(this);
@@ -286,7 +349,7 @@ public class Checkout extends AppCompatActivity {
         String url = ApiConstant.check_coupon;
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("user_id", selected_customer.getId());
+        params.put("user_id", globalClass.getUserId());
         params.put("cart_amount", tv_pay_amount.getText().toString());
         params.put("coupon", code);
 
@@ -302,6 +365,7 @@ public class Checkout extends AppCompatActivity {
                         String discount_amount = response.optString("discount_amount");
                         String cart_amount_now = response.optString("cart_amount_now");
 
+                        coupon_code = code;
 
                         tv_coupon_amt.setText(discount_amount);
                         tv_pay_amount2.setText(cart_amount_now);
@@ -311,9 +375,17 @@ public class Checkout extends AppCompatActivity {
 
                     }else {
 
+                        tv_coupon_amt.setText("0.00");
+                        tv_pay_amount2.setText("0.00");
+
+                        rel_coupon_amt.setVisibility(View.GONE);
+                        rel_coupon_amt2.setVisibility(View.GONE);
+
                         Toasty.error(getApplicationContext(),
                                 message, Toast.LENGTH_LONG, true).show();
                     }
+
+                    Commons.hideSoftKeyboard(Checkout.this);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -324,7 +396,7 @@ public class Checkout extends AppCompatActivity {
         });
     }
 
-
+    float differ = 0;
     private void dialogRefundAmount(){
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -342,6 +414,7 @@ public class Checkout extends AppCompatActivity {
         Button btn_done = dialogView.findViewById(R.id.btn_done);
         RelativeLayout rl_refund = dialogView.findViewById(R.id.rl_refund);
         rl_refund.setVisibility(View.GONE);
+        btn_done.setVisibility(View.GONE);
 
         tv_order_total.setText(tv_pay_amount2.getText().toString());
 
@@ -372,9 +445,10 @@ public class Checkout extends AppCompatActivity {
                     if (s.toString().length() > 0){
 
                         rl_refund.setVisibility(View.VISIBLE);
+                        btn_done.setVisibility(View.VISIBLE);
 
                         float value_received = Float.parseFloat(s.toString());
-                        float differ = value_received - Float.parseFloat(tv_order_total.getText().toString());
+                        differ = value_received - Float.parseFloat(tv_order_total.getText().toString());
 
 
                         if (differ == 0){
@@ -393,16 +467,18 @@ public class Checkout extends AppCompatActivity {
 
                         }else if (differ < 0){
 
+                            differ = Math.abs(differ);
+
                             tv_refund_value.setText(df.format(differ));
                             tv_due_refund.setText("Due Amount");
                             tv_refund_value.setTextColor(getResources().getColor(R.color.color3));
 
                         }
 
-
                     }else {
 
                         rl_refund.setVisibility(View.GONE);
+                        btn_done.setVisibility(View.GONE);
                     }
 
                 }catch (Exception e){
@@ -410,11 +486,68 @@ public class Checkout extends AppCompatActivity {
                     rl_refund.setVisibility(View.GONE);
                 }
 
-
             }
+        });
+
+        btn_done.setOnClickListener(v -> {
+
+            Commons.hideSoftKeyboard(Checkout.this);
+
+            dialog_refund.dismiss();
+
+            checkout();
+
         });
 
 
     }
 
+    private void checkout() {
+
+        String url = ApiConstant.check_out;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("cart_amount", tv_pay_amount.getText().toString());
+        params.put("payment_mode", payment_method);
+        params.put("customer_id", selected_customer.getId());
+        params.put("discount_amount", tv_coupon_amt.getText().toString());
+        params.put("coupon", coupon_code);
+        params.put("note", edt_notes.getText().toString());
+
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        globalClass.setCart_counter("0");
+                        Commons.hideSoftKeyboard(Checkout.this);
+                        Toasty.success(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();
+
+                        Intent intent = new Intent(Checkout.this, Container.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+
+                    }else {
+
+                        Toasty.error(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 }

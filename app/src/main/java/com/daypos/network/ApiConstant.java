@@ -15,6 +15,7 @@ public class ApiConstant {
 
 
     public static final String login                         = BASE_URL + "login";
+    public static final String SignUp                        = BASE_URL + "SignUp";
     public static final String forgotPassword                = BASE_URL + "forgotPassword";
     public static final String resetPassword                 = BASE_URL + "resetPassword";
     public static final String category_list                 = BASE_URL + "category_list";
@@ -33,6 +34,9 @@ public class ApiConstant {
     public static final String add_to_favourite              = BASE_URL + "add_to_favourite";
     public static final String delete_favourite              = BASE_URL + "delete_favourite";
     public static final String check_coupon                  = BASE_URL + "check_coupon";
+    public static final String check_out                     = BASE_URL + "check_out";
+    public static final String favourite_item_list           = BASE_URL + "favourite_item_list";
+    public static final String searchToFavorits              = BASE_URL + "searchToFavorits";
 
 
 

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
 import com.daypos.checkout.Checkout;
@@ -41,14 +42,16 @@ import es.dmoral.toasty.Toasty;
 public class CartActivity extends AppCompatActivity implements
         View.OnClickListener,
         CartAdapter.ItemClickListenerDetete,
-        CartAdapter.ItemClickListenerEdit{
+        CartAdapter.ItemClickListenerEdit,
+        SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.btn_checkout) Button btn_checkout;
     @BindView(R.id.btn_more_shop) Button btn_more_shop;
-    @BindView(R.id.tv_total_price)
-    TextView tv_total_price;
+    @BindView(R.id.tv_total_price) TextView tv_total_price;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipe_refresh_layout;
 
     ArrayList<CartData> cartDataArrayList;
     GlobalClass globalClass;
@@ -77,6 +80,7 @@ public class CartActivity extends AppCompatActivity implements
 
         btn_checkout.setOnClickListener(this);
         btn_more_shop.setOnClickListener(this);
+        swipe_refresh_layout.setOnRefreshListener(this);
 
         getCartItems();
 
@@ -128,6 +132,11 @@ public class CartActivity extends AppCompatActivity implements
 
         }
 
+    }
+
+    @Override
+    public void onRefresh() {
+        getCartItems();
     }
 
     private void dialogAddCustomer(){
@@ -196,6 +205,7 @@ public class CartActivity extends AppCompatActivity implements
                         setCartData();
                     }
 
+                    swipe_refresh_layout.setRefreshing(false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

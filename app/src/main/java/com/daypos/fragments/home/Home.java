@@ -73,6 +73,7 @@ public class Home extends Fragment implements
     private String category_id;
     ProductAdapter productAdapter;
 
+    private int last_scroll_position = 0;
     public Home() {}
 
     @Override
@@ -192,6 +193,7 @@ public class Home extends Fragment implements
     @Override
     public void onRefresh() {
         start_index_offset = 0;
+        last_scroll_position = 0;
         getProductCategoryWise(category_id);
 
     }
@@ -346,6 +348,10 @@ public class Home extends Fragment implements
         productAdapter.setClickListener(this);
         productAdapter.setClickListenerFav(this);
 
+        if (last_scroll_position != 0){
+            recyclerview.scrollToPosition(last_scroll_position);
+        }
+
     }
 
 
@@ -364,6 +370,8 @@ public class Home extends Fragment implements
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager)
                         recyclerView.getLayoutManager();
+
+                last_scroll_position = linearLayoutManager.findFirstVisibleItemPosition();
 
                 if (!isLoading) {
                     if (linearLayoutManager != null &&
@@ -441,11 +449,16 @@ public class Home extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
-                                        productData.setImage(ApiConstant.IMAGE_PATH
-                                                + object.optString("item_image"));
+                                        if (object.optString("item_image").isEmpty()){
+                                            productData.setImage("");
+                                        }else {
+                                            productData.setImage(ApiConstant.IMAGE_PATH
+                                                    + object.optString("item_image"));
+                                        }
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_fav(object.optString("fav"));
 
 
                                         productDataArrayList.add(productData);

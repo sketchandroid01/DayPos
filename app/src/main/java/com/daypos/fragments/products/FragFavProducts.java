@@ -25,6 +25,7 @@ import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
 
@@ -39,7 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 
-public class FragProductList extends Fragment implements
+public class FragFavProducts extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener,
         ProductAdapter.ItemClickListener,
         ProductAdapter.ItemClickListenerFav{
@@ -58,10 +59,10 @@ public class FragProductList extends Fragment implements
 
     private ArrayList<ProductData> productDataArrayList;
     private int start_index = 0;
-    private int limit = 50;
+    private int limit = 60;
 
 
-    public FragProductList() {}
+    public FragFavProducts() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,43 +89,18 @@ public class FragProductList extends Fragment implements
         unbinder.unbind();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_cat, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.add_cat:
-
-                Intent intent = new Intent(getActivity(), AddProduct.class);
-                startActivity(intent);
-
-                break;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     @Override
     public void onRefresh() {
 
-        getProductCategoryWise("all");
+        getFavProductList();
 
     }
 
     @Override
     public void onResume() {
 
-        getProductCategoryWise("all");
+        getFavProductList();
 
         super.onResume();
     }
@@ -135,7 +111,7 @@ public class FragProductList extends Fragment implements
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         swipe_refresh_layout.setOnRefreshListener(this);
 
-
+        edt_search.setHint("Search from favourite");
         iv_search.setOnClickListener(v -> {
 
             if (edt_search.getText().toString().trim().length() == 0){
@@ -146,6 +122,8 @@ public class FragProductList extends Fragment implements
             }
 
             searchProduct(edt_search.getText().toString());
+
+            Commons.hideSoftKeyboard(getActivity());
         });
 
         edt_search.addTextChangedListener(new TextWatcher() {
@@ -162,8 +140,12 @@ public class FragProductList extends Fragment implements
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (s.toString().trim().length() > 3){
+                if (s.toString().trim().length() > 1){
                     searchProduct(s.toString());
+                }
+
+                if (s.toString().length() == 0){
+                    getFavProductList();
                 }
 
             }
@@ -171,17 +153,14 @@ public class FragProductList extends Fragment implements
 
     }
 
-    private void getProductCategoryWise(String category) {
+    private void getFavProductList() {
 
         productDataArrayList = new ArrayList<>();
 
-        String url = ApiConstant.filterProductCategoryWise;
+        String url = ApiConstant.favourite_item_list;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
-        params.put("category_id", category);
-        params.put("start", String.valueOf(start_index));
-        params.put("limit", String.valueOf(limit));
 
         new PostDataParser(getActivity(), url, params, true,
                 new PostDataParser.OnGetResponseListner() {
@@ -193,10 +172,10 @@ public class FragProductList extends Fragment implements
                                 int status = response.optInt("status");
                                 String message = response.optString("message");
                                 if (status == 1) {
-                                    JSONArray item_list = response.getJSONArray("item_list");
+                                    JSONArray all_data = response.getJSONArray("all_data");
 
-                                    for (int i = 0; i < item_list.length(); i++){
-                                        JSONObject object = item_list.getJSONObject(i);
+                                    for (int i = 0; i < all_data.length(); i++){
+                                        JSONObject object = all_data.getJSONObject(i);
 
 
                                         ProductData productData = new ProductData();
@@ -218,7 +197,7 @@ public class FragProductList extends Fragment implements
                                         productData.setIs_attribute(object.optString("is_attribute"));
                                         productData.setCategory_id(object.optString("category_id"));
                                         productData.setSold_option(object.optString("sold_option"));
-                                        productData.setIs_fav(object.optString("fav"));
+                                        productData.setIs_fav("1");
 
 
                                         productDataArrayList.add(productData);
@@ -254,9 +233,9 @@ public class FragProductList extends Fragment implements
     @Override
     public void onItemClick(ProductData productData, View view) {
 
-        Intent intent = new Intent(getActivity(), EditProduct.class);
-        intent.putExtra("datas", productData);
-        startActivity(intent);
+       // Intent intent = new Intent(getActivity(), EditProduct.class);
+       // intent.putExtra("datas", productData);
+       // startActivity(intent);
 
     }
 
@@ -264,12 +243,11 @@ public class FragProductList extends Fragment implements
 
         productDataArrayList = new ArrayList<>();
 
-        String url = ApiConstant.search_item_list;
+        String url = ApiConstant.searchToFavorits;
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
-        params.put("search_keyword", search_key);
-        params.put("bar_code", "");
+        params.put("keyword", search_key);
 
 
         new PostDataParser(getActivity(), url, params, true,
@@ -303,8 +281,7 @@ public class FragProductList extends Fragment implements
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_attribute(object.optString("is_attribute"));
-                                        productData.setIs_fav(object.optString("fav"));
-
+                                        productData.setIs_fav("1");
 
                                         productDataArrayList.add(productData);
                                     }
@@ -319,11 +296,11 @@ public class FragProductList extends Fragment implements
 
                             swipe_refresh_layout.setRefreshing(false);
 
+                            Commons.hideSoftKeyboard(getActivity());
                         }
                     }
                 });
     }
-
 
     @Override
     public void onItemClickFav(ProductData productData) {
@@ -357,7 +334,7 @@ public class FragProductList extends Fragment implements
                         Toasty.success(getActivity(),
                                 message, Toast.LENGTH_SHORT, true).show();
 
-                        getProductCategoryWise("all");
+                        getFavProductList();
                     }
 
                 } catch (Exception e) {

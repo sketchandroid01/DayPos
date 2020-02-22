@@ -33,6 +33,7 @@ import com.daypos.R;
 import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
+import com.daypos.fragments.products.FragFavProducts;
 import com.daypos.fragments.products.FragProductList;
 import com.daypos.login.Login;
 import com.daypos.utils.GlobalClass;
@@ -168,6 +169,11 @@ public class Container extends AppCompatActivity implements
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
+        drawerData.setIcon(R.mipmap.icon_fav);
+        drawerData.setTitle("Favourites");
+        drawerDataArrayList.add(drawerData);
+
+        drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_bill_hist);
         drawerData.setTitle("Bill History");
         drawerDataArrayList.add(drawerData);
@@ -278,6 +284,14 @@ public class Container extends AppCompatActivity implements
 
                 break;
 
+
+            case 4:
+
+                getSupportActionBar().setTitle(drawerData.getTitle());
+                fragment = new FragFavProducts();
+                transactFragment(fragment);
+
+                break;
 
         }
 
