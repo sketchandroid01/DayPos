@@ -620,6 +620,7 @@ public class EditProduct extends AppCompatActivity implements
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 
+            p_image = null;
             try {
 
                 Uri selectedImage = data.getData();
@@ -643,7 +644,7 @@ public class EditProduct extends AppCompatActivity implements
 
         }else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 
-
+            p_image = null;
             try {
 
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
@@ -716,21 +717,21 @@ public class EditProduct extends AppCompatActivity implements
             file.mkdir();
 
 
-        String files = dir + "/picture_product" +".jpg";
+        String files = dir + "/"+System.currentTimeMillis() +".jpg";
         File newfile = new File(files);
 
         try {
 
             iv_image.setImageBitmap(bitmap);
 
-            newfile.delete();
+           // newfile.delete();
             OutputStream outFile = null;
             try {
 
                 p_image = newfile;
 
                 outFile = new FileOutputStream(newfile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outFile);
                 outFile.flush();
                 outFile.close();
 

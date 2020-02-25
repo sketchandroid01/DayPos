@@ -198,12 +198,11 @@ public class CartActivity extends AppCompatActivity implements
 
                         Collections.reverse(cartDataArrayList);
 
-                        globalClass.setCart_counter(""+cartDataArrayList.size());
-
-                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
-
-                        setCartData();
                     }
+
+                    globalClass.setCart_counter(""+cartDataArrayList.size());
+                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    setCartData();
 
                     swipe_refresh_layout.setRefreshing(false);
                 } catch (Exception e) {
@@ -375,13 +374,11 @@ public class CartActivity extends AppCompatActivity implements
 
                         Collections.reverse(cartDataArrayList);
 
-                        globalClass.setCart_counter(""+cartDataArrayList.size());
-
-                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
-
-                        setCartData();
-
                     }
+
+                    globalClass.setCart_counter(""+cartDataArrayList.size());
+                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    setCartData();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -446,12 +443,11 @@ public class CartActivity extends AppCompatActivity implements
 
                         Collections.reverse(cartDataArrayList);
 
-                        globalClass.setCart_counter(""+cartDataArrayList.size());
-
-                        getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
-
-                        setCartData();
                     }
+
+                    globalClass.setCart_counter(""+cartDataArrayList.size());
+                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    setCartData();
 
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -37,7 +37,7 @@
                     android:textSize="18sp"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/tv_save_cat"
-                    android:text="Add Category"
+                    android:text="Edit Category"
                     />
 
                 <TextView
