@@ -449,6 +449,10 @@ public class CartActivity extends AppCompatActivity implements
                     getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
                     setCartData();
 
+                    if (cartDataArrayList.size() == 0){
+                        finish();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

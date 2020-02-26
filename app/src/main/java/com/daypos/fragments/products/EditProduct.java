@@ -72,6 +72,7 @@ public class EditProduct extends AppCompatActivity implements
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.recycler_colors) RecyclerView recycler_colors;
     @BindView(R.id.tv_save_cat) TextView tv_save_cat;
+    @BindView(R.id.toolbar_title) TextView toolbar_title;
     @BindView(R.id.radio_color) RadioButton radio_color;
     @BindView(R.id.radio_image) RadioButton radio_image;
     @BindView(R.id.linear_select_image) LinearLayout linear_select_image;
@@ -119,6 +120,7 @@ public class EditProduct extends AppCompatActivity implements
         getSupportActionBar().setTitle("Edit Product");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
+        toolbar_title.setText("Edit Product");
 
         globalClass = (GlobalClass) getApplicationContext();
 

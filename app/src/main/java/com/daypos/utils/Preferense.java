@@ -61,9 +61,7 @@ public class Preferense {
     }
 
     public void setToGlobal(){
-
         globalClass.setUserId(sharedPreferences.getString(PREF_id, ""));
-
 
     }
 

@@ -10,6 +10,7 @@ import com.daypos.R;
 import com.daypos.container.Container;
 import com.daypos.login.Login;
 import com.daypos.utils.Preferense;
+import com.splunk.mint.Mint;
 
 public class Splash extends AppCompatActivity {
 
@@ -23,6 +24,8 @@ public class Splash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         preferense = new Preferense(this);
+
+        Mint.initAndStartSession(this.getApplication(), "4c5822c5");
 
         threadTogo();
     }
