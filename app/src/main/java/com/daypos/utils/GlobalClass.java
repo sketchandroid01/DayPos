@@ -21,7 +21,6 @@ public class GlobalClass extends MultiDexApplication {
     // https://github.com/sketchandroid01/DayPos
 
 
-
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context context;
@@ -87,5 +86,47 @@ public class GlobalClass extends MultiDexApplication {
 
     public void setCart_counter(String cart_counter) {
         this.cart_counter = cart_counter;
+    }
+
+    /// selected customer id for billing ...
+    private String cid = "";
+    private String cname = "";
+    private String cemail = "";
+    private String cphone = "";
+
+    public String getCid() {
+        return cid;
+    }
+
+    public GlobalClass setCid(String cid) {
+        this.cid = cid;
+        return this;
+    }
+
+    public String getCname() {
+        return cname;
+    }
+
+    public GlobalClass setCname(String cname) {
+        this.cname = cname;
+        return this;
+    }
+
+    public String getCemail() {
+        return cemail;
+    }
+
+    public GlobalClass setCemail(String cemail) {
+        this.cemail = cemail;
+        return this;
+    }
+
+    public String getCphone() {
+        return cphone;
+    }
+
+    public GlobalClass setCphone(String cphone) {
+        this.cphone = cphone;
+        return this;
     }
 }

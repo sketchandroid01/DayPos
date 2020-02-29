@@ -44,7 +44,6 @@ public class Customers extends Fragment implements
     @BindView(R.id.edt_search)
     EditText edt_search;
 
-
     private ArrayList<CustomerData> customerDataArrayList;
     private GlobalClass globalClass;
 

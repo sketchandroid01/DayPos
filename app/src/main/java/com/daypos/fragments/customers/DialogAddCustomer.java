@@ -33,6 +33,7 @@ public class DialogAddCustomer extends Dialog {
 
     private Context context;
     private GlobalClass globalClass;
+    public int is_add_customer = 0;
 
     public DialogAddCustomer(@NonNull Context context) {
 
@@ -84,7 +85,7 @@ public class DialogAddCustomer extends Dialog {
                             Toast.LENGTH_SHORT, true).show();
                     return;
                 }
-                if (edt_customer_phone.getText().toString().trim().length() == 0){
+                /*if (edt_customer_phone.getText().toString().trim().length() == 0){
                     Toasty.info(context,
                             "Enter customer phone",
                             Toast.LENGTH_SHORT, true).show();
@@ -95,20 +96,21 @@ public class DialogAddCustomer extends Dialog {
                             "Enter customer email",
                             Toast.LENGTH_SHORT, true).show();
                     return;
-                }
-                if (!isValidEmail(edt_customer_email.getText().toString())){
+                }*/
+                if (!edt_customer_email.getText().toString().isEmpty()
+                        && !isValidEmail(edt_customer_email.getText().toString())){
                     Toasty.info(context,
                             "Enter valid email",
                             Toast.LENGTH_SHORT, true).show();
                     return;
                 }
 
-                if (edt_customer_number.getText().toString().trim().length() == 0){
+               /* if (edt_customer_number.getText().toString().trim().length() == 0){
                     Toasty.info(context,
                             "Enter customer code",
                             Toast.LENGTH_SHORT, true).show();
                     return;
-                }
+                }*/
 
 
                 addCustomer(edt_customer_name.getText().toString(),
@@ -146,12 +148,20 @@ public class DialogAddCustomer extends Dialog {
 
                     if (status == 1) {
 
+                        String customer_id = response.optString("customer_id");
+
+                        globalClass.setCid(customer_id);
+                        globalClass.setCname(name);
+                        globalClass.setCemail(email);
+                        globalClass.setCphone(mobile);
+
                         Toasty.success(context,
                                 message,
                                 Toast.LENGTH_SHORT, true).show();
 
                         Commons.hideSoftKeyboard((Activity) context);
 
+                        is_add_customer = 1;
                         dismiss();
 
                     }else {

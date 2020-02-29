@@ -48,24 +48,21 @@ public class DialogEditCustomer extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_add_customer);
+        setContentView(R.layout.dialog_edit_customer);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setCancelable(false);
 
 
         initViews();
 
-
-
     }
 
     private void initViews(){
 
-
-
         TextView tv_title = findViewById(R.id.tv_title);
         Button btn_close = findViewById(R.id.btn_close);
         Button btn_save = findViewById(R.id.btn_save);
+        Button btn_edit = findViewById(R.id.btn_edit);
         EditText edt_customer_name = findViewById(R.id.edt_customer_name);
         EditText edt_customer_phone = findViewById(R.id.edt_customer_phone);
         EditText edt_customer_email = findViewById(R.id.edt_customer_email);
@@ -76,12 +73,19 @@ public class DialogEditCustomer extends Dialog {
         edt_customer_email.setText(customerData.getEmail());
         edt_customer_number.setText(customerData.getCustomer_id());
 
+        btn_edit.setVisibility(View.VISIBLE);
+        btn_save.setVisibility(View.GONE);
+
+        edt_customer_name.setEnabled(false);
+        edt_customer_phone.setEnabled(false);
+        edt_customer_email.setEnabled(false);
+        edt_customer_number.setEnabled(false);
+
         tv_title.setText("Update Customer");
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 dismiss();
             }
         });
@@ -96,7 +100,7 @@ public class DialogEditCustomer extends Dialog {
                             Toast.LENGTH_SHORT, true).show();
                     return;
                 }
-                if (edt_customer_phone.getText().toString().trim().length() == 0){
+                /*if (edt_customer_phone.getText().toString().trim().length() == 0){
                     Toasty.info(context,
                             "Enter customer phone",
                             Toast.LENGTH_SHORT, true).show();
@@ -107,20 +111,21 @@ public class DialogEditCustomer extends Dialog {
                             "Enter customer email",
                             Toast.LENGTH_SHORT, true).show();
                     return;
-                }
-                if (!isValidEmail(edt_customer_email.getText().toString())){
+                }*/
+                if (!edt_customer_email.getText().toString().isEmpty()
+                        && !isValidEmail(edt_customer_email.getText().toString())){
                     Toasty.info(context,
                             "Enter valid email",
                             Toast.LENGTH_SHORT, true).show();
                     return;
                 }
 
-                if (edt_customer_number.getText().toString().trim().length() == 0){
+                /*if (edt_customer_number.getText().toString().trim().length() == 0){
                     Toasty.info(context,
                             "Enter customer code",
                             Toast.LENGTH_SHORT, true).show();
                     return;
-                }
+                }*/
 
 
                 addCustomer(customerData.getId(), edt_customer_name.getText().toString(),
@@ -132,6 +137,19 @@ public class DialogEditCustomer extends Dialog {
             }
         });
 
+        btn_edit.setOnClickListener(v -> {
+            if (btn_save.getVisibility() == View.GONE){
+                btn_edit.setVisibility(View.GONE);
+                btn_save.setVisibility(View.VISIBLE);
+
+                edt_customer_name.setEnabled(true);
+                edt_customer_phone.setEnabled(true);
+                edt_customer_email.setEnabled(true);
+                edt_customer_number.setEnabled(true);
+
+                edt_customer_name.setSelection(edt_customer_name.length());
+            }
+        });
     }
 
 

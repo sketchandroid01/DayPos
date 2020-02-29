@@ -69,7 +69,6 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
     private GlobalClass globalClass;
     private ArrayList<CustomerData> customerDataArrayList;
-    private CustomerData selected_customer = null;
     private String payment_method = "", coupon_code = "";
 
     private static DecimalFormat df = new DecimalFormat("0.00");
@@ -110,6 +109,10 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         rel_coupon_amt2.setVisibility(View.GONE);
 
 
+        /// if select customer
+        addToSelectCustomer();
+
+
         autocomplete_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -139,18 +142,23 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
                 CustomerData customerData = (CustomerData)parent.getItemAtPosition(position);
 
-                String sss = customerData.getName()+" "
+                /*String sss = customerData.getName()+" "
                         + "\n" + customerData.getPhone()
                         + "\n" + customerData.getEmail();
 
-                tv_customer_info.setText(sss);
+                tv_customer_info.setText(sss);*/
 
-                rel_customer.setVisibility(View.VISIBLE);
+               // rel_customer.setVisibility(View.VISIBLE);
 
                 autocomplete_search.setText("");
                 autocomplete_search.setSelection(autocomplete_search.length());
 
-                selected_customer = customerData;
+                globalClass.setCid(customerData.getId());
+                globalClass.setCname(customerData.getName());
+                globalClass.setCphone(customerData.getPhone());
+                globalClass.setCemail(customerData.getEmail());
+
+                addToSelectCustomer();
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -160,14 +168,17 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         iv_remove_customer.setOnClickListener(v -> {
             tv_customer_info.setText("");
-            selected_customer = null;
+            globalClass.setCid("");
+            globalClass.setCname("");
+            globalClass.setCphone("");
+            globalClass.setCemail("");
             rel_customer.setVisibility(View.GONE);
 
         });
 
         iv_apply_coupon.setOnClickListener(v -> {
 
-            if (selected_customer == null){
+            if (globalClass.getCid().isEmpty()){
                 Toasty.info(getApplicationContext(),
                         "Select customer",
                         Toast.LENGTH_SHORT, true).show();
@@ -185,6 +196,25 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         });
 
+    }
+
+    private void addToSelectCustomer(){
+
+        if (!globalClass.getCid().isEmpty()){
+            String sss = "";
+            if (!globalClass.getCname().isEmpty()){
+                sss = globalClass.getCname();
+            }
+            if (!globalClass.getCphone().isEmpty()){
+                sss = sss + "\n" + globalClass.getCphone();
+            }
+            if (!globalClass.getCemail().isEmpty()){
+                sss = sss + "\n" + globalClass.getCemail();
+            }
+
+            tv_customer_info.setText(sss);
+            rel_customer.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -221,7 +251,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
                 payment_method = "Cash";
 
-                if (selected_customer == null){
+                if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
                             "Select customer",
                             Toast.LENGTH_LONG, true).show();
@@ -236,13 +266,12 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
                 payment_method = "Credit Card";
 
-                if (selected_customer == null){
+                if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
                             "Select customer",
                             Toast.LENGTH_LONG, true).show();
                     return;
                 }
-
 
 
                 break;
@@ -251,18 +280,14 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
                 payment_method = "Debit Card";
 
-                if (selected_customer == null){
+                if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
                             "Select customer",
                             Toast.LENGTH_LONG, true).show();
                     return;
                 }
 
-
-
-
                 break;
-
 
         }
 
@@ -271,6 +296,11 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
     private void dialogAddCustomer(){
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(this);
         dialogAddCustomer.show();
+        dialogAddCustomer.setOnDismissListener(dialog -> {
+            if (dialogAddCustomer.is_add_customer == 1){
+                addToSelectCustomer();
+            }
+        });
     }
 
     private void searchCustomerList(String keyword) {
@@ -510,7 +540,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         params.put("user_id", globalClass.getUserId());
         params.put("cart_amount", tv_pay_amount.getText().toString());
         params.put("payment_mode", payment_method);
-        params.put("customer_id", selected_customer.getId());
+        params.put("customer_id", globalClass.getCid());
         params.put("discount_amount", tv_coupon_amt.getText().toString());
         params.put("coupon", coupon_code);
         params.put("note", edt_notes.getText().toString());
@@ -524,6 +554,11 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                     int status = response.optInt("status");
                     String message = response.optString("message");
                     if (status == 1) {
+
+                        globalClass.setCid("");
+                        globalClass.setCname("");
+                        globalClass.setCphone("");
+                        globalClass.setCemail("");
 
                         globalClass.setCart_counter("0");
                         Commons.hideSoftKeyboard(Checkout.this);
@@ -550,4 +585,8 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         });
     }
+
+
+
+
 }

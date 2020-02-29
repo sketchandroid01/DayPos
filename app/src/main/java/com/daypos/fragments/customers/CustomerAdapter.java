@@ -36,11 +36,11 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.myView
 
         CustomerData customerData = customerDataArrayList.get(position);
 
-        if (position%2 == 0){
+        /*if (position%2 == 0){
             holder.linear_main.setBackgroundColor(context.getResources().getColor(R.color.sky_light));
         }else {
             holder.linear_main.setBackgroundColor(context.getResources().getColor(R.color.white));
-        }
+        }*/
 
         holder.customer_name.setText(customerData.getName());
         holder.tv_total_value.setText("0.00");
