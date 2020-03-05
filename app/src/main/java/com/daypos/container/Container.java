@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.daypos.R;
+import com.daypos.fragments.billhistory.FragBillHistory;
 import com.daypos.fragments.category.CategoryList;
 import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
@@ -292,6 +293,15 @@ public class Container extends AppCompatActivity implements
                 transactFragment(fragment);
 
                 break;
+
+            case 5:
+
+                getSupportActionBar().setTitle(drawerData.getTitle());
+                fragment = new FragBillHistory();
+                transactFragment(fragment);
+
+                break;
+
 
         }
 

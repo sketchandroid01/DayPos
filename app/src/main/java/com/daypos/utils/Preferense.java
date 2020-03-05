@@ -22,6 +22,7 @@ public class Preferense {
     public static final String PREF_business = "business";
     public static final String PREF_id = "id";
     public static final String Pref_Pin = "pincode";
+    public static final String employee_id = "employee_id";
 
 
     public Preferense(Context context) {

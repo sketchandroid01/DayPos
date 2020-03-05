@@ -64,6 +64,7 @@
     <string name="product_image">Image</string>
     <string name="hint_search_product">Search Product</string>
     <string name="hint_search_customer">Search Customer</string>
+    <string name="hint_search">Search</string>
     <string name="apply_coupon">Apply Coupon</string>
     <string name="not_get_password_resend">Not get any OTP? <font color='blue'>Resend it</font></string>
 

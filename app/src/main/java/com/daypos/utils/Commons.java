@@ -7,6 +7,10 @@ import android.graphics.Matrix;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Commons {
 
     public static final String TAG = "TAG";
@@ -48,4 +52,49 @@ public class Commons {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+
+    public static String convertDate1(String dates){
+        String date = "";
+        try {
+            SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date newDate = spf.parse(dates);
+
+            spf= new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.ENGLISH);
+            date = spf.format(newDate);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static String convertToTime(String dates){
+        String date = "";
+        try {
+            SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            Date newDate = spf.parse(dates);
+
+            spf= new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+            date = spf.format(newDate);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static String convertDateFormatBill(String dates){
+        String date = "";
+        try {
+            SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            Date newDate = spf.parse(dates);
+
+            spf= new SimpleDateFormat("dd-MMM-yyyy hh:mm a", Locale.ENGLISH);
+            date = spf.format(newDate);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

@@ -55,7 +55,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.myView
 
 
         holder.tv_name.setText(categoryData.getName());
-        holder.tv_item_no.setText(categoryData.getItem_no());
+        holder.tv_item_no.setText(categoryData.getItem_no() + " items");
 
 
         holder.itemView.setOnClickListener(v -> {

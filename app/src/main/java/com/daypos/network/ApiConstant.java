@@ -37,6 +37,9 @@ public class ApiConstant {
     public static final String check_out                     = BASE_URL + "check_out";
     public static final String favourite_item_list           = BASE_URL + "favourite_item_list";
     public static final String searchToFavorits              = BASE_URL + "searchToFavorits";
+    public static final String order_list                    = BASE_URL + "order_list";
+    public static final String order_detail                  = BASE_URL + "order_detail";
+    public static final String order_refund                  = BASE_URL + "order_refund";
 
 
 

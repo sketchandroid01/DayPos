@@ -162,8 +162,6 @@ public class Home extends Fragment implements
 
     }
 
-
-
     private void viewsAction(){
 
         preferense = new Preferense(getActivity());

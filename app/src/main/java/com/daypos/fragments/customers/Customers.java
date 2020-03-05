@@ -102,7 +102,6 @@ public class Customers extends Fragment implements
         dialogAddCustomer.show();
     }
 
-
     private void viewsAction(){
 
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -142,7 +141,6 @@ public class Customers extends Fragment implements
         getCustomerList();
 
     }
-
 
     @Override
     public void onRefresh() {

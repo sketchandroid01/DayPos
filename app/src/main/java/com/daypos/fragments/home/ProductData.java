@@ -19,6 +19,11 @@ public class ProductData implements Serializable {
     private String is_fav;
 
 
+    private String item_id;
+    private String qty;
+
+
+
     public String getId() {
         return id;
     }
@@ -126,6 +131,24 @@ public class ProductData implements Serializable {
 
     public void setIs_fav(String is_fav) {
         this.is_fav = is_fav;
+    }
+
+    public String getItem_id() {
+        return item_id;
+    }
+
+    public ProductData setItem_id(String item_id) {
+        this.item_id = item_id;
+        return this;
+    }
+
+    public String getQty() {
+        return qty;
+    }
+
+    public ProductData setQty(String qty) {
+        this.qty = qty;
+        return this;
     }
 }
 

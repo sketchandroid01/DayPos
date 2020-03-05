@@ -34,6 +34,7 @@ import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
+import com.daypos.utils.Preferense;
 import com.daypos.utils.PriceValueFilter;
 
 import org.json.JSONArray;
@@ -68,6 +69,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
 
     private GlobalClass globalClass;
+    private Preferense preferense;
     private ArrayList<CustomerData> customerDataArrayList;
     private String payment_method = "", coupon_code = "";
 
@@ -94,6 +96,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         tv_creditcard.setOnClickListener(this);
         tv_debitcard.setOnClickListener(this);
 
+        preferense = new Preferense(this);
         globalClass = (GlobalClass) getApplicationContext();
         customerDataArrayList = new ArrayList<>();
 
@@ -273,6 +276,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                     return;
                 }
 
+                checkout();
 
                 break;
 
@@ -286,6 +290,8 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                             Toast.LENGTH_LONG, true).show();
                     return;
                 }
+
+                checkout();
 
                 break;
 
@@ -538,6 +544,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
+        params.put("employee_id", preferense.getString(Preferense.employee_id));
         params.put("cart_amount", tv_pay_amount.getText().toString());
         params.put("payment_mode", payment_method);
         params.put("customer_id", globalClass.getCid());

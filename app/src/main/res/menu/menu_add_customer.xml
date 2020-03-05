@@ -6,7 +6,7 @@
         android:id="@+id/add_customer"
         android:title="Add Customer"
         android:icon="@mipmap/add_customer"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
 
 </menu>

@@ -73,7 +73,7 @@ public class GlobalClass extends MultiDexApplication {
     private String cart_counter = "0";
 
     public String getUserId() {
-        return "1";
+        return userId;
     }
 
     public void setUserId(String userId) {

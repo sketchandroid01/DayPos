@@ -172,19 +172,27 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                             JSONObject data = response.getJSONObject("data");
 
-                            JSONObject user_details = data.getJSONObject("user_details");
-
                             preferense.setPref_logInStatus(true);
 
                             preferense.saveString(Preferense.PREF_id,
                                     data.optString("user_id"));
-                            preferense.saveString(Preferense.PREF_name,
-                                    data.optString("user_name"));
+
                             preferense.saveString(Preferense.PREF_phone_number,
                                     data.optString("user_phone"));
                             preferense.saveString(Preferense.PREF_image,
                                     data.optString("user_image"));
+                            preferense.saveString(Preferense.employee_id,
+                                    data.optString("employee_id"));
 
+
+
+                            JSONObject user_details = data.getJSONObject("user_details");
+
+                            String fname = user_details.optString("fname");
+                            String lname = user_details.optString("lname");
+
+                            preferense.saveString(Preferense.PREF_name,
+                                    (fname + " " + lname));
 
                             preferense.saveString(Preferense.PREF_email,
                                     user_details.optString("email"));
@@ -192,7 +200,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     user_details.optString("emp_pin"));
                             preferense.saveString(Preferense.PREF_business,
                                     user_details.optString("business_name"));
-
 
 
 
