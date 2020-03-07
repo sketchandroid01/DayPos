@@ -3,6 +3,8 @@ package com.daypos.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.epson.eposprint.Print;
+
 public class Preferense {
 
     private Context context;
@@ -23,6 +25,10 @@ public class Preferense {
     public static final String PREF_id = "id";
     public static final String Pref_Pin = "pincode";
     public static final String employee_id = "employee_id";
+    public static final String printer_path = "printer_path";
+
+    private static final String OPENDEVICENAME = "OPENDEVICENAME";
+    private static final String CONNECTIONTYPE = "CONNECTIONTYPE";
 
 
     public Preferense(Context context) {
@@ -72,6 +78,18 @@ public class Preferense {
         editor.commit();
     }
 
+    public void saveThermalPrinterEpson(String openDeviceName,
+                                        int connectionType){
+        editor.putString(OPENDEVICENAME, openDeviceName);
+        editor.putInt(CONNECTIONTYPE, connectionType);
+        editor.commit();
+    }
 
+    public String getOpendevicename(){
+        return sharedPreferences.getString(OPENDEVICENAME, "");
+    }
+    public int getConnectionType(){
+        return sharedPreferences.getInt(OPENDEVICENAME, Print.DEVTYPE_USB);
+    }
 
 }

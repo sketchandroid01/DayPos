@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':ePOS2'
 rootProject.name='DayPos'

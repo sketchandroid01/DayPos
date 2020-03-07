@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        ndk.abiFilters 'armeabi','armeabi-v7a','arm64-v8a','x86','x86_64'
     }
     buildTypes {
         release {
@@ -18,10 +19,45 @@ android {
         }
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
+        preDexLibraries false
+
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/ASL2.0'
+        exclude 'VERSION.txt'
+    }
+
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs'
+        jni.srcDirs = []
+    }
+
+    bundle {
+        language {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        ignoreWarnings true
     }
 }
 
@@ -51,4 +87,5 @@ dependencies {
 
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation files('libs/mint-5.2.1.jar')
+    implementation project(path: ':ePOS2')
 }

@@ -205,9 +205,6 @@ public class FragBillHistory extends Fragment implements
         });
     }
 
-
-
-
     private void setData(){
 
 

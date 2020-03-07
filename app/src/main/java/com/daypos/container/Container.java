@@ -36,6 +36,7 @@ import com.daypos.fragments.customers.Customers;
 import com.daypos.fragments.home.Home;
 import com.daypos.fragments.products.FragFavProducts;
 import com.daypos.fragments.products.FragProductList;
+import com.daypos.fragments.settings.FragSettings;
 import com.daypos.login.Login;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
@@ -79,7 +80,6 @@ public class Container extends AppCompatActivity implements
 
 
     }
-
 
     private void initViews(){
 
@@ -200,8 +200,6 @@ public class Container extends AppCompatActivity implements
         recycler_view.setAdapter(drawerAdapter);
         drawerAdapter.setClickListener(this);
 
-
-
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -234,80 +232,63 @@ public class Container extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-
         try {
-
 
         }catch (Exception e){
             e.printStackTrace();
         }
-
         super.onResume();
     }
 
 
     @Override
     public void onItemClick(int position, DrawerData drawerData) {
-
         Fragment fragment = null;
         Intent intent = null;
-
         switch (position){
-
             case 0:
-
                 getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new Home();
                 transactFragment(fragment);
-
                 break;
 
             case 1:
-
                 getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new Customers();
                 transactFragment(fragment);
-
                 break;
 
             case 2:
-
                 intent = new Intent(Container.this, CategoryList.class);
                 intentClass(intent);
-
                 break;
 
             case 3:
-
                 getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new FragProductList();
                 transactFragment(fragment);
-
                 break;
 
-
             case 4:
-
                 getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new FragFavProducts();
                 transactFragment(fragment);
-
                 break;
 
             case 5:
-
                 getSupportActionBar().setTitle(drawerData.getTitle());
                 fragment = new FragBillHistory();
                 transactFragment(fragment);
-
                 break;
 
+            case 6:
+                getSupportActionBar().setTitle(drawerData.getTitle());
+                fragment = new FragSettings();
+                transactFragment(fragment);
+                break;
 
         }
-
-
         drawer.closeDrawer(GravityCompat.START);
-
 
     }
 
@@ -317,39 +298,26 @@ public class Container extends AppCompatActivity implements
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 if (fragment != null) {
-
                     FragmentTransaction ft = mFragmentManager.beginTransaction();
                     ft.replace(R.id.container, fragment);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     ft.commit();
-
                 }
-
             }
         }, FADE_DEFAULT_TIME);
-
-
-
-
     }
 
     private void intentClass(final Intent intent){
-
         if (intent != null) {
-
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
                     startActivity(intent);
-
                 }
             }, FADE_DEFAULT_TIME);
         }
-
     }
 
     public void dialogLogout(){

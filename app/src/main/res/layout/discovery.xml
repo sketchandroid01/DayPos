@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:minWidth="350dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:padding="20dp"
+        >
+
+        <Button
+            android:id="@+id/btnRestart"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorAccent"
+            android:text="Refresh Connected Printer"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/textView_pritnerlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/discovery_label_printerlist"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            />
+
+        <ListView
+            android:id="@+id/listView_printerlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#ffffff"
+            android:layout_marginTop="10dp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

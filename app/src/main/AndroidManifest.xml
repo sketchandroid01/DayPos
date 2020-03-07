@@ -10,6 +10,12 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
 
 
     <uses-feature android:name="android.hardware.camera"
@@ -214,6 +220,41 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.settings.PrinterListActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.settings.PrinterAddActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".fragments.settings.EpsonDiscoveryActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/datepicker"
+            android:label="Search Printer"
+            >
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+
         </activity>
 
 

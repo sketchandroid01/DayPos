@@ -84,4 +84,70 @@
     <string name="cancel_button">Cancel</string>
 
 
+
+
+    <!--For thermal Epson printer..............-->
+
+    <string name="title_target">Target</string>
+
+    <string name="discovery_label_printerlist">Printer List :</string>
+    <string name="printerseries_m10">Epson TM-m10 Series</string>
+    <string name="printerseries_m30">Epson TM-m30 Series</string>
+    <string name="printerseries_p20">Epson TM-P20 Series</string>
+    <string name="printerseries_p60">Epson TM-P60 Series</string>
+    <string name="printerseries_p60ii">Epson TM-P60II Series</string>
+    <string name="printerseries_p80">Epson TM-P80 Series</string>
+    <string name="printerseries_t20">Epson TM-T20 Series</string>
+    <string name="printerseries_t60">Epson TM-T60 Series</string>
+    <string name="printerseries_t70">Epson TM-T70 Series</string>
+    <string name="printerseries_t81">Epson TM-T81 Series</string>
+    <string name="printerseries_t82">Epson TM-T82 Series</string>
+    <string name="printerseries_t83">Epson TM-T83 Series</string>
+    <string name="printerseries_t88">Epson TM-T88 Series</string>
+    <string name="printerseries_t90">Epson TM-T90 Series</string>
+    <string name="printerseries_t90kp">Epson TM-T90KP Series</string>
+    <string name="printerseries_u220">Epson TM-U220 Series</string>
+    <string name="printerseries_u330">Epson TM-U330 Series</string>
+    <string name="printerseries_l90">Epson TM-L90 Series</string>
+    <string name="printerseries_h6000">Epson TM-H6000 Series</string>
+    <string name="title_err_code">Error Code</string>
+    <string name="title_err_method">Method</string>
+    <string name="title_msg_result">Result</string>
+    <string name="title_msg_description">Description</string>
+
+    <string name="handlingmsg_err_head">Print head of printer is hot.\n</string>
+    <string name="handlingmsg_err_motor">Motor Driver IC of printer is hot.\n</string>
+    <string name="handlingmsg_err_battery">Battery of printer is hot.\n</string>
+    <string name="handlingmsg_err_overheat">Please wait until error LED of the printer turns off. \n</string>
+    <string name="handlingmsg_err_no_response">Please check the connection of the printer and the mobile terminal.\nConnection get lost.\n</string>
+    <string name="handlingmsg_err_cover_open">Please close roll paper cover.\n</string>
+    <string name="handlingmsg_err_paper_feed">Please release a paper feed switch.\n</string>
+    <string name="handlingmsg_err_receipt_end">Please check roll paper.\n</string>
+    <string name="handlingmsg_err_wrong_paper">Please set correct roll paper.\n</string>
+    <string name="handlingmsg_err_autocutter">Please remove any jammed paper or foreign substances in the printer, and then turn the printer off and turn the printer on again.\n</string>
+    <string name="handlingmsg_err_need_recover">Then, If the printer doesn\'t recover from error, please cycle the power switch.\n</string>
+    <string name="handlingmsg_err_unrecover">Please cycle the power switch of the printer.\nIf same errors occurred even power cycled, the printer may out of order.</string>
+    <string name="handlingmsg_err_battery_real_end">Please connect AC adapter or change the battery.\nBattery of printer is almost empty.\n</string>
+    <string name="handlingmsg_warn_receipt_near_end">Roll paper is nearly end.\n</string>
+    <string name="handlingmsg_warn_battery_near_end">Battery level of printer is low.\n</string>
+    <string name="handlingmsg_ex_open">Please check the connection of the printer and the mobile terminal.\nFailed to open communication port.\n</string>
+    <string name="handlingmsg_ex_connect">Please reconnect the printer and the mobile terminal.\nFailed to communicate with the printer.\n</string>
+    <string name="handlingmsg_ex_timeout">Please check the connection of the printer and the mobile terminal.\nCommunication has timed out.\n</string>
+    <string name="handlingmsg_ex_off_line">Printer is offline.\n</string>
+    <string name="handlingmsg_ex_failure">Please check communication settings of the mobile terminal and application execution environment.\nUnknown error has occurred.\n</string>
+    <string name="handlingmsg_ex_application_error">Please contact developer of this application.\nApplication error has occurred.\n</string>
+    <string name="handlingmsg_notice_printer_problems">Printer problems:\n</string>
+    <string name="handlingmsg_notice_failed">Failed to get printer status.\n</string>
+    <string name="handlingmsg_err_offline">Printer is offline.\n</string>
+
+    <string name="model_ank">ANK</string>
+    <string name="model_japanese">JAPANESE</string>
+    <string name="model_chinese">CHINESE</string>
+    <string name="model_taiwan">TAIWAN</string>
+    <string name="model_korean">KOREAN</string>
+    <string name="model_thai">THAI</string>
+    <string name="model_southasia">SOUTH ASIA</string>
+    <string name="pleasewaitamoment">Please wait a moment...</string>
+
+
 </resources>

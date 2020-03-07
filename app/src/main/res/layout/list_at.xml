@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="2dip"
+    android:paddingTop="2dip"
+    android:background="@color/light_darker"
+    >
+
+    <TextView
+        android:id="@+id/PrinterName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/Target"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/PrinterName"
+        android:layout_below="@+id/PrinterName"
+        android:layout_margin="5dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:padding="5dp"
+        android:gravity="center"
+        />
+
+
+
+</RelativeLayout>
