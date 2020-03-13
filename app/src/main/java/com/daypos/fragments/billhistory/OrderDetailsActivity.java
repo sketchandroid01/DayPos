@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class OrderDetailsActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener,
@@ -70,6 +72,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
     public static Activity activity;
     PrinterData printerData;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +103,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
             getSupportActionBar().setTitle(orderDetails.getBill_no());
             tv_total_value.setText(orderDetails.getTotal_amount());
 
-            tv_bill_no.setText(orderDetails.getBill_no());
+            tv_bill_no.setText("#"+orderDetails.getBill_no());
             tv_date_time.setText(Commons.convertDateFormatBill(orderDetails.getDate()));
 
 
@@ -121,7 +124,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
         getOrdersDetailsList();
 
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
         printerData = databaseHelper.getActivePrinter();
 
 
@@ -158,10 +161,15 @@ public class OrderDetailsActivity extends AppCompatActivity implements
                 finish();
                 break;
 
-
             case R.id.print_receipt:
 
-                runPrintReceiptSequence_EPSON();
+                if (databaseHelper.getActivePrinterLength() > 0){
+                    runPrintReceiptSequence_EPSON();
+                }else {
+                    Toasty.info(getApplicationContext(),
+                            "You are not selected any printer to print receipt.",
+                            Toast.LENGTH_LONG, true).show();
+                }
 
                 break;
 
@@ -614,7 +622,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
             String date_time = Commons.convertDateFormatBill(orderDetails.getDate());
 
-            textData.append(date_time +"\n" + orderDetails.getBill_no()+"\n");
+            textData.append(date_time +"\n" + "#"+orderDetails.getBill_no()+"\n");
             textData.append("--------------------------------\n");
 
             textData.append("\n");
@@ -646,22 +654,90 @@ public class OrderDetailsActivity extends AppCompatActivity implements
             return false;
         }
         try {
-            mEpsonPrinter.addTextSize(2, 2);
+
+            mEpsonPrinter.addTextSize(1, 2);
+            mEpsonPrinter.addTextFont(Printer.FONT_A);
 
             mEpsonPrinter.addTextAlign(Printer.ALIGN_CENTER);
-
-            textData.append("Test Receipt");
-            textData.append("\n");
-
-            mEpsonPrinter.addTextSize(1, 1);
-            textData.append("------------------------------------------------\n");
-
 
             textData.append(preferense.getString(Preferense.PREF_business));
             textData.append("\n");
             textData.append("\n");
+            mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
+
+
+            mEpsonPrinter.addTextAlign(Printer.ALIGN_LEFT);
+            mEpsonPrinter.addTextSize(1, 1);
+
+            textData.append("Cashier: "+preferense.getString(Preferense.PREF_name)+"\n");
+            textData.append("POS: POS 1"+"\n");
+            textData.append("------------------------------------------------\n");
+            mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
+
+
+            for (int i = 0; i < productDataArrayList.size(); i++){
+                ProductData productData = productDataArrayList.get(i);
+
+                String p_name = productData.getName();
+
+                int qty = Integer.parseInt(productData.getQty());
+                float price = Float.parseFloat(productData.getPrice());
+                float total_price = price * qty;
+
+                textData.append(p_name);
+
+                int differ = 48 - (p_name.length() + df.format(total_price).length());
+                StringBuilder stringBuilder = new StringBuilder(differ);
+                for (int j = 0; j < differ; j++){
+                    stringBuilder.append(" ");
+                }
+                textData.append(stringBuilder.toString() + df.format(total_price)+"\n");
+                textData.append(productData.getQty() + " x "+productData.getPrice()+"\n");
+                textData.append("\n");
+
+            }
+            textData.append("\n");
+            textData.append("------------------------------------------------\n");
+            mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
+
+            int differ = 48 - ("Total" + orderDetails.getTotal_amount()).length();
+            StringBuilder stringBuilder = new StringBuilder(differ);
+            for (int j = 0; j < differ; j++){
+                stringBuilder.append(" ");
+            }
+            textData.append("Total" + stringBuilder.toString()
+                    + orderDetails.getTotal_amount()+"\n");
 
             mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
+
+
+            differ = 48 - (orderDetails.getPayment_type() + orderDetails.getTotal_amount()).length();
+            stringBuilder = new StringBuilder(differ);
+            for (int j = 0; j < differ; j++){
+                stringBuilder.append(" ");
+            }
+            textData.append(orderDetails.getPayment_type() + stringBuilder.toString()
+                    + orderDetails.getTotal_amount()+"\n");
+
+
+            textData.append("------------------------------------------------\n");
+            mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
+
+            String date_time = Commons.convertDateFormatBill(orderDetails.getDate());
+
+            textData.append(date_time + "\n" + "#"+orderDetails.getBill_no()+"\n");
+            textData.append("------------------------------------------------\n");
+
+            textData.append("\n");
+            textData.append("\n");
+
+            mEpsonPrinter.addText(textData.toString());
+            textData.delete(0, textData.length());
 
             mEpsonPrinter.addCut(Printer.CUT_FEED);
         }

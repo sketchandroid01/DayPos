@@ -105,6 +105,11 @@ public class FragBillHistory extends Fragment implements
             @Override
             public void afterTextChanged(Editable s) {
 
+                if (s.toString().length() > 0){
+                    searchOrdersList(s.toString());
+                }else {
+                    getOrdersList();
+                }
 
             }
         });
@@ -207,7 +212,6 @@ public class FragBillHistory extends Fragment implements
 
     private void setData(){
 
-
         mListItem = new ArrayList<>();
         for (Orders orders : ordersArrayList){
 
@@ -239,6 +243,93 @@ public class FragBillHistory extends Fragment implements
 
     }
 
+    private void searchOrdersList(String keyword) {
+
+        swipe_refresh_layout.setRefreshing(true);
+
+        String url = ApiConstant.searchToBill;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("employee_id", preferense.getString(Preferense.employee_id));
+        params.put("keyword", keyword);
+
+        new PostDataParser(getActivity(), url, params, false, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        JSONArray data = response.getJSONArray("data");
+
+                        ordersArrayList = new ArrayList<>();
+
+                        for (int i = 0; i < data.length(); i++){
+                            JSONObject object = data.getJSONObject(i);
+
+                            String date = object.optString("date");
+
+                            Orders orders = new Orders();
+                            orders.setDate(Commons.convertDate1(date));
+
+                            ArrayList<OrderDetails> list = new ArrayList<>();
+                            JSONArray orderlist = object.getJSONArray("orderlist");
+                            for (int j = 0; j < orderlist.length(); j++){
+                                JSONObject object1 = orderlist.getJSONObject(j);
+
+                                String id = object1.optString("id");
+                                String customer_id = object1.optString("customer_id");
+                                String user_id = object1.optString("user_id");
+                                String total_item = object1.optString("total_item");
+                                String created = object1.optString("created");
+                                String total_amount = object1.optString("total_amount");
+                                String coupon_name = object1.optString("coupon_name");
+                                String discount_amount = object1.optString("discount_amount");
+                                String payment_mode = object1.optString("payment_mode");
+                                String invoice = object1.optString("invoice");
+                                String is_return = object1.optString("is_return");
+                                String return_id = object1.optString("return_id");
+                                String cashier = object1.optString("cashier");
+
+                                OrderDetails orderDetails = new OrderDetails();
+                                orderDetails.setId(id);
+                                orderDetails.setDate(created);
+                                orderDetails.setTime(Commons.convertToTime(created));
+                                orderDetails.setPayment_type(payment_mode);
+                                orderDetails.setTotal_amount(total_amount);
+                                orderDetails.setTotal_item(total_item);
+                                orderDetails.setBill_no(invoice);
+                                orderDetails.setIs_returned(is_return);
+                                orderDetails.setReturn_no(return_id);
+                                orderDetails.setCashier(cashier);
+
+                                list.add(orderDetails);
+                            }
+
+                            orders.setOrderDetailsArrayList(list);
+
+                            ordersArrayList.add(orders);
+                        }
+
+                        setData();
+
+                    }
+
+                    if (swipe_refresh_layout.isRefreshing()){
+                        swipe_refresh_layout.setRefreshing(false);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 
 
 }

@@ -49,6 +49,12 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
             holder.tv_is_print.setVisibility(View.GONE);
         }
 
+
+        holder.itemView.setOnLongClickListener(v -> {
+            mLongClickListener.onItemLongClick(printerData);
+            return true;
+        });
+
     }
 
     @Override
@@ -81,6 +87,15 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     }
 
 
+    /// on long click ...
+    private ItemLongClickListener mLongClickListener;
+    public void setLongClickListener(ItemLongClickListener itemLongClickListener) {
+        this.mLongClickListener = itemLongClickListener;
+    }
+
+    public interface ItemLongClickListener {
+        void onItemLongClick(PrinterData printerData);
+    }
 
 
 

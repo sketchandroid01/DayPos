@@ -1,5 +1,7 @@
 package com.daypos.fragments.settings;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,12 +21,15 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PrinterListActivity extends AppCompatActivity {
+public class PrinterListActivity extends AppCompatActivity implements
+        PrinterListAdapter.ItemLongClickListener {
 
     @BindView(R.id.recyclerview)
     RecyclerView recyclerview;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class PrinterListActivity extends AppCompatActivity {
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
+        databaseHelper = new DatabaseHelper(this);
 
     }
 
@@ -81,14 +87,45 @@ public class PrinterListActivity extends AppCompatActivity {
 
     private void setPrinterData(){
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
         ArrayList<PrinterData> list = databaseHelper.getAllPrinters();
 
         PrinterListAdapter printerListAdapter =
                 new PrinterListAdapter(PrinterListActivity.this, list);
         recyclerview.setAdapter(printerListAdapter);
+        printerListAdapter.setLongClickListener(this);
 
     }
+
+    @Override
+    public void onItemLongClick(PrinterData printerData) {
+        dialogLogout(printerData);
+    }
+
+    public void dialogLogout(PrinterData printerData){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(PrinterListActivity.this);
+        builder.setTitle("DayPos");
+        builder.setMessage("Are you sure you want to delete "+printerData.getPrinter_name()+"?");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                databaseHelper.deletePrinter(printerData.getId());
+                setPrinterData();
+            }
+        });
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+
+
 
 
 }

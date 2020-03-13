@@ -163,11 +163,11 @@ public class PrinterAddActivity extends AppCompatActivity implements
 
             if (switch_print.isChecked()){
                 printerData.setIs_print("1");
+                databaseHelper.updateIsPrintColumn();
             }else {
                 printerData.setIs_print("0");
             }
 
-            databaseHelper.updateIsPrintColumn();
 
             databaseHelper.insertPinter(printerData);
 
@@ -566,7 +566,6 @@ public class PrinterAddActivity extends AppCompatActivity implements
 
         }
     }
-
 
 
 

@@ -26,13 +26,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRINTER);
 
         onCreate(db);
     }
 
 
-    private static final String TABLE_NAME = "printer";
+    private static final String TABLE_PRINTER = "printer";
 
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "printer_name";
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
     public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + "("
+            "CREATE TABLE " + TABLE_PRINTER + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_NAME + " TEXT,"
                     + COLUMN_PATH_NAME + " TEXT,"
@@ -64,14 +64,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_IS_PRINT, printerData.getIs_print());
         values.put(COLUMN_PAPER_WIDTH, printerData.getPaper_width());
 
-        db.insert(TABLE_NAME, null, values);
+        db.insert(TABLE_PRINTER, null, values);
 
     }
 
     public ArrayList<PrinterData> getAllPrinters() {
         ArrayList<PrinterData> list = new ArrayList<>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME
+        String selectQuery = "SELECT  * FROM " + TABLE_PRINTER
                 + " ORDER BY " + COLUMN_TIMESTAMP + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -101,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_IS_PRINT, "0");
 
-        db.update(TABLE_NAME, values, null, null);
+        db.update(TABLE_PRINTER, values, null, null);
     }
 
     public PrinterData getActivePrinter(){
@@ -111,7 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String where = COLUMN_IS_PRINT +" =?";
         String[] whereArg = {"1"};
         String limit = "1";
-        Cursor cursor = db.query(TABLE_NAME, null, where, whereArg,
+        Cursor cursor = db.query(TABLE_PRINTER, null, where, whereArg,
                 null,null,limit);
 
         if (cursor.moveToFirst()){
@@ -130,20 +130,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return printerData;
     }
 
+
     public int getActivePrinterLength(){
         SQLiteDatabase db = this.getReadableDatabase();
         String where = COLUMN_IS_PRINT +" =?";
         String[] whereArg = {"1"};
-        Cursor cursor = db.query(TABLE_NAME, null, where, whereArg,
+        Cursor cursor = db.query(TABLE_PRINTER, null, where, whereArg,
                 null,null,null);
+        int count = cursor.getCount();
         cursor.close();
 
-        return cursor.getCount();
+        return count;
     }
 
     public void deletePrinter(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_PRINTER, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         db.close();
     }
 }
