@@ -242,6 +242,19 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".fragments.customers.CustomerSearchActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+
+
+
         <activity
             android:name=".fragments.settings.EpsonDiscoveryActivity"
             android:windowSoftInputMode="stateHidden"

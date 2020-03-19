@@ -21,7 +21,6 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             android:background="@color/colorAccent"
             app:titleTextColor="@color/white"
-            android:gravity="end"
             app:popupTheme="@style/AppTheme.PopupOverlay">
         </androidx.appcompat.widget.Toolbar>
 

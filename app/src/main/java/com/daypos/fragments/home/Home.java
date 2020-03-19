@@ -28,7 +28,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.daypos.R;
 import com.daypos.cart.CartActivity;
 import com.daypos.fragments.category.CategoryData;
+import com.daypos.fragments.customers.CustomerSearchActivity;
 import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.fragments.customers.DialogRemoveSelectCustomer;
 import com.daypos.fragments.products.SearchProductList;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
@@ -71,7 +73,8 @@ public class Home extends Fragment implements
     private int start_index_offset = 0;
     private int limit = 20;
     private String category_id;
-    ProductAdapter productAdapter;
+    private ProductAdapter productAdapter;
+    Menu menu;
 
     private int last_scroll_position = 0;
     public Home() {}
@@ -104,8 +107,10 @@ public class Home extends Fragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
+        this.menu = menu;
 
         MenuItem menuItem = menu.findItem(R.id.cart);
+
 
         MenuItemCompat.setActionView(menuItem, R.layout.cart_counter);
         cart_relativeLayout = (RelativeLayout) MenuItemCompat.getActionView(menuItem);
@@ -133,7 +138,25 @@ public class Home extends Fragment implements
 
             case R.id.add_customer:
 
-                dialogAddCustomer();
+                if (!globalClass.getCid().isEmpty()){
+                    DialogRemoveSelectCustomer dialogRemoveSelectCustomer =
+                            new DialogRemoveSelectCustomer(getActivity());
+                    dialogRemoveSelectCustomer.show();
+                    dialogRemoveSelectCustomer.setOnDismissListener(dialog -> {
+                        if (dialogRemoveSelectCustomer.is_removed_customer == 1){
+                            MenuItem add_customer = menu.findItem(R.id.add_customer);
+                            if (!globalClass.getCid().isEmpty()){
+                                add_customer.setIcon(R.mipmap.icon_user_added);
+                            }else {
+                                add_customer.setIcon(R.mipmap.add_customer);
+                            }
+                        }
+                    });
+
+                }else {
+                    Intent intent = new Intent(getActivity(), CustomerSearchActivity.class);
+                    startActivity(intent);
+                }
 
                 break;
 
@@ -147,6 +170,14 @@ public class Home extends Fragment implements
     public void onResume() {
 
         try {
+
+            MenuItem add_customer = menu.findItem(R.id.add_customer);
+            if (!globalClass.getCid().isEmpty()){
+                add_customer.setIcon(R.mipmap.icon_user_added);
+            }else {
+                add_customer.setIcon(R.mipmap.add_customer);
+            }
+
             cart_counter.setText(globalClass.getCart_counter());
         }catch (Exception e){
             e.printStackTrace();
@@ -156,10 +187,8 @@ public class Home extends Fragment implements
     }
 
     private void dialogAddCustomer(){
-
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(getActivity());
         dialogAddCustomer.show();
-
     }
 
     private void viewsAction(){
@@ -547,9 +576,11 @@ public class Home extends Fragment implements
                         String count = response.optString("count");
                         cart_counter.setText(count);
 
-                        Toasty.success(getActivity(),
+                        globalClass.setCart_counter(count);
+
+                        /*Toasty.success(getActivity(),
                                 "Added",
-                                Toast.LENGTH_SHORT, true).show();
+                                Toast.LENGTH_SHORT, true).show();*/
                     }
 
                 } catch (Exception e) {

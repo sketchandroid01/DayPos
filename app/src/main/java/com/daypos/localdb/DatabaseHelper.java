@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE_PRINTER);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAPER_WIDTH = "paper_width";
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
-    public static final String CREATE_TABLE =
+    public static final String CREATE_TABLE_PRINTER =
             "CREATE TABLE " + TABLE_PRINTER + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_NAME + " TEXT,"

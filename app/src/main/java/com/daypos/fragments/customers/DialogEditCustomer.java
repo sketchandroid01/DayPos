@@ -66,12 +66,11 @@ public class DialogEditCustomer extends Dialog {
         EditText edt_customer_name = findViewById(R.id.edt_customer_name);
         EditText edt_customer_phone = findViewById(R.id.edt_customer_phone);
         EditText edt_customer_email = findViewById(R.id.edt_customer_email);
-        EditText edt_customer_number = findViewById(R.id.edt_customer_number);
 
         edt_customer_name.setText(customerData.getName());
         edt_customer_phone.setText(customerData.getPhone());
         edt_customer_email.setText(customerData.getEmail());
-        edt_customer_number.setText(customerData.getCustomer_id());
+
 
         btn_edit.setVisibility(View.VISIBLE);
         btn_save.setVisibility(View.GONE);
@@ -79,7 +78,7 @@ public class DialogEditCustomer extends Dialog {
         edt_customer_name.setEnabled(false);
         edt_customer_phone.setEnabled(false);
         edt_customer_email.setEnabled(false);
-        edt_customer_number.setEnabled(false);
+
 
         tv_title.setText("Update Customer");
 
@@ -130,8 +129,7 @@ public class DialogEditCustomer extends Dialog {
 
                 addCustomer(customerData.getId(), edt_customer_name.getText().toString(),
                         edt_customer_email.getText().toString(),
-                        edt_customer_phone.getText().toString(),
-                        edt_customer_number.getText().toString());
+                        edt_customer_phone.getText().toString());
 
 
             }
@@ -145,7 +143,6 @@ public class DialogEditCustomer extends Dialog {
                 edt_customer_name.setEnabled(true);
                 edt_customer_phone.setEnabled(true);
                 edt_customer_email.setEnabled(true);
-                edt_customer_number.setEnabled(true);
 
                 edt_customer_name.setSelection(edt_customer_name.length());
             }
@@ -154,7 +151,7 @@ public class DialogEditCustomer extends Dialog {
 
 
 
-    private void addCustomer(String id, String name, String email, String mobile, String c_no) {
+    private void addCustomer(String id, String name, String email, String mobile) {
 
         String url = ApiConstant.addEditCustomer;
 
@@ -164,7 +161,6 @@ public class DialogEditCustomer extends Dialog {
         params.put("name", name);
         params.put("email", email);
         params.put("phone", mobile);
-        params.put("customer_no", c_no);
 
 
         new PostDataParser(context, url, params, true, response -> {

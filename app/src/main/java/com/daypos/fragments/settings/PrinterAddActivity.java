@@ -605,8 +605,8 @@ public class PrinterAddActivity extends AppCompatActivity implements
             return false;
         }
         try {
-            mEpsonPrinter.addTextSize(2, 2);
-
+            mEpsonPrinter.addTextSize(1, 2);
+            mEpsonPrinter.addTextFont(Printer.FONT_A);
             mEpsonPrinter.addTextAlign(Printer.ALIGN_CENTER);
 
             textData.append("Test Receipt");
@@ -643,8 +643,8 @@ public class PrinterAddActivity extends AppCompatActivity implements
             return false;
         }
         try {
-            mEpsonPrinter.addTextSize(2, 2);
-
+            mEpsonPrinter.addTextSize(1, 2);
+            mEpsonPrinter.addTextFont(Printer.FONT_A);
             mEpsonPrinter.addTextAlign(Printer.ALIGN_CENTER);
 
             textData.append("Test Receipt");

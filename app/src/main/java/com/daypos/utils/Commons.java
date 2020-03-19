@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +32,15 @@ public class Commons {
                 inputManager.hideSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
             }
         }
+
+        if (activity != null) {
+            View view = activity.findViewById(android.R.id.content);
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+
     }
 
 
@@ -59,7 +69,7 @@ public class Commons {
             SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             Date newDate = spf.parse(dates);
 
-            spf= new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.ENGLISH);
+            spf = new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.ENGLISH);
             date = spf.format(newDate);
 
         }catch (Exception e){

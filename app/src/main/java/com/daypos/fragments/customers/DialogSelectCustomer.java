@@ -9,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,28 +20,25 @@ import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import es.dmoral.toasty.Toasty;
 
-import static com.daypos.utils.Commons.hideSoftKeyboard;
 import static com.daypos.utils.Commons.isValidEmail;
 
-public class DialogAddCustomer extends Dialog {
+public class DialogSelectCustomer extends Dialog {
 
     private Context context;
     private GlobalClass globalClass;
-    public int is_add_customer = 0;
+    public int is_set_customer = 0;
+    private CustomerData customerData;
 
-    public DialogAddCustomer(@NonNull Context context) {
+    public DialogSelectCustomer(@NonNull Context context, CustomerData customerData) {
 
         super(context);
         this.context = context;
         globalClass = (GlobalClass) context.getApplicationContext();
+        this.customerData = customerData;
 
     }
 
@@ -48,24 +46,27 @@ public class DialogAddCustomer extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_add_customer);
+        setContentView(R.layout.dialog_select_customer);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setCancelable(false);
 
-
         initViews();
-
-
 
     }
 
     private void initViews(){
 
+        is_set_customer = 0;
+
         Button btn_close = findViewById(R.id.btn_close);
-        Button btn_save = findViewById(R.id.btn_save);
-        EditText edt_customer_name = findViewById(R.id.edt_customer_name);
-        EditText edt_customer_phone = findViewById(R.id.edt_customer_phone);
-        EditText edt_customer_email = findViewById(R.id.edt_customer_email);
+        Button btn_add_to_sale = findViewById(R.id.btn_add_to_sale);
+        TextView edt_customer_name = findViewById(R.id.edt_customer_name);
+        TextView edt_customer_phone = findViewById(R.id.edt_customer_phone);
+        TextView edt_customer_email = findViewById(R.id.edt_customer_email);
+
+        edt_customer_name.setText(customerData.getName());
+        edt_customer_phone.setText(customerData.getPhone());
+        edt_customer_email.setText(customerData.getEmail());
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,61 +76,28 @@ public class DialogAddCustomer extends Dialog {
             }
         });
 
-        btn_save.setOnClickListener(new View.OnClickListener() {
+        btn_add_to_sale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (edt_customer_name.getText().toString().trim().length() == 0){
-                    Toasty.info(context,
-                            "Enter customer name",
-                            Toast.LENGTH_SHORT, true).show();
-                    return;
-                }
-                /*if (edt_customer_phone.getText().toString().trim().length() == 0){
-                    Toasty.info(context,
-                            "Enter customer phone",
-                            Toast.LENGTH_SHORT, true).show();
-                    return;
-                }
-                if (edt_customer_email.getText().toString().trim().length() == 0){
-                    Toasty.info(context,
-                            "Enter customer email",
-                            Toast.LENGTH_SHORT, true).show();
-                    return;
-                }*/
-                if (!edt_customer_email.getText().toString().isEmpty()
-                        && !isValidEmail(edt_customer_email.getText().toString())){
-                    Toasty.info(context,
-                            "Enter valid email",
-                            Toast.LENGTH_SHORT, true).show();
-                    return;
-                }
+                globalClass.setCid(customerData.getId());
+                globalClass.setCname(customerData.getName());
+                globalClass.setCemail(customerData.getEmail());
+                globalClass.setCphone(customerData.getPhone());
 
-               /* if (edt_customer_number.getText().toString().trim().length() == 0){
-                    Toasty.info(context,
-                            "Enter customer code",
-                            Toast.LENGTH_SHORT, true).show();
-                    return;
-                }*/
+                is_set_customer = 1;
 
-
-                addCustomer(edt_customer_name.getText().toString(),
-                        edt_customer_email.getText().toString(),
-                        edt_customer_phone.getText().toString());
-
-
+                dismiss();
             }
         });
 
     }
 
-    @Override
-    public void dismiss() {
-        hideSoftKeyboard((Activity) context);
-        super.dismiss();
-    }
 
-    private void addCustomer(String name, String email, String mobile) {
+
+
+    /// not use
+    private void addCustomer(String name, String email, String mobile, String c_no) {
 
         String url = ApiConstant.addEditCustomer;
 
@@ -138,7 +106,7 @@ public class DialogAddCustomer extends Dialog {
         params.put("name", name);
         params.put("email", email);
         params.put("phone", mobile);
-        params.put("customer_no", "");
+        params.put("customer_no", c_no);
 
 
         new PostDataParser(context, url, params, true, response -> {
@@ -164,7 +132,6 @@ public class DialogAddCustomer extends Dialog {
 
                         Commons.hideSoftKeyboard((Activity) context);
 
-                        is_add_customer = 1;
                         dismiss();
 
                     }else {
@@ -173,6 +140,7 @@ public class DialogAddCustomer extends Dialog {
                                 message,
                                 Toast.LENGTH_SHORT, true).show();
                     }
+
 
                 } catch (Exception e) {
                     e.printStackTrace();

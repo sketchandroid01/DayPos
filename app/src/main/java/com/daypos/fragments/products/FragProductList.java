@@ -257,7 +257,7 @@ public class FragProductList extends Fragment implements
         Intent intent = new Intent(getActivity(), EditProduct.class);
         intent.putExtra("datas", productData);
         startActivity(intent);
-
+       // getActivity().overridePendingTransition(R.anim.entry_anim, R.anim.exit_anim);
     }
 
     private void searchProduct(String search_key) {

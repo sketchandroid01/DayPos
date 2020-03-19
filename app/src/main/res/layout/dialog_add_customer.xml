@@ -89,26 +89,6 @@
             />
 
 
-        <EditText
-            android:id="@+id/edt_customer_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:textSize="16sp"
-            android:padding="8dp"
-            android:layout_marginTop="15dp"
-            android:hint="Customer No."
-            />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/border_color"
-            />
-
-
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -124,7 +104,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/border_red"
                 android:textColor="@color/colorAccent"
-                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
                 android:text="CLOSE"
                 />
 

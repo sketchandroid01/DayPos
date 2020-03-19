@@ -12,6 +12,7 @@ android {
         multiDexEnabled true
         ndk.abiFilters 'armeabi','armeabi-v7a','arm64-v8a','x86','x86_64'
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,7 +30,6 @@ android {
         jumboMode true
         javaMaxHeapSize "4g"
         preDexLibraries false
-
     }
 
     packagingOptions {

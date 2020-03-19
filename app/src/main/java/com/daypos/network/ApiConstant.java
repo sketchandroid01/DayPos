@@ -41,6 +41,8 @@ public class ApiConstant {
     public static final String order_detail                  = BASE_URL + "order_detail";
     public static final String order_refund                  = BASE_URL + "order_refund";
     public static final String searchToBill                  = BASE_URL + "searchToBill";
+    public static final String logout                        = BASE_URL + "logout";
+    public static final String top_customer                  = BASE_URL + "top_customer";
 
 
 

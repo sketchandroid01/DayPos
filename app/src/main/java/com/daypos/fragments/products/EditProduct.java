@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -109,10 +110,9 @@ public class EditProduct extends AppCompatActivity implements
         setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
 
+
         initViews();
     }
-
-
 
     private void initViews() {
 
@@ -262,7 +262,6 @@ public class EditProduct extends AppCompatActivity implements
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -273,7 +272,6 @@ public class EditProduct extends AppCompatActivity implements
         }
         return (super.onOptionsItemSelected(menuItem));
     }
-
 
     @Override
     public void onClick(View v) {
@@ -328,7 +326,6 @@ public class EditProduct extends AppCompatActivity implements
         }
 
     }
-
 
     @Override
     public void onItemClick(String color_code) {
@@ -393,7 +390,6 @@ public class EditProduct extends AppCompatActivity implements
         });
     }
 
-
     private void spinnerAction(){
 
         spinner_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -423,7 +419,6 @@ public class EditProduct extends AppCompatActivity implements
 
         }
     }
-
 
     public void editProduct(){
 
@@ -568,7 +563,6 @@ public class EditProduct extends AppCompatActivity implements
         }
     }
 
-
     private void captureImage(){
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -624,14 +618,14 @@ public class EditProduct extends AppCompatActivity implements
 
             p_image = null;
             try {
+                Glide.with(EditProduct.this).clear(iv_image);
 
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 Cursor cursor = getContentResolver().query(selectedImage,
                         filePathColumn, null, null, null);
                 cursor.moveToFirst();
-
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();

@@ -327,9 +327,9 @@ public class SearchProductList extends AppCompatActivity implements
                         cart_counter.setText(count);
                         globalClass.setCart_counter(count);
 
-                        Toasty.success(getApplicationContext(),
+                        /*Toasty.success(getApplicationContext(),
                                 "Added",
-                                Toast.LENGTH_SHORT, true).show();
+                                Toast.LENGTH_SHORT, true).show();*/
                     }
 
                 } catch (Exception e) {

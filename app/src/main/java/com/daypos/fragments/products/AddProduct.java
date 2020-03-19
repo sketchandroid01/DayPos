@@ -555,14 +555,13 @@ public class AddProduct extends AppCompatActivity implements
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             p_image = null;
             try {
-
+                Glide.with(AddProduct.this).clear(iv_image);
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 Cursor cursor = getContentResolver().query(selectedImage,
                         filePathColumn, null, null, null);
                 cursor.moveToFirst();
-
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();

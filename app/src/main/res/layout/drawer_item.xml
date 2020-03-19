@@ -8,16 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="15dp"
-        android:paddingTop="8dp"
+        android:paddingTop="6dp"
         android:paddingBottom="2dp"
         android:paddingEnd="10dp"
         >
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@mipmap/icon_home"
             android:contentDescription="@string/app_name"
             android:layout_centerVertical="true"
             />
@@ -29,7 +29,7 @@
             android:layout_toEndOf="@id/iv_icon"
             android:paddingStart="20dp"
             android:paddingEnd="5dp"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="@color/black"
             android:layout_centerVertical="true"
             android:layout_marginTop="2dp"

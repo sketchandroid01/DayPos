@@ -27,7 +27,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.myView
     @Override
     public CustomerAdapter.myViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.customers_item, parent, false);
+                .inflate(R.layout.customer_item, parent, false);
         return new myViewHolder(view);
     }
 
@@ -36,16 +36,27 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.myView
 
         CustomerData customerData = customerDataArrayList.get(position);
 
-        /*if (position%2 == 0){
-            holder.linear_main.setBackgroundColor(context.getResources().getColor(R.color.sky_light));
-        }else {
-            holder.linear_main.setBackgroundColor(context.getResources().getColor(R.color.white));
-        }*/
+        holder.tv_name.setText(customerData.getName());
 
-        holder.customer_name.setText(customerData.getName());
-        holder.tv_total_value.setText("0.00");
-        holder.tv_balance.setText("0.00");
-        holder.tv_total_orders.setText("0");
+        holder.tv_email.setVisibility(View.GONE);
+
+        if (customerData.getEmail().isEmpty()){
+            if (customerData.getPhone().isEmpty()){
+                holder.tv_email.setText(customerData.getEmail());
+            }else {
+                holder.tv_email.setText(customerData.getPhone());
+                holder.tv_email.setVisibility(View.VISIBLE);
+            }
+
+        }else {
+            holder.tv_email.setVisibility(View.VISIBLE);
+            if (customerData.getPhone().isEmpty()){
+                holder.tv_email.setText(customerData.getEmail());
+            }else {
+                holder.tv_email.setText(customerData.getEmail()+", "+customerData.getPhone());
+            }
+        }
+
 
 
         holder.itemView.setOnClickListener(v -> {
@@ -63,15 +74,14 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.myView
 
     public class myViewHolder extends RecyclerView.ViewHolder {
         LinearLayout linear_main;
-        TextView customer_name, tv_total_orders, tv_total_value, tv_balance;
+        TextView tv_name, tv_email;
 
         public myViewHolder(View itemView) {
             super(itemView);
             linear_main = itemView.findViewById(R.id.linear_main);
-            customer_name = itemView.findViewById(R.id.customer_name);
-            tv_total_orders = itemView.findViewById(R.id.tv_total_orders);
-            tv_total_value = itemView.findViewById(R.id.tv_total_value);
-            tv_balance = itemView.findViewById(R.id.tv_balance);
+            tv_name = itemView.findViewById(R.id.tv_name);
+            tv_email = itemView.findViewById(R.id.tv_email);
+
         }
     }
 

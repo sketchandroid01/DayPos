@@ -100,6 +100,11 @@ public class Customers extends Fragment implements
 
         DialogAddCustomer dialogAddCustomer = new DialogAddCustomer(getActivity());
         dialogAddCustomer.show();
+        dialogAddCustomer.setOnDismissListener(dialog -> {
+            if (dialogAddCustomer.is_add_customer == 1){
+                getCustomerList();
+            }
+        });
     }
 
     private void viewsAction(){
@@ -126,7 +131,6 @@ public class Customers extends Fragment implements
             public void afterTextChanged(Editable s) {
 
                 if (s.toString().length() > 1){
-
                     searchCustomerList(s.toString());
                 }
 

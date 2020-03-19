@@ -73,6 +73,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
     public static Activity activity;
     PrinterData printerData;
     private DatabaseHelper databaseHelper;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -509,7 +510,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
     private boolean runPrintReceiptSequence_EPSON() {
 
-        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage("Print processing...");
         progressDialog.show();

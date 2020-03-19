@@ -38,10 +38,16 @@ import com.daypos.fragments.products.FragFavProducts;
 import com.daypos.fragments.products.FragProductList;
 import com.daypos.fragments.settings.FragSettings;
 import com.daypos.login.Login;
+import com.daypos.network.ApiConstant;
+import com.daypos.network.PostDataParser;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -327,21 +333,12 @@ public class Container extends AppCompatActivity implements
         builder.setMessage("Are you sure you want to logout?");
         builder.setPositiveButton("LOGOUT", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        preferense.clearData();
-
-                        Intent intent = new Intent(Container.this, Login.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-
+                        logoutApi();
                     }
                 });
 
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
+                    public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
@@ -352,7 +349,42 @@ public class Container extends AppCompatActivity implements
     }
 
 
+    private void logoutApi() {
 
+        String url = ApiConstant.logout;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user_id", globalClass.getUserId());
+        params.put("employee_id", preferense.getString(Preferense.employee_id));
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        preferense.clearData();
+
+                        Intent intent = new Intent(Container.this, Login.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 
 
 

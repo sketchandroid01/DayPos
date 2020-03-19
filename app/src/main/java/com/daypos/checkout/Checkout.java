@@ -481,11 +481,9 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                     if (s.toString().length() > 0){
 
                         rl_refund.setVisibility(View.VISIBLE);
-                        btn_done.setVisibility(View.VISIBLE);
 
                         float value_received = Float.parseFloat(s.toString());
                         differ = value_received - Float.parseFloat(tv_order_total.getText().toString());
-
 
                         if (differ == 0){
 
@@ -493,6 +491,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                             tv_due_refund.setText("Refund Amount");
                             tv_refund_value.setTextColor(getResources().getColor(R.color.green_light));
 
+                            btn_done.setVisibility(View.VISIBLE);
 
                         }else if (differ > 0){
 
@@ -500,6 +499,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                             tv_due_refund.setText("Refund Amount");
                             tv_refund_value.setTextColor(getResources().getColor(R.color.green_light));
 
+                            btn_done.setVisibility(View.VISIBLE);
 
                         }else if (differ < 0){
 
@@ -509,6 +509,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                             tv_due_refund.setText("Due Amount");
                             tv_refund_value.setTextColor(getResources().getColor(R.color.color3));
 
+                            btn_done.setVisibility(View.GONE);
                         }
 
                     }else {
