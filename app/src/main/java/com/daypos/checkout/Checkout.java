@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.fragments.customers.SearchCustomerAdapter;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.receipt.ReceiptActivity;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
@@ -66,12 +70,15 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
     @BindView(R.id.rel_customer) RelativeLayout rel_customer;
     @BindView(R.id.rel_coupon_amt) RelativeLayout rel_coupon_amt;
     @BindView(R.id.rel_coupon_amt2) RelativeLayout rel_coupon_amt2;
+    @BindView(R.id.radio_group)
+    RadioGroup radio_group;
 
 
     private GlobalClass globalClass;
     private Preferense preferense;
     private ArrayList<CustomerData> customerDataArrayList;
-    private String payment_method = "", coupon_code = "";
+    private String payment_method = "", coupon_code = "", feedback = "";
+    private String refund_amount = "0.00", pay_amount;
 
     private static DecimalFormat df = new DecimalFormat("0.00");
 
@@ -83,7 +90,6 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         initViews();
 
     }
-
 
     private void initViews() {
 
@@ -115,7 +121,6 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         /// if select customer
         addToSelectCustomer();
 
-
         autocomplete_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -138,7 +143,6 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
             }
         });
 
-
         autocomplete_search.setOnItemClickListener((parent, view, position, id) -> {
 
             try {
@@ -148,10 +152,9 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                 /*String sss = customerData.getName()+" "
                         + "\n" + customerData.getPhone()
                         + "\n" + customerData.getEmail();
-
                 tv_customer_info.setText(sss);*/
-
                // rel_customer.setVisibility(View.VISIBLE);
+
 
                 autocomplete_search.setText("");
                 autocomplete_search.setSelection(autocomplete_search.length());
@@ -199,6 +202,18 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         });
 
+
+        radio_group.setOnCheckedChangeListener((group, checkedId) -> {
+
+            int selectedId = group.getCheckedRadioButtonId();
+            RadioButton radioButton = findViewById(selectedId);
+
+            feedback = radioButton.getText().toString().toLowerCase();
+
+            Log.d(Commons.TAG, "value = "+feedback);
+
+        });
+
     }
 
     private void addToSelectCustomer(){
@@ -220,13 +235,11 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_customer, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -236,23 +249,20 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                 break;
 
             case R.id.add_customer:
-
                 dialogAddCustomer();
-
                 break;
-
         }
         return (super.onOptionsItemSelected(menuItem));
     }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()){
 
             case R.id.tv_cash:
 
                 payment_method = "Cash";
+                pay_amount = tv_pay_amount2.getText().toString();
 
                 if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
@@ -268,6 +278,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
             case R.id.tv_creditcard:
 
                 payment_method = "Credit Card";
+                pay_amount = tv_pay_amount2.getText().toString();
 
                 if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
@@ -283,6 +294,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
             case R.id.tv_debitcard:
 
                 payment_method = "Debit Card";
+                pay_amount = tv_pay_amount2.getText().toString();
 
                 if (globalClass.getCid().isEmpty()){
                     Toasty.info(getApplicationContext(),
@@ -294,9 +306,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                 checkout();
 
                 break;
-
         }
-
     }
 
     private void dialogAddCustomer(){
@@ -512,6 +522,8 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                             btn_done.setVisibility(View.GONE);
                         }
 
+                        refund_amount = tv_refund_value.getText().toString();
+
                     }else {
 
                         rl_refund.setVisibility(View.GONE);
@@ -552,6 +564,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         params.put("discount_amount", tv_coupon_amt.getText().toString());
         params.put("coupon", coupon_code);
         params.put("note", edt_notes.getText().toString());
+        params.put("feedback", feedback);
 
 
         new PostDataParser(this, url, params, true, response -> {
@@ -567,15 +580,16 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                         globalClass.setCname("");
                         globalClass.setCphone("");
                         globalClass.setCemail("");
-
                         globalClass.setCart_counter("0");
-                        Commons.hideSoftKeyboard(Checkout.this);
-                        Toasty.success(getApplicationContext(),
-                                message, Toast.LENGTH_LONG, true).show();
 
-                        Intent intent = new Intent(Checkout.this, Container.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Commons.hideSoftKeyboard(Checkout.this);
+                        /*Toasty.success(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();*/
+
+                        Intent intent = new Intent(Checkout.this, ReceiptActivity.class);
+                        intent.putExtra("pay_mat", pay_amount);
+                        intent.putExtra("change_amt", refund_amount);
+                        intent.putExtra("order_id", response.optString("order_id"));
                         startActivity(intent);
                         finish();
 
@@ -588,13 +602,9 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-
         });
     }
-
-
 
 
 }

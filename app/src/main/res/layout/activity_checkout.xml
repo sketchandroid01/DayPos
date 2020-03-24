@@ -266,11 +266,49 @@
 
                 </RelativeLayout>
 
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Customer feedback:"
+                    />
+                <RadioGroup
+                    android:id="@+id/radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <RadioButton
+                        android:id="@+id/radio1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Excellent"
+                        />
+                    <RadioButton
+                        android:id="@+id/radio2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Average"
+                        />
+                    <RadioButton
+                        android:id="@+id/radio3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Poor"
+                        />
+                </RadioGroup>
+
+
+
                 <EditText
                     android:id="@+id/edt_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="150dp"
+                    android:minHeight="80dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/border_grey"
                     android:gravity="start"
@@ -278,6 +316,7 @@
                     android:textSize="15sp"
                     android:maxLength="150"
                     android:hint="Add note"
+                    android:autofillHints="Add note"
                     />
 
                 <LinearLayout

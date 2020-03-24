@@ -43,6 +43,7 @@ public class ApiConstant {
     public static final String searchToBill                  = BASE_URL + "searchToBill";
     public static final String logout                        = BASE_URL + "logout";
     public static final String top_customer                  = BASE_URL + "top_customer";
+    public static final String email_invoice                 = BASE_URL + "email_invoice";
 
 
 

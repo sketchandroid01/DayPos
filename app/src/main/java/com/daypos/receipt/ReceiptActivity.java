@@ -1,28 +1,41 @@
-package com.daypos.fragments.billhistory;
+package com.daypos.receipt;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
+import com.daypos.container.Container;
+import com.daypos.fragments.billhistory.OrderDetails;
+import com.daypos.fragments.customers.CustomerData;
+import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.fragments.customers.SearchCustomerAdapter;
 import com.daypos.fragments.home.ProductData;
 import com.daypos.fragments.settings.ShowMsg;
-import com.daypos.fragments.settings.SpnModelsItem;
 import com.daypos.localdb.DatabaseHelper;
 import com.daypos.localdb.PrinterData;
 import com.daypos.network.ApiConstant;
@@ -30,6 +43,7 @@ import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
+import com.daypos.utils.PriceValueFilter;
 import com.epson.epos2.Epos2Exception;
 import com.epson.epos2.printer.Printer;
 import com.epson.epos2.printer.PrinterStatusInfo;
@@ -46,123 +60,84 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class OrderDetailsActivity extends AppCompatActivity implements
-        SwipeRefreshLayout.OnRefreshListener,
+public class ReceiptActivity extends AppCompatActivity implements
+        View.OnClickListener,
         ReceiveListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe_refresh_layout;
-    @BindView(R.id.tv_return_id) TextView tv_return_id;
-    @BindView(R.id.tv_total_value) TextView tv_total_value;
-    @BindView(R.id.tv_cashier_name) TextView tv_cashier_name;
-    @BindView(R.id.tv_pos_name) TextView tv_pos_name;
-    @BindView(R.id.recyclerview) RecyclerView recyclerview;
-    @BindView(R.id.tv_total_value2) TextView tv_total_value2;
-    @BindView(R.id.tv_payment_mode) TextView tv_payment_mode;
-    @BindView(R.id.tv_total_value3) TextView tv_total_value3;
-    @BindView(R.id.tv_date_time) TextView tv_date_time;
-    @BindView(R.id.tv_bill_no) TextView tv_bill_no;
+    @BindView(R.id.tv_paid_amount) TextView tv_paid_amount;
+    @BindView(R.id.tv_change_amt) TextView tv_change_amt;
+    @BindView(R.id.edt_emailid) EditText edt_emailid;
+    @BindView(R.id.iv_send) ImageView iv_send;
+    @BindView(R.id.linear_print) LinearLayout linear_print;
+    @BindView(R.id.rel_new_sale) RelativeLayout rel_new_sale;
 
 
-
-    private OrderDetails orderDetails;
     private GlobalClass globalClass;
     private Preferense preferense;
-    private ArrayList<ProductData> productDataArrayList;
-
-    public static Activity activity;
-    PrinterData printerData;
     private DatabaseHelper databaseHelper;
     ProgressDialog progressDialog;
+    PrinterData printerData;
+    OrderDetails orderDetails;
+    private ArrayList<ProductData> productDataArrayList;
+    private static DecimalFormat df = new DecimalFormat("0.00");
+    String order_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_details);
+        setContentView(R.layout.activity_receipt);
         ButterKnife.bind(this);
-        activity = OrderDetailsActivity.this;
+        initViews();
 
-        iniViews();
     }
 
-    private void iniViews(){
+
+    private void initViews() {
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
+        getSupportActionBar().setTitle("");
 
+
+        iv_send.setOnClickListener(this);
+        linear_print.setOnClickListener(this);
+        rel_new_sale.setOnClickListener(this);
+
+
+        databaseHelper = new DatabaseHelper(this);
         preferense = new Preferense(this);
         globalClass = (GlobalClass) getApplicationContext();
-        swipe_refresh_layout.setOnRefreshListener(this);
-        recyclerview.setLayoutManager(new LinearLayoutManager(this));
+        printerData = databaseHelper.getActivePrinter();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
 
-            orderDetails = (OrderDetails) bundle.getSerializable("datas");
+            tv_paid_amount.setText(bundle.getString("pay_mat"));
+            tv_change_amt.setText(bundle.getString("change_amt"));
 
-            getSupportActionBar().setTitle(orderDetails.getBill_no());
-            tv_total_value.setText(orderDetails.getTotal_amount());
+            order_id = bundle.getString("order_id");
 
-            tv_bill_no.setText("#"+orderDetails.getBill_no());
-            tv_date_time.setText(Commons.convertDateFormatBill(orderDetails.getDate()));
-
-
-            tv_total_value2.setText(orderDetails.getTotal_amount());
-            tv_total_value3.setText(orderDetails.getTotal_amount());
-            tv_payment_mode.setText(orderDetails.getPayment_type());
-            tv_cashier_name.setText("Cashier: "+orderDetails.getCashier());
-
-
-            if (orderDetails.getIs_returned().equals("y")){
-                tv_return_id.setText(orderDetails.getReturn_no());
-                tv_return_id.setVisibility(View.VISIBLE);
-            }else {
-                tv_return_id.setVisibility(View.INVISIBLE);
-            }
         }
+
 
         getOrdersDetailsList();
-
-
-        databaseHelper = new DatabaseHelper(this);
-        printerData = databaseHelper.getActivePrinter();
-
-
-
     }
 
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_refund, menu);
+    public void onClick(View v) {
 
+        switch (v.getId()){
 
-        MenuItem menuItem = menu.findItem(R.id.refund);
-        MenuItemCompat.setActionView(menuItem, R.layout.item_refund);
-        TextView refund = (TextView) MenuItemCompat.getActionView(menuItem);
+            case R.id.iv_send:
 
-        if (orderDetails != null){
-            if (orderDetails.getIs_returned().equals("y")){
-                menuItem.setVisible(false);
-            }
-        }
+                if (edt_emailid.getText().toString().trim().length() > 0){
+                    sendEmailReceipt(edt_emailid.getText().toString());
+                }
 
-
-        refund.setOnClickListener(v -> {
-            gotoReturnScreen();
-
-        });
-
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
                 break;
 
-            case R.id.print_receipt:
+            case R.id.linear_print:
 
                 if (databaseHelper.getActivePrinterLength() > 0){
                     runPrintReceiptSequence_EPSON();
@@ -174,23 +149,31 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
                 break;
 
+            case R.id.rel_new_sale:
+
+                Intent intent = new Intent(ReceiptActivity.this, Container.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+
+                break;
+
+
         }
-        return (super.onOptionsItemSelected(menuItem));
+
     }
 
-    @Override
-    public void onRefresh() {
-        getOrdersDetailsList();
-    }
 
-    private void getOrdersDetailsList() {
+    private void sendEmailReceipt(String email) {
 
-        productDataArrayList = new ArrayList<>();
-
-        String url = ApiConstant.order_detail;
+        String url = ApiConstant.email_invoice;
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("order_id", orderDetails.getId());
+        params.put("user_id", globalClass.getUserId());
+        params.put("order_id", order_id);
+        params.put("email", email);
+        params.put("store_id", "");
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -200,6 +183,54 @@ public class OrderDetailsActivity extends AppCompatActivity implements
                     int status = response.optInt("status");
                     String message = response.optString("message");
                     if (status == 1) {
+
+                        Toasty.success(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();
+
+                    }else {
+                        Toasty.error(getApplicationContext(),
+                                message, Toast.LENGTH_LONG, true).show();
+                    }
+
+                    Commons.hideSoftKeyboard(ReceiptActivity.this);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+
+
+    /////////////
+    private void getOrdersDetailsList() {
+
+        productDataArrayList = new ArrayList<>();
+
+        String url = ApiConstant.order_detail;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("order_id", order_id);
+
+        new PostDataParser(this, url, params, true, response -> {
+
+            if (response != null) {
+
+                try {
+                    int status = response.optInt("status");
+                    String message = response.optString("message");
+                    if (status == 1) {
+
+                        orderDetails = new OrderDetails();
+                        JSONObject bill_detail = response.getJSONObject("bill_detail");
+                        orderDetails.setBill_no(bill_detail.optString("invoice"));
+                        orderDetails.setTotal_amount(bill_detail.optString("total_amount"));
+                        orderDetails.setPayment_type(bill_detail.optString("payment_mode"));
+                        orderDetails.setDate(bill_detail.optString("created"));
+
 
                         JSONArray data = response.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++){
@@ -222,11 +253,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
                         }
 
-                        setData();
-                    }
 
-                    if (swipe_refresh_layout.isRefreshing()){
-                        swipe_refresh_layout.setRefreshing(false);
+
                     }
 
                 } catch (Exception e) {
@@ -237,25 +265,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
         });
     }
-
-    private void setData(){
-
-        OrderProductAdapter orderProductAdapter =
-                new OrderProductAdapter(OrderDetailsActivity.this,
-                productDataArrayList);
-        recyclerview.setAdapter(orderProductAdapter);
-    }
-
-    private void gotoReturnScreen(){
-
-        Intent intent = new Intent(OrderDetailsActivity.this, ReturnActivity.class);
-        intent.putExtra("array", productDataArrayList);
-        intent.putExtra("order_id", orderDetails.getId());
-        intent.putExtra("total", orderDetails.getTotal_amount());
-        startActivity(intent);
-    }
-
-
 
 
     private Printer mEpsonPrinter = null;
@@ -536,7 +545,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements
     }
 
     /// 58 mm print
-    private static DecimalFormat df = new DecimalFormat("0.00");
     private boolean createReceiptData58() {
         String method = "";
         StringBuilder textData = new StringBuilder();
@@ -636,7 +644,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
         } catch (Exception e) {
             e.printStackTrace();
-            ShowMsg.showException(e, method, OrderDetailsActivity.this);
+            ShowMsg.showException(e, method, ReceiptActivity.this);
             return false;
         }
 
@@ -742,7 +750,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
             mEpsonPrinter.addCut(Printer.CUT_FEED);
         }
         catch (Exception e) {
-            ShowMsg.showException(e, method, getApplicationContext());
+            ShowMsg.showException(e, method, ReceiptActivity.this);
             return false;
         }
 
@@ -750,4 +758,5 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
         return true;
     }
+
 }

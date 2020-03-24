@@ -271,6 +271,18 @@
         </activity>
 
 
+        <activity android:name=".receipt.ReceiptActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

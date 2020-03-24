@@ -127,7 +127,6 @@ public class Home extends Fragment implements
             }
         });
 
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
