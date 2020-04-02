@@ -1,6 +1,9 @@
 package com.daypos.fragments.home;
 
+import com.daypos.modifier.ModifierItemsData;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ProductData implements Serializable {
 
@@ -13,11 +16,12 @@ public class ProductData implements Serializable {
     private String bar_code;
     private String item_color;
     private String item_shape;
-    private String is_attribute;
+    private String is_modifier;
     private String category_id;
     private String sold_option;
     private String is_fav;
 
+    ArrayList<ModifierItemsData> modifierList;
 
     private String item_id;
     private String qty;
@@ -100,12 +104,12 @@ public class ProductData implements Serializable {
         return this;
     }
 
-    public String getIs_attribute() {
-        return is_attribute;
+    public String getIs_modifier() {
+        return is_modifier;
     }
 
-    public ProductData setIs_attribute(String is_attribute) {
-        this.is_attribute = is_attribute;
+    public ProductData setIs_modifier(String is_modifier) {
+        this.is_modifier = is_modifier;
         return this;
     }
 
@@ -148,6 +152,15 @@ public class ProductData implements Serializable {
 
     public ProductData setQty(String qty) {
         this.qty = qty;
+        return this;
+    }
+
+    public ArrayList<ModifierItemsData> getModifierList() {
+        return modifierList;
+    }
+
+    public ProductData setModifierList(ArrayList<ModifierItemsData> modifierList) {
+        this.modifierList = modifierList;
         return this;
     }
 }

@@ -215,7 +215,7 @@ public class FragProductList extends Fragment implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setCategory_id(object.optString("category_id"));
                                         productData.setSold_option(object.optString("sold_option"));
                                         productData.setIs_fav(object.optString("fav"));
@@ -302,7 +302,7 @@ public class FragProductList extends Fragment implements
                                         }
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
 
 

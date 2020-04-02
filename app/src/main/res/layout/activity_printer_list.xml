@@ -14,7 +14,6 @@
         android:background="@color/colorAccent"
         app:titleTextColor="@color/white"
         app:popupTheme="@style/AppTheme.PopupOverlay">
-
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView

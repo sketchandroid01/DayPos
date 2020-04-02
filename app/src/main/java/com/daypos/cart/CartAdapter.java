@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daypos.R;
 import com.daypos.container.DrawerData;
 import com.daypos.fragments.home.ProductData;
+import com.daypos.modifier.ModifierItemsData;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
             int qty = Integer.parseInt(cartData.getQty());
 
             float total_price = price * qty;
+            total_price = total_price + getModifier_price(cartData.getModifierItemsList(), cartData.getModifiers(), qty);
 
             holder.tv_calculate_price.setText(df.format(total_price));
 
@@ -57,7 +60,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
             e.printStackTrace();
         }
 
-        holder.tv_quantity.setOnClickListener(v -> {
+        getModifier_names(holder.tv_modifier_name, cartData.getModifiers(), cartData.getModifierItemsList());
+
+        holder.linearProduct.setOnClickListener(v -> {
             mClickListenerEdit.onItemClickEdit(position, cartData);
         });
 
@@ -75,7 +80,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
 
     public class myViewHolder extends RecyclerView.ViewHolder {
         ImageView delete_iv;
-        TextView tv_product_name, tv_quantity, tv_calculate_price;
+        TextView tv_product_name, tv_quantity, tv_calculate_price, tv_modifier_name;
+        LinearLayout linearProduct;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +89,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
             tv_product_name = itemView.findViewById(R.id.tv_product_name);
             tv_quantity = itemView.findViewById(R.id.tv_quantity);
             tv_calculate_price = itemView.findViewById(R.id.tv_calculate_price);
+            tv_modifier_name = itemView.findViewById(R.id.tv_modifier_name);
+            linearProduct = itemView.findViewById(R.id.linearProduct);
         }
     }
 
@@ -104,6 +112,46 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
 
     public interface ItemClickListenerDetete {
         void onItemClickDelete(int position, CartData cartData);
+    }
+
+
+    private void getModifier_names(TextView textView, String modifier,
+                                   ArrayList<ModifierItemsData> arrayList){
+
+        String[] array = modifier.split(",");
+        StringBuilder sbString = new StringBuilder("");
+        for(ModifierItemsData itemsData : arrayList){
+
+            for (String ss : array) {
+                if (ss.equals(itemsData.getId())) {
+                    sbString.append(itemsData.getName()).append(", ");
+                }
+            }
+
+        }
+        String strList = sbString.toString();
+        if( strList.length() > 0 )
+            strList = strList.substring(0, strList.length() - 2);
+
+        textView.setText(strList);
+
+    }
+
+    private float getModifier_price(ArrayList<ModifierItemsData> arrayList,
+                                    String modifier, int qty){
+
+        String[] array = modifier.split(",");
+        float price = 0;
+        for(ModifierItemsData itemsData : arrayList){
+
+            for (String ss : array) {
+                if (ss.equals(itemsData.getId())) {
+                    price = price + (Float.parseFloat(itemsData.getPrice()) * qty);
+                }
+            }
+        }
+
+        return price;
     }
 
 }

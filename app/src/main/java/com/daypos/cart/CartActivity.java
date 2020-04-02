@@ -1,9 +1,11 @@
 package com.daypos.cart;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,8 +26,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.daypos.R;
 import com.daypos.checkout.Checkout;
 import com.daypos.fragments.customers.DialogAddCustomer;
+import com.daypos.modifier.ModifierItemsData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
+import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 
 import org.json.JSONArray;
@@ -50,8 +55,9 @@ public class CartActivity extends AppCompatActivity implements
     @BindView(R.id.btn_checkout) Button btn_checkout;
     @BindView(R.id.btn_more_shop) Button btn_more_shop;
     @BindView(R.id.tv_total_price) TextView tv_total_price;
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipe_refresh_layout;
+    @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe_refresh_layout;
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
     ArrayList<CartData> cartDataArrayList;
     GlobalClass globalClass;
@@ -75,6 +81,8 @@ public class CartActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.mipmap.icon_back);
         getSupportActionBar().setTitle("Cart");
+
+        swipe_refresh_layout.setVisibility(View.GONE);
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
@@ -161,7 +169,7 @@ public class CartActivity extends AppCompatActivity implements
         new PostDataParser(this, url, params, true, response -> {
 
             if (response != null) {
-
+                int total_qty = 0;
                 try {
                     int status = response.optInt("status");
                     String message = response.optString("message");
@@ -178,6 +186,9 @@ public class CartActivity extends AppCompatActivity implements
                             String quantity = object.optString("quantity");
                             String price = object.optString("price");
                             String cost = object.optString("cost");
+                            String modifiers = object.optString("modifiers");
+
+                            total_qty = total_qty + Integer.parseInt(quantity);
 
 
                             CartData cartData = new CartData();
@@ -187,21 +198,54 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setPrice(price);
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
+                            cartData.setModifiers(modifiers);
+
+
+                            int qty = Integer.parseInt(cartData.getQty());
+
+                            String[] array = modifiers.split(",");
+                            /// modifier
+                            float modifier_price = 0;
+                            ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                            JSONArray item_modifire = object.getJSONArray("item_modifire");
+                            for (int j = 0; j < item_modifire.length(); j++){
+                                JSONObject object2 = item_modifire.getJSONObject(j);
+
+                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                modifierItemsData.setId(object2.optString("id"));
+                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                               for (String ss : array){
+                                   if (ss.equals(object2.optString("id"))){
+                                       modifier_price = modifier_price
+                                               + (Float.parseFloat(object2.optString("price")) * qty);
+                                   }
+                               }
+
+                            }
+                            cartData.setModifierItemsList(modifierItemsDataArrayList);
+
+
 
                             cartDataArrayList.add(cartData);
 
                             double price_ = Float.parseFloat(cartData.getPrice());
-                            int qty = Integer.parseInt(cartData.getQty());
                             double total_price = price_ * qty;
+                            total_price = total_price + modifier_price;
                             total_cart_value = total_cart_value + total_price;
                         }
 
                         Collections.reverse(cartDataArrayList);
 
+
+                        swipe_refresh_layout.setVisibility(View.VISIBLE);
                     }
 
-                    globalClass.setCart_counter(""+cartDataArrayList.size());
-                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    globalClass.setCart_counter(""+total_qty);
+                    getSupportActionBar().setTitle("Cart ("+total_qty+")");
                     setCartData();
 
                     swipe_refresh_layout.setRefreshing(false);
@@ -222,11 +266,25 @@ public class CartActivity extends AppCompatActivity implements
         cartAdapter.setClickListenerDetete(this);
 
         tv_total_price.setText(df.format(total_cart_value));
+
+        scrollView.post(() -> {
+            scrollView.fullScroll(View.FOCUS_DOWN);
+        });
+
     }
 
     @Override
     public void onItemClickEdit(int position, CartData cartData) {
-        editDialog(cartData);
+
+        if (cartData.getModifierItemsList().size() > 0){
+            selected_cartdata = cartData;
+            Intent intent = new Intent(CartActivity.this, CartModifierEditAct.class);
+            intent.putExtra("datas", cartData);
+            startActivityForResult(intent, MODIFIER_REQUEST);
+        }else {
+            editDialog(cartData);
+        }
+
     }
 
     @Override
@@ -331,11 +389,12 @@ public class CartActivity extends AppCompatActivity implements
         params.put("user_id", globalClass.getUserId());
         params.put("cart_row_id", cart_row_id);
         params.put("quantity", quantity_);
+        params.put("modifiers", modifires_ids);
 
         new PostDataParser(this, url, params, true, response -> {
 
             if (response != null) {
-
+                int total_qty = 0;
                 try {
                     int status = response.optInt("status");
                     String message = response.optString("message");
@@ -352,6 +411,9 @@ public class CartActivity extends AppCompatActivity implements
                             String quantity = object.optString("quantity");
                             String price = object.optString("price");
                             String cost = object.optString("cost");
+                            String modifiers = object.optString("modifiers");
+
+                            total_qty = total_qty + Integer.parseInt(quantity);
 
 
                             CartData cartData = new CartData();
@@ -361,13 +423,43 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setPrice(price);
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
+                            cartData.setModifiers(modifiers);
+
+                            int qty = Integer.parseInt(cartData.getQty());
+
+                            String[] array = modifiers.split(",");
+                            /// modifier
+                            float modifier_price = 0;
+                            ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                            JSONArray item_modifire = object.getJSONArray("item_modifire");
+                            for (int j = 0; j < item_modifire.length(); j++){
+                                JSONObject object2 = item_modifire.getJSONObject(j);
+
+                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                modifierItemsData.setId(object2.optString("id"));
+                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                for (String ss : array){
+                                    if (ss.equals(object2.optString("id"))){
+                                        modifier_price = modifier_price
+                                                + (Float.parseFloat(object2.optString("price")) * qty);
+                                    }
+                                }
+
+                            }
+                            cartData.setModifierItemsList(modifierItemsDataArrayList);
+
 
                             cartDataArrayList.add(cartData);
 
 
                             double price_ = Float.parseFloat(cartData.getPrice());
-                            int qty = Integer.parseInt(cartData.getQty());
+
                             double total_price = price_ * qty;
+                            total_price = total_price + modifier_price;
                             total_cart_value = total_cart_value + total_price;
 
                         }
@@ -376,8 +468,8 @@ public class CartActivity extends AppCompatActivity implements
 
                     }
 
-                    globalClass.setCart_counter(""+cartDataArrayList.size());
-                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    globalClass.setCart_counter(""+total_qty);
+                    getSupportActionBar().setTitle("Cart ("+total_qty+")");
                     setCartData();
 
                 } catch (Exception e) {
@@ -404,7 +496,7 @@ public class CartActivity extends AppCompatActivity implements
         new PostDataParser(this, url, params, true, response -> {
 
             if (response != null) {
-
+                int total_qty = 0;
                 try {
                     int status = response.optInt("status");
                     String message = response.optString("message");
@@ -421,7 +513,9 @@ public class CartActivity extends AppCompatActivity implements
                             String quantity = object.optString("quantity");
                             String price = object.optString("price");
                             String cost = object.optString("cost");
+                            String modifiers = object.optString("modifiers");
 
+                            total_qty = total_qty + Integer.parseInt(quantity);
 
                             CartData cartData = new CartData();
                             cartData.setId(id);
@@ -430,13 +524,43 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setPrice(price);
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
+                            cartData.setModifiers(modifiers);
+
+                            int qty = Integer.parseInt(cartData.getQty());
+
+                            String[] array = modifiers.split(",");
+
+                            /// modifier
+                            float modifier_price = 0;
+                            ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                            JSONArray item_modifire = object.getJSONArray("item_modifire");
+                            for (int j = 0; j < item_modifire.length(); j++){
+                                JSONObject object2 = item_modifire.getJSONObject(j);
+
+                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                modifierItemsData.setId(object2.optString("id"));
+                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                for (String ss : array){
+                                    if (ss.equals(object2.optString("id"))){
+                                        modifier_price = modifier_price
+                                                + (Float.parseFloat(object2.optString("price")) * qty);
+                                    }
+                                }
+
+                            }
+                            cartData.setModifierItemsList(modifierItemsDataArrayList);
+
 
                             cartDataArrayList.add(cartData);
 
 
                             double price_ = Float.parseFloat(cartData.getPrice());
-                            int qty = Integer.parseInt(cartData.getQty());
                             double total_price = price_ * qty;
+                            total_price = total_price + modifier_price;
                             total_cart_value = total_cart_value + total_price;
 
                         }
@@ -445,8 +569,8 @@ public class CartActivity extends AppCompatActivity implements
 
                     }
 
-                    globalClass.setCart_counter(""+cartDataArrayList.size());
-                    getSupportActionBar().setTitle("Cart ("+cartDataArrayList.size()+")");
+                    globalClass.setCart_counter(""+total_qty);
+                    getSupportActionBar().setTitle("Cart ("+total_qty+")");
                     setCartData();
 
                     if (cartDataArrayList.size() == 0){
@@ -460,5 +584,26 @@ public class CartActivity extends AppCompatActivity implements
             }
 
         });
+    }
+
+
+
+    ///
+    private static final int MODIFIER_REQUEST = 1231;
+    String modifires_ids = "";
+    private CartData selected_cartdata;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if( requestCode == MODIFIER_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            modifires_ids = data.getStringExtra("ids");
+            String qty = data.getStringExtra("qty");
+            Log.d(Commons.TAG, "modifires_ids = "+modifires_ids);
+
+            editCart(selected_cartdata.getId(), qty);
+        }
     }
 }

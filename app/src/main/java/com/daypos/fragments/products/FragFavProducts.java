@@ -1,13 +1,9 @@
 package com.daypos.fragments.products;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -194,7 +190,7 @@ public class FragFavProducts extends Fragment implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setCategory_id(object.optString("category_id"));
                                         productData.setSold_option(object.optString("sold_option"));
                                         productData.setIs_fav("1");
@@ -280,7 +276,7 @@ public class FragFavProducts extends Fragment implements
                                         }
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav("1");
 
                                         productDataArrayList.add(productData);

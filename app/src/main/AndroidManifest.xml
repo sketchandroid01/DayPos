@@ -252,9 +252,6 @@
             </intent-filter>
         </activity>
 
-
-
-
         <activity
             android:name=".fragments.settings.EpsonDiscoveryActivity"
             android:windowSoftInputMode="stateHidden"
@@ -270,7 +267,6 @@
 
         </activity>
 
-
         <activity android:name=".receipt.ReceiptActivity"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="stateHidden"
@@ -280,6 +276,27 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".modifier.ModifierActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".cart.CartModifierEditAct"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
 
 
 

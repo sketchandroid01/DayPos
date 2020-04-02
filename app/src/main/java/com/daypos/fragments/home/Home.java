@@ -1,9 +1,11 @@
 package com.daypos.fragments.home;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,9 +34,12 @@ import com.daypos.fragments.customers.CustomerSearchActivity;
 import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.fragments.customers.DialogRemoveSelectCustomer;
 import com.daypos.fragments.products.SearchProductList;
+import com.daypos.modifier.ModifierActivity;
+import com.daypos.modifier.ModifierItemsData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.CircleAnimationUtil;
+import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 import com.daypos.utils.Preferense;
 
@@ -77,6 +82,11 @@ public class Home extends Fragment implements
     Menu menu;
 
     private int last_scroll_position = 0;
+    private static final int MODIFIER_REQUEST = 1231;
+    private ProductData selected_product;
+    private View selected_view;
+
+
     public Home() {}
 
     @Override
@@ -344,8 +354,32 @@ public class Home extends Fragment implements
                                         }
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
+
+
+                                        /// modifier
+                                        productData.setIs_modifier(object.optString("is_modifire"));
+                                        ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                                        if (productData.getIs_modifier().equals("1")){
+
+                                            JSONArray modifire = object.getJSONArray("modifire");
+                                            for (int j = 0; j < modifire.length(); j++){
+                                                JSONObject object2 = modifire.getJSONObject(j);
+
+                                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                                modifierItemsData.setId(object2.optString("id"));
+                                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                            }
+
+                                        }
+                                        productData.setModifierList(modifierItemsDataArrayList);
+
+
 
 
                                         productDataArrayList.add(productData);
@@ -483,8 +517,30 @@ public class Home extends Fragment implements
                                         }
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
+
+
+                                        /// modifier
+                                        productData.setIs_modifier(object.optString("is_modifire"));
+                                        ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                                        if (productData.getIs_modifier().equals("1")){
+
+                                            JSONArray modifire = object.getJSONArray("modifire");
+                                            for (int j = 0; j < modifire.length(); j++){
+                                                JSONObject object2 = modifire.getJSONObject(j);
+
+                                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                                modifierItemsData.setId(object2.optString("id"));
+                                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                            }
+
+                                        }
+                                        productData.setModifierList(modifierItemsDataArrayList);
 
 
                                         productDataArrayList.add(productData);
@@ -517,7 +573,16 @@ public class Home extends Fragment implements
     @Override
     public void onItemClick(ProductData productData, View view) {
 
-        makeFlyAnimation(view, productData.getId());
+        if (productData.getIs_modifier().equals("1")){
+            Intent intent = new Intent(getActivity(), ModifierActivity.class);
+            intent.putExtra("datas", productData);
+            startActivityForResult(intent, MODIFIER_REQUEST);
+
+            selected_product = productData;
+            selected_view = view;
+        }else {
+            makeFlyAnimation(view, productData.getId());
+        }
 
     }
 
@@ -561,6 +626,7 @@ public class Home extends Fragment implements
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("item_id", product_id);
+        params.put("modifiers", modifires_ids);
         params.put("type", "1");
 
         new PostDataParser(getActivity(), url, params, false, response -> {
@@ -580,6 +646,8 @@ public class Home extends Fragment implements
                         /*Toasty.success(getActivity(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();*/
+
+                        modifires_ids = "";
                     }
 
                 } catch (Exception e) {
@@ -601,7 +669,7 @@ public class Home extends Fragment implements
         new PostDataParser(getActivity(), url, params, false, response -> {
 
             if (response != null) {
-
+                int total_qty = 0;
                 try {
                     int status = response.optInt("status");
                     String message = response.optString("message");
@@ -609,9 +677,17 @@ public class Home extends Fragment implements
 
                         JSONArray data = response.getJSONArray("data");
 
-                        cart_counter.setText(""+data.length());
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject object = data.getJSONObject(i);
 
-                        globalClass.setCart_counter(""+data.length());
+                            String quantity = object.optString("quantity");
+
+                            total_qty = total_qty + Integer.parseInt(quantity);
+                        }
+
+                        cart_counter.setText(""+total_qty);
+
+                        globalClass.setCart_counter(""+total_qty);
                     }
 
                 } catch (Exception e) {
@@ -667,6 +743,20 @@ public class Home extends Fragment implements
             }
 
         });
+    }
+
+
+
+    String modifires_ids = "";
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if( requestCode == MODIFIER_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            modifires_ids = data.getStringExtra("ids");
+            Log.d(Commons.TAG, "modifires_ids = "+modifires_ids);
+
+            makeFlyAnimation(selected_view, selected_product.getId());
+        }
     }
 
 }

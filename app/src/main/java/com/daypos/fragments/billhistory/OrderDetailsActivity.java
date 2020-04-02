@@ -25,6 +25,7 @@ import com.daypos.fragments.settings.ShowMsg;
 import com.daypos.fragments.settings.SpnModelsItem;
 import com.daypos.localdb.DatabaseHelper;
 import com.daypos.localdb.PrinterData;
+import com.daypos.modifier.ModifierItemsData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
@@ -217,6 +218,25 @@ public class OrderDetailsActivity extends AppCompatActivity implements
                             productData.setName(item_name);
                             productData.setQty(quantity);
                             productData.setPrice(price);
+
+
+                            /// modifier
+                            ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                            JSONArray item_modifire = object.getJSONArray("item_modifire");
+                            for (int j = 0; j < item_modifire.length(); j++){
+                                JSONObject object2 = item_modifire.getJSONObject(j);
+
+                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                modifierItemsData.setId(object2.optString("id"));
+                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                modifierItemsDataArrayList.add(modifierItemsData);
+
+
+                            }
+                            productData.setModifierList(modifierItemsDataArrayList);
+
 
                             productDataArrayList.add(productData);
 

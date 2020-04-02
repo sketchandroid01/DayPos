@@ -2,11 +2,13 @@ package com.daypos.fragments.products;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +33,11 @@ import com.daypos.barcodeLibs.FullScannerActivity;
 import com.daypos.cart.CartActivity;
 import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
+import com.daypos.modifier.ModifierActivity;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.CircleAnimationUtil;
+import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
 
 import org.json.JSONArray;
@@ -127,9 +131,7 @@ public class SearchProductList extends AppCompatActivity implements
         });
 
         iv_barcode_search.setOnClickListener(v -> {
-
             launchActivity(FullScannerActivity.class);
-
         });
 
 
@@ -233,7 +235,7 @@ public class SearchProductList extends AppCompatActivity implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
 
                                         productDataArrayList.add(productData);
@@ -268,7 +270,18 @@ public class SearchProductList extends AppCompatActivity implements
 
     @Override
     public void onItemClick(ProductData productData, View view) {
-        makeFlyAnimation(view, productData.getId());
+
+        if (productData.getIs_modifier().equals("1")){
+            Intent intent = new Intent(SearchProductList.this, ModifierActivity.class);
+            intent.putExtra("datas", productData);
+            startActivityForResult(intent, MODIFIER_REQUEST);
+
+            selected_product = productData;
+            selected_view = view;
+        }else {
+            makeFlyAnimation(view, productData.getId());
+        }
+
     }
 
     private void makeFlyAnimation(View view, String id) {
@@ -312,6 +325,7 @@ public class SearchProductList extends AppCompatActivity implements
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("item_id", product_id);
+        params.put("modifiers", modifires_ids);
         params.put("type", "1");
 
         new PostDataParser(this, url, params, true, response -> {
@@ -330,6 +344,8 @@ public class SearchProductList extends AppCompatActivity implements
                         /*Toasty.success(getApplicationContext(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();*/
+
+                        modifires_ids = "";
                     }
 
                 } catch (Exception e) {
@@ -384,7 +400,7 @@ public class SearchProductList extends AppCompatActivity implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
 
 
@@ -421,11 +437,9 @@ public class SearchProductList extends AppCompatActivity implements
             url = ApiConstant.add_to_favourite;
         }
 
-
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("item_id", productData.getId());
-
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -455,7 +469,6 @@ public class SearchProductList extends AppCompatActivity implements
     ////////// goto barcode scanner ...
     private static final int ZXING_CAMERA_PERMISSION = 1;
     private Class<?> mClss;
-
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -469,7 +482,8 @@ public class SearchProductList extends AppCompatActivity implements
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,  String permissions[],
+                                           int[] grantResults) {
         switch (requestCode) {
             case ZXING_CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -486,6 +500,23 @@ public class SearchProductList extends AppCompatActivity implements
 
 
 
+    ////
+    private static final int MODIFIER_REQUEST = 1231;
+    private ProductData selected_product;
+    private View selected_view;
+    String modifires_ids = "";
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if( requestCode == MODIFIER_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            modifires_ids = data.getStringExtra("ids");
+            Log.d(Commons.TAG, "modifires_ids = "+modifires_ids);
+
+            makeFlyAnimation(selected_view, selected_product.getId());
+        }
+    }
 
 }

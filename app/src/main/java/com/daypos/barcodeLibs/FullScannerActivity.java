@@ -291,6 +291,7 @@ public class FullScannerActivity extends BaseScannerActivity implements
         params.put("user_id", globalClass.getUserId());
         params.put("item_id", "");
         params.put("bar_code", barcode);
+        params.put("modifires", "");
         params.put("type", "2");
 
         new PostDataParser(this, url, params, true, response -> {
@@ -309,6 +310,7 @@ public class FullScannerActivity extends BaseScannerActivity implements
                        /* Toasty.success(getApplicationContext(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();*/
+
 
                     }else {
 

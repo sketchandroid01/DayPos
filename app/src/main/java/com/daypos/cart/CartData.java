@@ -1,6 +1,11 @@
 package com.daypos.cart;
 
-public class CartData {
+import com.daypos.modifier.ModifierItemsData;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class CartData implements Serializable {
 
     private String id;
     private String product_id;
@@ -12,6 +17,8 @@ public class CartData {
     private String mrp;
     private String price;
     private String special_price;
+    private String modifiers;
+    private ArrayList<ModifierItemsData> modifierItemsList;
 
 
     public String getId() {
@@ -101,6 +108,24 @@ public class CartData {
 
     public CartData setSpecial_price(String special_price) {
         this.special_price = special_price;
+        return this;
+    }
+
+    public String getModifiers() {
+        return modifiers;
+    }
+
+    public CartData setModifiers(String modifiers) {
+        this.modifiers = modifiers;
+        return this;
+    }
+
+    public ArrayList<ModifierItemsData> getModifierItemsList() {
+        return modifierItemsList;
+    }
+
+    public CartData setModifierItemsList(ArrayList<ModifierItemsData> modifierItemsList) {
+        this.modifierItemsList = modifierItemsList;
         return this;
     }
 }

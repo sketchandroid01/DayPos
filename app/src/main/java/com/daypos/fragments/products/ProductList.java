@@ -184,7 +184,7 @@ public class ProductList extends AppCompatActivity implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
 
 
@@ -272,7 +272,7 @@ public class ProductList extends AppCompatActivity implements
 
                                         productData.setTaxes(object.optString("taxes"));
                                         productData.setItem_color(object.optString("item_color"));
-                                        productData.setIs_attribute(object.optString("is_attribute"));
+                                        productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
 
                                         productDataArrayList.add(productData);
