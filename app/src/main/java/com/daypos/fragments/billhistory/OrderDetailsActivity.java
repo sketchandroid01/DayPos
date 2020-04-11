@@ -175,6 +175,14 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
                 break;
 
+            case R.id.email_receipt:
+
+                Intent intent = new Intent(OrderDetailsActivity.this, EmailReceiptActivity.class);
+                intent.putExtra("order_id", orderDetails.getId());
+                startActivity(intent);
+
+                break;
+
         }
         return (super.onOptionsItemSelected(menuItem));
     }
@@ -211,6 +219,10 @@ public class OrderDetailsActivity extends AppCompatActivity implements
                             String quantity = object.optString("quantity");
                             String price = object.optString("price");
                             String item_name = object.optString("item_name");
+                            String sold_option = object.optString("sold_option");
+                            String weight_quantity = object.optString("weight_quantity");
+
+
 
                             ProductData productData = new ProductData();
                             productData.setId(id);
@@ -218,6 +230,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
                             productData.setName(item_name);
                             productData.setQty(quantity);
                             productData.setPrice(price);
+                            productData.setSold_option(sold_option);
 
 
                             /// modifier
@@ -594,7 +607,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
                 String p_name = productData.getName();
 
-                int qty = Integer.parseInt(productData.getQty());
+                float qty = Float.parseFloat(productData.getQty());
                 float price = Float.parseFloat(productData.getPrice());
                 float total_price = price * qty;
 
@@ -702,7 +715,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements
 
                 String p_name = productData.getName();
 
-                int qty = Integer.parseInt(productData.getQty());
+                float qty = Float.parseFloat(productData.getQty());
                 float price = Float.parseFloat(productData.getPrice());
                 float total_price = price * qty;
 

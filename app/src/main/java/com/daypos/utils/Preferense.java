@@ -26,6 +26,7 @@ public class Preferense {
     public static final String Pref_Pin = "pincode";
     public static final String employee_id = "employee_id";
     public static final String printer_path = "printer_path";
+    public static final String enable_open_ticket = "enable_open_ticket";
 
     private static final String OPENDEVICENAME = "OPENDEVICENAME";
     private static final String CONNECTIONTYPE = "CONNECTIONTYPE";
@@ -69,7 +70,6 @@ public class Preferense {
 
     public void setToGlobal(){
         globalClass.setUserId(sharedPreferences.getString(PREF_id, ""));
-
     }
 
 

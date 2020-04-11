@@ -34,6 +34,7 @@ import com.daypos.cart.CartActivity;
 import com.daypos.fragments.home.ProductAdapter;
 import com.daypos.fragments.home.ProductData;
 import com.daypos.modifier.ModifierActivity;
+import com.daypos.modifier.ModifierItemsData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.CircleAnimationUtil;
@@ -70,6 +71,7 @@ public class SearchProductList extends AppCompatActivity implements
     GlobalClass globalClass;
     private int start_index = 0;
     private int limit = 60;
+    private String weight_qty = "0";
     private ArrayList<ProductData> productDataArrayList;
 
     @Override
@@ -225,6 +227,7 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
 
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
@@ -237,6 +240,30 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
+
+
+
+                                        /// modifier
+                                        productData.setIs_modifier(object.optString("is_modifire"));
+                                        ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                                        if (productData.getIs_modifier().equals("1")){
+
+                                            JSONArray modifire = object.getJSONArray("modifire");
+                                            for (int j = 0; j < modifire.length(); j++){
+                                                JSONObject object2 = modifire.getJSONObject(j);
+
+                                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                                modifierItemsData.setId(object2.optString("id"));
+                                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                            }
+
+                                        }
+                                        productData.setModifierList(modifierItemsDataArrayList);
+
 
                                         productDataArrayList.add(productData);
                                     }
@@ -275,10 +302,11 @@ public class SearchProductList extends AppCompatActivity implements
             Intent intent = new Intent(SearchProductList.this, ModifierActivity.class);
             intent.putExtra("datas", productData);
             startActivityForResult(intent, MODIFIER_REQUEST);
-
+            weight_qty = "1";
             selected_product = productData;
             selected_view = view;
         }else {
+            weight_qty = "1";
             makeFlyAnimation(view, productData.getId());
         }
 
@@ -327,6 +355,8 @@ public class SearchProductList extends AppCompatActivity implements
         params.put("item_id", product_id);
         params.put("modifiers", modifires_ids);
         params.put("type", "1");
+        params.put("weight_quantity", weight_qty);
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -338,8 +368,11 @@ public class SearchProductList extends AppCompatActivity implements
                     if (status == 1) {
 
                         String count = response.optString("count");
-                        cart_counter.setText(count);
-                        globalClass.setCart_counter(count);
+
+                        float fff = Float.parseFloat(count);
+                        cart_counter.setText(""+(int)fff);
+
+                        globalClass.setCart_counter(""+(int)fff);
 
                         /*Toasty.success(getApplicationContext(),
                                 "Added",
@@ -390,6 +423,8 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
+
 
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
@@ -402,6 +437,30 @@ public class SearchProductList extends AppCompatActivity implements
                                         productData.setItem_color(object.optString("item_color"));
                                         productData.setIs_modifier(object.optString("is_attribute"));
                                         productData.setIs_fav(object.optString("fav"));
+
+
+
+                                        /// modifier
+                                        productData.setIs_modifier(object.optString("is_modifire"));
+                                        ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                                        if (productData.getIs_modifier().equals("1")){
+
+                                            JSONArray modifire = object.getJSONArray("modifire");
+                                            for (int j = 0; j < modifire.length(); j++){
+                                                JSONObject object2 = modifire.getJSONObject(j);
+
+                                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                                modifierItemsData.setId(object2.optString("id"));
+                                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                                            }
+
+                                        }
+                                        productData.setModifierList(modifierItemsDataArrayList);
+
 
 
                                         productDataArrayList.add(productData);

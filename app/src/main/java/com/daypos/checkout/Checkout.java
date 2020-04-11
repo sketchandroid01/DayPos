@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.daypos.R;
-import com.daypos.container.Container;
 import com.daypos.fragments.customers.CustomerData;
 import com.daypos.fragments.customers.DialogAddCustomer;
 import com.daypos.fragments.customers.SearchCustomerAdapter;
@@ -271,7 +270,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                     return;
                 }
 
-                dialogRefundAmount();
+                checkout();
 
                 break;
 
@@ -447,7 +446,7 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Checkout.this);
-        View dialogView = inflater.inflate(R.layout.cash_refund_dialog, null);
+        View dialogView = inflater.inflate(R.layout.dialog_cash_refund, null);
         dialogBuilder.setView(dialogView);
         AlertDialog dialog_refund = dialogBuilder.create();
         dialog_refund.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -566,6 +565,9 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
         params.put("note", edt_notes.getText().toString());
         params.put("feedback", feedback);
 
+        params.put("ticket_id", globalClass.getTicket_id());
+        params.put("ticket_name", globalClass.getTicket_name());
+
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -582,9 +584,11 @@ public class Checkout extends AppCompatActivity implements View.OnClickListener 
                         globalClass.setCemail("");
                         globalClass.setCart_counter("0");
 
+                        globalClass.setTicket_id("");
+                        globalClass.setTicket_name("");
+
+
                         Commons.hideSoftKeyboard(Checkout.this);
-                        /*Toasty.success(getApplicationContext(),
-                                message, Toast.LENGTH_LONG, true).show();*/
 
                         Intent intent = new Intent(Checkout.this, ReceiptActivity.class);
                         intent.putExtra("pay_mat", pay_amount);

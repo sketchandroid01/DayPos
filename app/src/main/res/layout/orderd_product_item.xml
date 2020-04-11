@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Product 1"
-            android:textColor="@color/black"
+            android:textColor="@color/dark_gray_text"
             android:maxLines="2"
             android:paddingEnd="5dp"
             android:layout_toStartOf="@+id/tv_calculate_price"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="100.00"
-            android:textColor="@color/black"
+            android:textColor="@color/dark_gray_text"
             android:textSize="16sp"
             />
 

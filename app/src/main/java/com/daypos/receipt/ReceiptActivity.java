@@ -38,6 +38,7 @@ import com.daypos.fragments.home.ProductData;
 import com.daypos.fragments.settings.ShowMsg;
 import com.daypos.localdb.DatabaseHelper;
 import com.daypos.localdb.PrinterData;
+import com.daypos.modifier.ModifierItemsData;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
@@ -241,6 +242,9 @@ public class ReceiptActivity extends AppCompatActivity implements
                             String quantity = object.optString("quantity");
                             String price = object.optString("price");
                             String item_name = object.optString("item_name");
+                            String sold_option = object.optString("sold_option");
+                            String weight_quantity = object.optString("weight_quantity");
+
 
                             ProductData productData = new ProductData();
                             productData.setId(id);
@@ -248,12 +252,29 @@ public class ReceiptActivity extends AppCompatActivity implements
                             productData.setName(item_name);
                             productData.setQty(quantity);
                             productData.setPrice(price);
+                            productData.setSold_option(sold_option);
+
+
+                            /// modifier
+                            ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
+                            JSONArray item_modifire = object.getJSONArray("item_modifire");
+                            for (int j = 0; j < item_modifire.length(); j++){
+                                JSONObject object2 = item_modifire.getJSONObject(j);
+
+                                ModifierItemsData modifierItemsData = new ModifierItemsData();
+                                modifierItemsData.setId(object2.optString("id"));
+                                modifierItemsData.setName(object2.optString("modifier_option"));
+                                modifierItemsData.setPrice(object2.optString("price"));
+
+                                modifierItemsDataArrayList.add(modifierItemsData);
+
+                            }
+                            productData.setModifierList(modifierItemsDataArrayList);
+
 
                             productDataArrayList.add(productData);
 
                         }
-
-
 
                     }
 
@@ -582,7 +603,7 @@ public class ReceiptActivity extends AppCompatActivity implements
 
                 String p_name = productData.getName();
 
-                int qty = Integer.parseInt(productData.getQty());
+                float qty = Float.parseFloat(productData.getQty());
                 float price = Float.parseFloat(productData.getPrice());
                 float total_price = price * qty;
 
@@ -690,7 +711,7 @@ public class ReceiptActivity extends AppCompatActivity implements
 
                 String p_name = productData.getName();
 
-                int qty = Integer.parseInt(productData.getQty());
+                float qty = Float.parseFloat(productData.getQty());
                 float price = Float.parseFloat(productData.getPrice());
                 float total_price = price * qty;
 

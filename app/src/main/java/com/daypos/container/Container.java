@@ -158,47 +158,56 @@ public class Container extends AppCompatActivity implements
         DrawerData drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_home);
         drawerData.setTitle("Home");
+        drawerData.setColor_code("#F44336");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_customers);
         drawerData.setTitle("Customers");
+        drawerData.setColor_code("#f5a108");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_category);
         drawerData.setTitle("Category");
+        drawerData.setColor_code("#E91E63");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_products);
         drawerData.setTitle("Products");
+        drawerData.setColor_code("#39b939");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_fav);
         drawerData.setTitle("Favourites");
+        drawerData.setColor_code("#f5a108");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_bill_hist);
         drawerData.setTitle("Bill History");
+        drawerData.setColor_code("#448AFF");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_setting);
         drawerData.setTitle("Settings");
+        drawerData.setColor_code("#9C27B0");
         drawerDataArrayList.add(drawerData);
 
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_help);
         drawerData.setTitle("Help");
+        drawerData.setColor_code("#00D5AA");
         drawerDataArrayList.add(drawerData);
 
         drawerData = new DrawerData();
         drawerData.setIcon(R.mipmap.icon_update);
         drawerData.setTitle("Check for Update");
+        drawerData.setColor_code("#2ED500");
         drawerDataArrayList.add(drawerData);
 
 

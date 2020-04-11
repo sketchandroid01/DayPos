@@ -297,6 +297,46 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".modifier.WeightQtyActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".draftorder.AddDraftTicketActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".draftorder.DraftListActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".fragments.billhistory.EmailReceiptActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:forceDarkAllowed="false"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
 
 
 

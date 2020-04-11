@@ -75,6 +75,7 @@ public class AddProduct extends AppCompatActivity implements
     @BindView(R.id.radio_image) RadioButton radio_image;
     @BindView(R.id.linear_select_image) LinearLayout linear_select_image;
     @BindView(R.id.edt_product_name) EditText edt_product_name;
+    @BindView(R.id.edt_cost) EditText edt_cost;
     @BindView(R.id.edt_selling_price) EditText edt_selling_price;
     @BindView(R.id.edt_sku) EditText edt_sku;
     @BindView(R.id.edt_barcode) EditText edt_barcode;
@@ -297,7 +298,7 @@ public class AddProduct extends AppCompatActivity implements
                         CategoryData categoryData = new CategoryData();
 
                         categoryData.setId("");
-                        categoryData.setName("Select Category");
+                        categoryData.setName("Select category");
                         categoryData.setColor("");
                         categoryData.setItem_no("");
                         categoryDataArrayList.add(categoryData);
@@ -322,6 +323,19 @@ public class AddProduct extends AppCompatActivity implements
                                 = new CategorySpinnerAdapter(AddProduct.this, categoryDataArrayList);
                         spinner_category.setAdapter(categorySpinnerAdapter);
 
+                    }else {
+
+                        CategoryData categoryData = new CategoryData();
+
+                        categoryData.setId("");
+                        categoryData.setName("No category found");
+                        categoryData.setColor("");
+                        categoryData.setItem_no("");
+                        categoryDataArrayList.add(categoryData);
+
+                        CategorySpinnerAdapter categorySpinnerAdapter
+                                = new CategorySpinnerAdapter(AddProduct.this, categoryDataArrayList);
+                        spinner_category.setAdapter(categorySpinnerAdapter);
                     }
 
                     spinnerAction();
@@ -376,7 +390,7 @@ public class AddProduct extends AppCompatActivity implements
         params.put("category_id", category_id);
         params.put("sold_option", unit_type);
         params.put("price", edt_selling_price.getText().toString());
-        params.put("cost", edt_selling_price.getText().toString());
+        params.put("cost", edt_cost.getText().toString());
         params.put("sku", edt_sku.getText().toString());
         params.put("bar_code", edt_barcode.getText().toString());
         params.put("item_color", selected_color_code);
@@ -386,9 +400,9 @@ public class AddProduct extends AppCompatActivity implements
         params.put("item_attribute", type_of_color_file);  // 1 for color, 2 for image file
 
         try{
-
-            params.put("content_image", p_image);
-
+            if (p_image != null){
+                params.put("content_image", p_image);
+            }
         }catch (FileNotFoundException e){
             e.printStackTrace();
         }

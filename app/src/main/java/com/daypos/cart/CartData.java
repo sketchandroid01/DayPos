@@ -18,6 +18,7 @@ public class CartData implements Serializable {
     private String price;
     private String special_price;
     private String modifiers;
+    private String sold_option;
     private ArrayList<ModifierItemsData> modifierItemsList;
 
 
@@ -126,6 +127,15 @@ public class CartData implements Serializable {
 
     public CartData setModifierItemsList(ArrayList<ModifierItemsData> modifierItemsList) {
         this.modifierItemsList = modifierItemsList;
+        return this;
+    }
+
+    public String getSold_option() {
+        return sold_option;
+    }
+
+    public CartData setSold_option(String sold_option) {
+        this.sold_option = sold_option;
         return this;
     }
 }

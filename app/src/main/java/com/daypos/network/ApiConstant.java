@@ -45,6 +45,10 @@ public class ApiConstant {
     public static final String top_customer                  = BASE_URL + "top_customer";
     public static final String email_invoice                 = BASE_URL + "email_invoice";
 
+    public static final String add_ticket                    = BASE_URL + "add_ticket";
+    public static final String get_ticket                    = BASE_URL + "get_ticket";
+    public static final String convert_cart_to_draft         = BASE_URL + "convert_cart_to_draft";
+
 
 
 

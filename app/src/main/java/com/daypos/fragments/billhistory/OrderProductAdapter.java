@@ -63,12 +63,17 @@ public class OrderProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         holder.tv_product_name.setText(productData.getName());
 
-        int qty = Integer.parseInt(productData.getQty());
+        double qty = Double.parseDouble(productData.getQty());
         float price = Float.parseFloat(productData.getPrice());
 
-        holder.tv_qty.setText(productData.getQty() + " x "+productData.getPrice());
+        if (productData.getSold_option().equals("1")){
+            holder.tv_qty.setText((int)qty + " x "+productData.getPrice());
+        }else {
+            holder.tv_qty.setText(productData.getQty() + " x "+productData.getPrice());
+        }
 
-        float total_price = price * qty;
+
+        double total_price = price * qty;
         total_price = total_price + getModifier_price(productData.getModifierList(), qty);
         holder.tv_calculate_price.setText(df.format(total_price));
 
@@ -89,12 +94,12 @@ public class OrderProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     private void showModifiers(ArrayList<ModifierItemsData> modifierList,
-                               TextView textView, int qty){
+                               TextView textView, double qty){
 
         String string = "";
         for(ModifierItemsData itemsData : modifierList){
 
-            float price = Float.parseFloat(itemsData.getPrice());
+            double price = Float.parseFloat(itemsData.getPrice());
             price = price * qty;
 
             string = string + "+ " + itemsData.getName() + " (" + df.format(price) + ")" + "\n";
@@ -108,9 +113,9 @@ public class OrderProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    private float getModifier_price(ArrayList<ModifierItemsData> arrayList, int qty){
+    private double getModifier_price(ArrayList<ModifierItemsData> arrayList, double qty){
 
-        float price = 0;
+        double price = 0;
         for(ModifierItemsData itemsData : arrayList){
             price = price + (Float.parseFloat(itemsData.getPrice()) * qty);
         }

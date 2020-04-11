@@ -29,6 +29,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daypos.R;
 import com.daypos.cart.CartActivity;
+import com.daypos.draftorder.AddDraftTicketActivity;
+import com.daypos.draftorder.DraftListActivity;
 import com.daypos.fragments.category.CategoryData;
 import com.daypos.fragments.customers.CustomerSearchActivity;
 import com.daypos.fragments.customers.DialogAddCustomer;
@@ -36,6 +38,7 @@ import com.daypos.fragments.customers.DialogRemoveSelectCustomer;
 import com.daypos.fragments.products.SearchProductList;
 import com.daypos.modifier.ModifierActivity;
 import com.daypos.modifier.ModifierItemsData;
+import com.daypos.modifier.WeightQtyActivity;
 import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.CircleAnimationUtil;
@@ -63,9 +66,10 @@ public class Home extends Fragment implements
 
     @BindView(R.id.recyclerview) RecyclerView recyclerview;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe_refresh_layout;
-    @BindView(R.id.iv_search)
-    ImageView iv_search;
+    @BindView(R.id.iv_search) ImageView iv_search;
     @BindView(R.id.spinner_cat) Spinner spinner_cat;
+    @BindView(R.id.rel_ticket) RelativeLayout rel_ticket;
+    @BindView(R.id.tv_ticket_action) TextView tv_ticket_action;
 
     public static TextView cart_counter;
     private RelativeLayout cart_relativeLayout;
@@ -83,6 +87,7 @@ public class Home extends Fragment implements
 
     private int last_scroll_position = 0;
     private static final int MODIFIER_REQUEST = 1231;
+    private static final int WEIGHT_QTY_REQUEST = 5214;
     private ProductData selected_product;
     private View selected_view;
 
@@ -188,9 +193,14 @@ public class Home extends Fragment implements
             }
 
             cart_counter.setText(globalClass.getCart_counter());
+
+            setDraftText();
+
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        getCartItems();
 
         super.onResume();
     }
@@ -214,16 +224,38 @@ public class Home extends Fragment implements
         categoryDataArrayList = new ArrayList<>();
         getCategoryList();
 
+        if (preferense.getString(Preferense.enable_open_ticket).equals("y")){
+            rel_ticket.setVisibility(View.VISIBLE);
+        }else {
+            rel_ticket.setVisibility(View.VISIBLE);
+        }
+
 
         iv_search.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SearchProductList.class);
             startActivity(intent);
         });
 
+        rel_ticket.setOnClickListener(v -> {
+
+            if (globalClass.getTicket_id().isEmpty()){
+                if (Integer.parseInt(globalClass.getCart_counter()) == 0){
+                    Intent intent = new Intent(getActivity(), DraftListActivity.class);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(getActivity(), AddDraftTicketActivity.class);
+                    startActivity(intent);
+                }
+            }else {
+                globalClass.setTicket_id("");
+                globalClass.setTicket_name("");
+                getCartItems();
+            }
+
+        });
 
         initScrollListener();
 
-        getCartItems();
     }
 
     @Override
@@ -281,6 +313,19 @@ public class Home extends Fragment implements
                                             = new CategorySpinnerAdapter(getActivity(), categoryDataArrayList);
                                     spinner_cat.setAdapter(categorySpinnerAdapter);
 
+                                }else {
+
+                                    CategoryData categoryData = new CategoryData();
+
+                                    categoryData.setId("all");
+                                    categoryData.setName("All");
+                                    categoryData.setColor("");
+                                    categoryData.setItem_no("");
+                                    categoryDataArrayList.add(categoryData);
+
+                                    CategorySpinnerAdapter categorySpinnerAdapter
+                                            = new CategorySpinnerAdapter(getActivity(), categoryDataArrayList);
+                                    spinner_cat.setAdapter(categorySpinnerAdapter);
                                 }
 
                                 spinnerAction();
@@ -345,6 +390,7 @@ public class Home extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
 
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
@@ -509,6 +555,8 @@ public class Home extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
+
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
                                         }else {
@@ -577,11 +625,25 @@ public class Home extends Fragment implements
             Intent intent = new Intent(getActivity(), ModifierActivity.class);
             intent.putExtra("datas", productData);
             startActivityForResult(intent, MODIFIER_REQUEST);
-
+            weight_qty = "1";
             selected_product = productData;
             selected_view = view;
+
         }else {
-            makeFlyAnimation(view, productData.getId());
+
+            ///WEIGHT_QTY_REQUEST
+            if (productData.getSold_option().equals("2")){
+                Intent intent = new Intent(getActivity(), WeightQtyActivity.class);
+                intent.putExtra("datas", productData);
+                startActivityForResult(intent, WEIGHT_QTY_REQUEST);
+
+                selected_product = productData;
+                selected_view = view;
+            }else {
+                weight_qty = "1";
+                makeFlyAnimation(view, productData.getId());
+            }
+
         }
 
     }
@@ -627,7 +689,9 @@ public class Home extends Fragment implements
         params.put("user_id", globalClass.getUserId());
         params.put("item_id", product_id);
         params.put("modifiers", modifires_ids);
+        params.put("weight_quantity", weight_qty);
         params.put("type", "1");
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(getActivity(), url, params, false, response -> {
 
@@ -639,15 +703,19 @@ public class Home extends Fragment implements
                     if (status == 1) {
 
                         String count = response.optString("count");
-                        cart_counter.setText(count);
+                        float fff = Float.parseFloat(count);
+                        cart_counter.setText(""+(int)fff);
 
-                        globalClass.setCart_counter(count);
+                        globalClass.setCart_counter(""+(int)fff);
 
                         /*Toasty.success(getActivity(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();*/
 
                         modifires_ids = "";
+
+
+                        setDraftText();
                     }
 
                 } catch (Exception e) {
@@ -665,11 +733,12 @@ public class Home extends Fragment implements
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(getActivity(), url, params, false, response -> {
 
             if (response != null) {
-                int total_qty = 0;
+                float total_qty = 0;
                 try {
                     int status = response.optInt("status");
                     String message = response.optString("message");
@@ -682,13 +751,20 @@ public class Home extends Fragment implements
 
                             String quantity = object.optString("quantity");
 
-                            total_qty = total_qty + Integer.parseInt(quantity);
+                            total_qty = total_qty + Float.parseFloat(quantity);
                         }
 
-                        cart_counter.setText(""+total_qty);
+                        cart_counter.setText(""+(int)total_qty);
 
-                        globalClass.setCart_counter(""+total_qty);
+                        globalClass.setCart_counter(""+(int)total_qty);
+
+                    }else {
+                        cart_counter.setText(""+(int)total_qty);
+
+                        globalClass.setCart_counter(""+(int)total_qty);
                     }
+
+                    setDraftText();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -746,14 +822,44 @@ public class Home extends Fragment implements
     }
 
 
+    private void setDraftText(){
+        /*if (Integer.parseInt(globalClass.getCart_counter()) == 0){
+            tv_ticket_action.setText("OPEN DRAFT");
+        }else {
+            tv_ticket_action.setText("SAVE");
+        }*/
 
-    String modifires_ids = "";
+        if (!globalClass.getTicket_id().isEmpty()){
+            if (Integer.parseInt(globalClass.getCart_counter()) == 0){
+                tv_ticket_action.setText("OPEN TICKET");
+            }else {
+                tv_ticket_action.setText("SAVE   ("+globalClass.getTicket_name()+")");
+            }
+        }else {
+            if (Integer.parseInt(globalClass.getCart_counter()) == 0){
+                tv_ticket_action.setText("OPEN TICKET");
+            }else {
+                tv_ticket_action.setText("SAVE");
+            }
+        }
+    }
+
+    ///
+    private String modifires_ids = "";
+    private String weight_qty = "";
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if( requestCode == MODIFIER_REQUEST && resultCode == Activity.RESULT_OK) {
 
             modifires_ids = data.getStringExtra("ids");
             Log.d(Commons.TAG, "modifires_ids = "+modifires_ids);
+
+            makeFlyAnimation(selected_view, selected_product.getId());
+
+        }if( requestCode == WEIGHT_QTY_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            weight_qty = data.getStringExtra("qty");
+            Log.d(Commons.TAG, "weight_qty = "+weight_qty);
 
             makeFlyAnimation(selected_view, selected_product.getId());
         }

@@ -205,6 +205,8 @@ public class FragProductList extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
+                                        productData.setCost(object.optString("cost"));
 
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
@@ -294,6 +296,8 @@ public class FragProductList extends Fragment implements
                                         productData.setPrice(object.optString("price"));
                                         productData.setSku(object.optString("sku"));
                                         productData.setBar_code(object.optString("bar_code"));
+                                        productData.setSold_option(object.optString("sold_option"));
+
                                         if (object.optString("item_image").isEmpty()){
                                             productData.setImage("");
                                         }else {

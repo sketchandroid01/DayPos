@@ -33,6 +33,7 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Button btn_refund;
 
     private static DecimalFormat df = new DecimalFormat("0.00");
+    private static DecimalFormat df3 = new DecimalFormat("0.000");
 
     private ArrayList<ReturnData> returnDataArrayList;
     private ArrayList<Boolean> booleanArrayList;
@@ -89,15 +90,13 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         holder.tv_product_name.setText(productData.getName());
 
-        int qty = Integer.parseInt(productData.getQty());
+        float qty = Float.parseFloat(productData.getQty());
         float price = Float.parseFloat(productData.getPrice());
 
         holder.tv_qty.setText(" x "+productData.getQty());
 
-        float total_price = price * qty;
+        double total_price = price * qty;
         holder.tv_calculate_price.setText(df.format(total_price));
-
-        //holder.tv_return_qty
 
 
         holder.checkbox.setChecked(booleanArrayList.get(position));
@@ -129,10 +128,8 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void addToArray(String item_id, String item_qty, String item_price){
 
-        if (Integer.parseInt(item_qty) > 1){
-
+        if (Double.parseDouble(item_qty) > 1){
             returnQtyDialog(item_id, item_qty, item_price);
-
         }else {
             ReturnData returnData = new ReturnData();
             returnData.setItem_id(item_id);
@@ -178,7 +175,7 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
         for (int i = 0; i < returnDataArrayList.size(); i++){
             ReturnData returnData = returnDataArrayList.get(i);
             float price = Float.parseFloat(returnData.getItem_price());
-            int qty = Integer.parseInt(returnData.getItem_qty());
+            float qty = Float.parseFloat(returnData.getItem_qty());
 
             float ppp = price * qty;
             total = total + ppp;
@@ -216,10 +213,10 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
         cart_minus_img.setOnClickListener(v -> {
 
             try {
-                int count = Integer.parseInt(edit_cart_quantity.getText().toString());
+                float count = Float.parseFloat(edit_cart_quantity.getText().toString());
                 if (count >= 2){
                     count--;
-                    edit_cart_quantity.setText(String.valueOf(count));
+                    edit_cart_quantity.setText(df3.format(count));
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -231,11 +228,11 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
         cart_plus_img.setOnClickListener(v -> {
 
             try {
-                int count = Integer.parseInt(edit_cart_quantity.getText().toString());
+                float count = Float.parseFloat(edit_cart_quantity.getText().toString());
                 count++;
 
-                if (count <= Integer.parseInt(item_qty)){
-                    edit_cart_quantity.setText(String.valueOf(count));
+                if (count <= Float.parseFloat(item_qty)){
+                    edit_cart_quantity.setText(df3.format(count));
                 }
 
             }catch (Exception e){
@@ -258,7 +255,7 @@ public class ReturnProductAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
 
             float refund_price = Float.parseFloat(item_price)
-                    * Integer.parseInt(edit_cart_quantity.getText().toString());
+                    * Float.parseFloat(edit_cart_quantity.getText().toString());
 
             ReturnData returnData = new ReturnData();
             returnData.setItem_id(item_id);

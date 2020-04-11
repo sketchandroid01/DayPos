@@ -44,7 +44,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Product 1"
-                            android:textColor="@color/black"
+                            android:textColor="@color/dark_gray_text"
                             android:maxLines="2"
                             />
 
@@ -60,7 +60,7 @@
                             android:id="@+id/tv_quantity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="@color/dark_gray_text"
                             android:text="X 1"
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
@@ -84,7 +84,7 @@
                             android:layout_alignParentEnd="true"
                             android:text="1100.00"
                             android:paddingRight="5dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/dark_gray_text"
                             android:textSize="16sp"
                             />
 

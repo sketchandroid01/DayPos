@@ -43,15 +43,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
         CartData cartData = cartDataArrayList.get(position);
 
         holder.tv_product_name.setText(cartData.getProduct_name());
-        holder.tv_quantity.setText("X "+cartData.getQty());
+
         holder.tv_product_name.setText(cartData.getProduct_name());
 
         try {
 
-            float price = Float.parseFloat(cartData.getPrice());
-            int qty = Integer.parseInt(cartData.getQty());
+            double price = Double.parseDouble(cartData.getPrice());
+            double qty = Double.parseDouble(cartData.getQty());
 
-            float total_price = price * qty;
+            if (cartData.getSold_option().equals("1")){
+                holder.tv_quantity.setText("X "+(int)qty);
+            }else {
+                holder.tv_quantity.setText("X "+cartData.getQty());
+            }
+
+
+            double total_price = price * qty;
             total_price = total_price + getModifier_price(cartData.getModifierItemsList(), cartData.getModifiers(), qty);
 
             holder.tv_calculate_price.setText(df.format(total_price));
@@ -137,11 +144,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.myViewHolder> 
 
     }
 
-    private float getModifier_price(ArrayList<ModifierItemsData> arrayList,
-                                    String modifier, int qty){
+    private double getModifier_price(ArrayList<ModifierItemsData> arrayList,
+                                    String modifier, double qty){
 
         String[] array = modifier.split(",");
-        float price = 0;
+        double price = 0;
         for(ModifierItemsData itemsData : arrayList){
 
             for (String ss : array) {

@@ -71,7 +71,7 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_gray_text"
                 android:text="Product Name"
                 />
 
@@ -93,6 +93,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             >
             <TextView
                 android:id="@+id/tv_price"
@@ -105,10 +106,11 @@
 
             <ImageView
                 android:id="@+id/iv_fav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@mipmap/icon_heart_grey"
                 android:layout_marginStart="10dp"
+                android:padding="6dp"
                 />
 
         </LinearLayout>

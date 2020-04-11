@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +33,7 @@ import com.daypos.network.ApiConstant;
 import com.daypos.network.PostDataParser;
 import com.daypos.utils.Commons;
 import com.daypos.utils.GlobalClass;
+import com.daypos.utils.PriceValueFilter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -165,6 +168,7 @@ public class CartActivity extends AppCompatActivity implements
 
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -187,8 +191,12 @@ public class CartActivity extends AppCompatActivity implements
                             String price = object.optString("price");
                             String cost = object.optString("cost");
                             String modifiers = object.optString("modifiers");
+                            String sold_option = object.optString("sold_option");
+                            String weight_quantity = object.optString("weight_quantity");
 
-                            total_qty = total_qty + Integer.parseInt(quantity);
+
+                            total_qty = total_qty + (int) Float.parseFloat(weight_quantity);
+
 
 
                             CartData cartData = new CartData();
@@ -199,13 +207,14 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
                             cartData.setModifiers(modifiers);
+                            cartData.setSold_option(sold_option);
 
 
-                            int qty = Integer.parseInt(cartData.getQty());
+                            double qty = Double.parseDouble(cartData.getQty());
 
                             String[] array = modifiers.split(",");
                             /// modifier
-                            float modifier_price = 0;
+                            double modifier_price = 0;
                             ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
                             JSONArray item_modifire = object.getJSONArray("item_modifire");
                             for (int j = 0; j < item_modifire.length(); j++){
@@ -227,7 +236,6 @@ public class CartActivity extends AppCompatActivity implements
 
                             }
                             cartData.setModifierItemsList(modifierItemsDataArrayList);
-
 
 
                             cartDataArrayList.add(cartData);
@@ -324,7 +332,25 @@ public class CartActivity extends AppCompatActivity implements
         ImageView cart_plus_img = dialogView.findViewById(R.id.cart_plus_img);
         Button btn_close = dialogView.findViewById(R.id.btn_close);
         Button btn_save = dialogView.findViewById(R.id.btn_save);
-        edit_cart_quantity.setText(cartData.getQty());
+
+
+        if (cartData.getSold_option().equals("2")){
+
+            edit_cart_quantity.setInputType(InputType.TYPE_CLASS_NUMBER
+                    | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            edit_cart_quantity.setFilters(new InputFilter[]{new PriceValueFilter(3)});
+
+            cart_plus_img.setVisibility(View.GONE);
+            cart_minus_img.setVisibility(View.GONE);
+
+            edit_cart_quantity.setText(cartData.getQty());
+            edit_cart_quantity.setSelection(edit_cart_quantity.length());
+
+        }else {
+            float qty = Float.parseFloat(cartData.getQty());
+
+            edit_cart_quantity.setText(""+(int)qty);
+        }
 
 
         AlertDialog alertDialog = dialogBuilder.create();
@@ -370,6 +396,22 @@ public class CartActivity extends AppCompatActivity implements
                 return;
             }
 
+            try {
+                if (Float.parseFloat(edit_cart_quantity.getText().toString()) == 0){
+                    Toasty.info(getApplicationContext(),
+                            "Enter valid quantity",
+                            Toast.LENGTH_SHORT, true).show();
+                    return;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                Toasty.info(getApplicationContext(),
+                        "Enter valid quantity",
+                        Toast.LENGTH_SHORT, true).show();
+                return;
+            }
+
+
             editCart(cartData.getId(), edit_cart_quantity.getText().toString());
 
             alertDialog.dismiss();
@@ -390,6 +432,7 @@ public class CartActivity extends AppCompatActivity implements
         params.put("cart_row_id", cart_row_id);
         params.put("quantity", quantity_);
         params.put("modifiers", modifires_ids);
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -399,6 +442,8 @@ public class CartActivity extends AppCompatActivity implements
                     int status = response.optInt("status");
                     String message = response.optString("message");
                     if (status == 1) {
+
+                        cartDataArrayList = new ArrayList<>();
 
                         JSONArray data = response.getJSONArray("data");
 
@@ -412,8 +457,10 @@ public class CartActivity extends AppCompatActivity implements
                             String price = object.optString("price");
                             String cost = object.optString("cost");
                             String modifiers = object.optString("modifiers");
+                            String sold_option = object.optString("sold_option");
+                            String weight_quantity = object.optString("weight_quantity");
 
-                            total_qty = total_qty + Integer.parseInt(quantity);
+                            total_qty = total_qty + (int) Float.parseFloat(weight_quantity);
 
 
                             CartData cartData = new CartData();
@@ -424,12 +471,14 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
                             cartData.setModifiers(modifiers);
+                            cartData.setSold_option(sold_option);
 
-                            int qty = Integer.parseInt(cartData.getQty());
+
+                            double qty = Double.parseDouble(cartData.getQty());
 
                             String[] array = modifiers.split(",");
                             /// modifier
-                            float modifier_price = 0;
+                            double modifier_price = 0;
                             ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
                             JSONArray item_modifire = object.getJSONArray("item_modifire");
                             for (int j = 0; j < item_modifire.length(); j++){
@@ -492,6 +541,7 @@ public class CartActivity extends AppCompatActivity implements
         HashMap<String, String> params = new HashMap<>();
         params.put("user_id", globalClass.getUserId());
         params.put("cart_row_id", cart_row_id);
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -501,6 +551,8 @@ public class CartActivity extends AppCompatActivity implements
                     int status = response.optInt("status");
                     String message = response.optString("message");
                     if (status == 1) {
+
+                        cartDataArrayList = new ArrayList<>();
 
                         JSONArray data = response.getJSONArray("data");
 
@@ -514,8 +566,10 @@ public class CartActivity extends AppCompatActivity implements
                             String price = object.optString("price");
                             String cost = object.optString("cost");
                             String modifiers = object.optString("modifiers");
+                            String sold_option = object.optString("sold_option");
+                            String weight_quantity = object.optString("weight_quantity");
 
-                            total_qty = total_qty + Integer.parseInt(quantity);
+                            total_qty = total_qty + (int) Float.parseFloat(weight_quantity);
 
                             CartData cartData = new CartData();
                             cartData.setId(id);
@@ -525,13 +579,15 @@ public class CartActivity extends AppCompatActivity implements
                             cartData.setQty(quantity);
                             cartData.setMrp(cost);
                             cartData.setModifiers(modifiers);
+                            cartData.setSold_option(sold_option);
 
-                            int qty = Integer.parseInt(cartData.getQty());
+
+                            double qty = Double.parseDouble(cartData.getQty());
 
                             String[] array = modifiers.split(",");
 
                             /// modifier
-                            float modifier_price = 0;
+                            double modifier_price = 0;
                             ArrayList<ModifierItemsData> modifierItemsDataArrayList = new ArrayList<>();
                             JSONArray item_modifire = object.getJSONArray("item_modifire");
                             for (int j = 0; j < item_modifire.length(); j++){

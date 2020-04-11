@@ -4,6 +4,7 @@ public class DrawerData {
 
     private String title;
     private int icon;
+    private String color_code;
 
     public String getTitle() {
         return title;
@@ -19,5 +20,14 @@ public class DrawerData {
 
     public void setIcon(int icon) {
         this.icon = icon;
+    }
+
+    public String getColor_code() {
+        return color_code;
+    }
+
+    public DrawerData setColor_code(String color_code) {
+        this.color_code = color_code;
+        return this;
     }
 }

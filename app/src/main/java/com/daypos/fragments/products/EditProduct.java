@@ -79,6 +79,7 @@ public class EditProduct extends AppCompatActivity implements
     @BindView(R.id.linear_select_image) LinearLayout linear_select_image;
     @BindView(R.id.edt_product_name) EditText edt_product_name;
     @BindView(R.id.edt_selling_price) EditText edt_selling_price;
+    @BindView(R.id.edt_cost) EditText edt_cost;
     @BindView(R.id.edt_sku) EditText edt_sku;
     @BindView(R.id.edt_barcode) EditText edt_barcode;
     @BindView(R.id.spinner_category) Spinner spinner_category;
@@ -150,6 +151,7 @@ public class EditProduct extends AppCompatActivity implements
             edt_barcode.setText(productData.getBar_code());
             edt_product_name.setText(productData.getName());
             edt_selling_price.setText(productData.getPrice());
+            edt_cost.setText(productData.getCost());
             edt_sku.setText(productData.getSku());
 
 

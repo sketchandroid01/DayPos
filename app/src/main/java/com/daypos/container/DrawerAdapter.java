@@ -1,6 +1,7 @@
 package com.daypos.container;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.myViewHold
 
         holder.iv_icon.setImageResource(drawerData.getIcon());
         holder.tv_title.setText(drawerData.getTitle());
+        holder.iv_icon.setColorFilter(Color.parseColor(drawerData.getColor_code()));
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

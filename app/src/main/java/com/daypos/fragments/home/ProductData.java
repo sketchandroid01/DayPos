@@ -11,6 +11,7 @@ public class ProductData implements Serializable {
     private String name;
     private String image;
     private String sku;
+    private String cost;
     private String price;
     private String taxes;
     private String bar_code;
@@ -161,6 +162,15 @@ public class ProductData implements Serializable {
 
     public ProductData setModifierList(ArrayList<ModifierItemsData> modifierList) {
         this.modifierList = modifierList;
+        return this;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public ProductData setCost(String cost) {
+        this.cost = cost;
         return this;
     }
 }

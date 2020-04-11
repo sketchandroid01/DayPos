@@ -71,6 +71,8 @@ public class GlobalClass extends MultiDexApplication {
 
     private String userId;
     private String cart_counter = "0";
+    private String ticket_id = "";
+    private String ticket_name = "";
 
     public String getUserId() {
         return userId;
@@ -86,6 +88,24 @@ public class GlobalClass extends MultiDexApplication {
 
     public void setCart_counter(String cart_counter) {
         this.cart_counter = cart_counter;
+    }
+
+    public String getTicket_id() {
+        return ticket_id;
+    }
+
+    public GlobalClass setTicket_id(String ticket_id) {
+        this.ticket_id = ticket_id;
+        return this;
+    }
+
+    public String getTicket_name() {
+        return ticket_name;
+    }
+
+    public GlobalClass setTicket_name(String ticket_name) {
+        this.ticket_name = ticket_name;
+        return this;
     }
 
     /// selected customer id for billing ...
@@ -129,4 +149,7 @@ public class GlobalClass extends MultiDexApplication {
         this.cphone = cphone;
         return this;
     }
+
+
+
 }

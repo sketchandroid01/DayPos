@@ -57,6 +57,7 @@ public class FullScannerActivity extends BaseScannerActivity implements
 
     private GlobalClass globalClass;
 
+    private String weight_qty = "";
 
 
     @Override
@@ -206,6 +207,7 @@ public class FullScannerActivity extends BaseScannerActivity implements
             e.printStackTrace();
         }
 
+        weight_qty = "1";
         addToCart(rawResult.getText());
 
        // mScannerView.resumeCameraPreview(this);
@@ -293,6 +295,8 @@ public class FullScannerActivity extends BaseScannerActivity implements
         params.put("bar_code", barcode);
         params.put("modifires", "");
         params.put("type", "2");
+        params.put("weight_quantity", weight_qty);
+        params.put("ticket_id", globalClass.getTicket_id());
 
         new PostDataParser(this, url, params, true, response -> {
 
@@ -304,9 +308,10 @@ public class FullScannerActivity extends BaseScannerActivity implements
                     if (status == 1) {
 
                         String count = response.optString("count");
-                        cart_counter.setText(count);
-                        globalClass.setCart_counter(count);
+                        float fff = Float.parseFloat(count);
+                        cart_counter.setText(""+(int)fff);
 
+                        globalClass.setCart_counter(""+(int)fff);
                        /* Toasty.success(getApplicationContext(),
                                 "Added",
                                 Toast.LENGTH_SHORT, true).show();*/
